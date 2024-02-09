@@ -1,0 +1,64 @@
+@import "VariableDefine";
+
+.header {
+  display: flex;
+  justify-content: space-around;
+  height: fit-content;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  .logo_and_search {
+    display: flex;
+    .logo {
+      height: fit-content;
+      margin-right: 120px;
+      cursor: pointer;
+    }
+    .global_search {
+      display: flex;
+      align-items: center;
+      width: 580px;
+      cursor: pointer;
+      .input {
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        font-size: 28px;
+      }
+      .search_icon {
+        margin-left: -50px;
+      }
+      .search_icon:hover {
+        color: @pointerOn;
+      }
+    }
+  }
+  .personal_operate {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-left: 480px;
+    .msg_box {
+      display: flex;
+      .dot {
+        height: 15px;
+        width: 15px;
+        background-color: red;
+        border-radius: 50%;
+        margin-left: -15px;
+        margin-top: 2px;
+        z-index: @msgDot;
+      }
+    }
+    .msg_icon {
+      cursor: pointer;
+      z-index: @msgIcon;
+    }
+    .msg_icon:hover {
+      color: @pointerOn;
+    }
+    .account_icon {
+      margin-left: 30px;
+    }
+  }
+}
