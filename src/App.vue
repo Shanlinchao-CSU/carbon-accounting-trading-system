@@ -1,13 +1,13 @@
 <template>
-  <MainHeader/>
-  <div class="testt"></div>
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
 </template>
 
 <script setup>
-import MainHeader from '@/components/common/MainHeader.vue'
+
 </script>
 <style scoped lang="less">
-.testt {
-  height: 2000px;
-}
 </style>
