@@ -1,74 +1,139 @@
-.login_box {
-  height: 800px;
-  width: 700px;
-  padding-top: 40px;
-  border-radius: 10px;
-  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
-  text-align: center;
-  .title {
-    font-size: 48px;
-    font-weight: 1000;
-  }
-  .form {
+@import "VariableDefine";
+  .login_image_box {
+    position: absolute;
+    top: 20%;
+    left: 18%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-top: 70px;
-    .form_item:first-child {
-      width: 70%;
-      height: 70px;
-      .input {
-        width: 100%;
-        height: 100%;
-        line-height: 65px;
-        font-size: 22px;
-      }
+    .title {
+      color: white;
+      font-size: 40px;
+      font-weight: 500;
+      letter-spacing: 8px;
+      margin-bottom: 80px;
     }
-    .form_item:nth-child(2) {
-      margin-top: 30px;
-      width: 70%;
-      height: 70px;
-      .input {
-        width: 100%;
-        height: 100%;
-        line-height: 65px;
-        font-size: 22px;
-      }
+    .login_image {
+      margin-bottom: 30px;
     }
-    .form_item:nth-child(3) {
-      margin-top: 30px;
-      width: 70%;
-      height: 70px;
-      .input {
-        width: 60%;
-        height: 100%;
-        line-height: 65px;
-        font-size: 22px;
-        z-index: 2;
+    .slogan {
+      color: white;
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: 6px;
+    }
+  }
+  .login_box {
+    position: absolute;
+    top: 15%;
+    right: 18%;
+    width: 700px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    text-align: center;
+    background: #f6f8f6;
+    .title {
+      font-size: 52px;
+      font-weight: 500;
+      letter-spacing: 15px;
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+      .ID_login_box {
+        width: 70%;
+        .form_item {
+          height: 70px;
+          .input {
+            height: 100%;
+            font-size: 25px;
+          }
+        }
+        .form_item:nth-child(2) {
+          margin-top: 30px;
+        }
+        .form_item:nth-child(3) {
+          margin-top: 30px;
+          .input {
+            width: 60%;
+          }
+          .code_box {
+            width: 40%;
+            height: 100%;
+            border-radius: 5px;
+            border: 0.1px solid #e7dfda;
+            box-sizing: border-box;
+            .code_pic {
+              height: 100%;
+              width: 100%;
+            }
+          }
+        }
       }
-      .code_box {
-        width: 40%;
-        height: 100%;
-        border-radius: 5px;
-        border: 0.1px solid #e7dfda;
-        box-sizing: border-box;
-        .code_pic {
-          height: 100%;
-          width: 100%;
+      .email_login_box, .phone_login_box {
+        width: 70%;
+        .form_item {
+          height: 70px;
+          .input {
+            height: 100%;
+            font-size: 25px;
+          }
+        }
+        .form_item:nth-child(2) {
+          .input {
+            width: calc(70% - 10px);
+          }
+          .get_code_btn {
+            margin-left: 10px;
+            width: 30%;
+            height: 100%;
+            font-size: 20px;
+          }
         }
       }
     }
-  }
-  .button_box {
-    width: 90%;
-    margin: 25px auto 50px;
-    display: flex;
-    justify-content: space-around;
-    .button {
-      width: 120px;
-      height: 60px;
-      font-size: 28px;
+    .go_login {
       position: relative;
+      left: 160px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .go_login:hover {
+      color: @pointer_on;
+    }
+    .button_box {
+      width: 90%;
+      margin: 18px auto 50px;
+      display: flex;
+      justify-content: space-around;
+      .button {
+        width: 120px;
+        height: 60px;
+        font-size: 28px;
+        position: relative;
+      }
+    }
+    .other_method_box {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      .method_box:not(:first-child) {
+        margin-left: 220px;
+      }
+      .method_box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .method_text {
+          font-size: 20px;
+          font-weight: 500;
+        }
+      }
+      .method_box:hover {
+        cursor: pointer;
+      }
     }
   }
-}

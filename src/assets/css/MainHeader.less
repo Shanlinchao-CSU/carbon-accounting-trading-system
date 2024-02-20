@@ -1,5 +1,4 @@
 @import "VariableDefine";
-
 .header {
   display: flex;
   justify-content: space-around;
@@ -11,7 +10,7 @@
     display: flex;
     .logo {
       height: fit-content;
-      margin-right: 120px;
+      margin-right: 200px;
       cursor: pointer;
     }
     .global_search {
@@ -29,7 +28,7 @@
         margin-left: -50px;
       }
       .search_icon:hover {
-        color: @pointerOn;
+        color: @pointer_on;
       }
     }
   }
@@ -37,9 +36,16 @@
     display: flex;
     align-items: center;
     width: fit-content;
-    margin-left: 480px;
+    margin-left: 160px;
     .msg_box {
       display: flex;
+      .msg_icon {
+        cursor: pointer;
+        z-index: @msgIcon;
+      }
+      .msg_icon:hover {
+        color: @pointer_on;
+      }
       .dot {
         height: 15px;
         width: 15px;
@@ -50,15 +56,8 @@
         z-index: @msgDot;
       }
     }
-    .msg_icon {
-      cursor: pointer;
-      z-index: @msgIcon;
-    }
-    .msg_icon:hover {
-      color: @pointerOn;
-    }
     .account_icon {
-      margin-left: 30px;
+      margin-left: 40px;
     }
   }
 }

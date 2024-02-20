@@ -119,7 +119,7 @@ onMounted(() => {
   refresh()
 });
 
-defineExpose({code})
+defineExpose({code,refresh})
 </script>
 
 <style scoped>
