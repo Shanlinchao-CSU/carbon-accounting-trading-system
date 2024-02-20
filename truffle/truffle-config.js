@@ -43,8 +43,9 @@
 
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
-
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const mnemonic = "<Your mnemonic>"; //自己的助记词
+//contract address:0xAccb25c8325f6918BCb66E3E3319b19a7A5423C5
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -69,6 +70,12 @@ module.exports = {
      port: 8545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+    sepolia: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, "https://sepolia.infura.io/v3/d364d4ee1f6948d7ac8a9f352c4d4a40")
+      },
+      network_id: 11155111
+    }
     //
     // An additional network, but with some advanced options…
     // advanced: {
