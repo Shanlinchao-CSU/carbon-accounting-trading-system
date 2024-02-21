@@ -1,5 +1,7 @@
 <template>
-  <div>123123</div>
+  <div class="register_box">
+    <el-text class="title"></el-text>
+  </div>
 </template>
 
 <script setup>

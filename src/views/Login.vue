@@ -1,145 +1,147 @@
-<template class="background_box">
-  <div class="login_image_box">
-    <el-text class="title">CNTS碳核算交易系统</el-text>
-    <el-image
-        class="login_image"
-        :src="require('@/assets/images/login/login_pic.png')"
-        :fit="'cover'"></el-image>
-    <el-text class="slogan">区块链赋能绿色转型</el-text>
-  </div>
-  <div class="login_box">
-    <el-text class="title">登录CNTS</el-text>
-    <el-form
-        ref="ruleFormRef"
-        :model="ruleForm"
-        :rules="rules"
-        class="form"
-        :size="formSize"
-        status-icon>
-      <div class="ID_login_box" v-if="login_method===0">
-        <el-form-item
-            prop="username"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.username"
-              placeholder="请输入账户ID/手机号码/邮箱"
-              maxlength="16"
-              :prefix-icon="User"
-              class="input"/>
-        </el-form-item>
-        <el-form-item
-            prop="password"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.password"
-              placeholder="请输入密码"
-              maxlength="18"
-              :prefix-icon="Lock"
-              show-password
-              class="input"/>
-        </el-form-item>
-        <el-form-item
-            prop="verification_code"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.verification_code"
-              placeholder="请输入验证码"
-              maxlength="4"
-              class="input"/>
-          <div class="code_box" id="code_box">
-            <VerificationCode
-                :contentWidth=196
-                :contentHeight=70
-                ref="vCode" />
-          </div>
-        </el-form-item>
-      </div>
-      <div class="email_login_box" v-if="login_method===1">
-        <el-form-item
-            prop="email"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.email"
-              placeholder="请输入邮箱"
-              maxlength="20"
-              class="input"/>
-        </el-form-item>
-        <el-form-item
-            prop="email_code"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.email_code"
-              placeholder="请输入验证码"
-              maxlength="4"
-              class="input"/>
-          <el-button
-              class="get_code_btn"
-              @click="sendMessage(ruleFormRef)"
-              :disabled="email_counting">
-            {{get_email_code_text}}
-          </el-button>
-        </el-form-item>
-      </div>
-      <div class="phone_login_box" v-if="login_method===2">
-        <el-form-item
-            prop="phone"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.phone"
-              placeholder="请输入手机号码"
-              maxlength="11"
-              class="input"/>
-        </el-form-item>
-        <el-form-item
-            prop="phone_code"
-            class="form_item">
-          <el-input
-              v-model="ruleForm.phone_code"
-              placeholder="请输入验证码"
-              maxlength="4"
-              class="input"/>
-          <el-button
-              class="get_code_btn"
-              @click="sendMessage(ruleFormRef)"
-              :disabled="phone_counting">
-            {{get_phone_code_text}}
-          </el-button>
-        </el-form-item>
-      </div>
-    </el-form>
-    <el-text class="go_login" @click="openLogin">立即注册</el-text>
-    <div class="button_box">
-      <el-button
-          type="primary"
-          class="button"
-          @click="submitForm(ruleFormRef)">
-        登录
-      </el-button>
-      <el-button
-          class="button"
-          @click="reset">
-        重置
-      </el-button>
+<template>
+  <div class="background_box">
+    <div class="login_image_box">
+      <el-text class="title">CNTS碳核算交易系统</el-text>
+      <el-image
+          class="login_image"
+          :src="require('@/assets/images/login/login_pic.png')"
+          :fit="'cover'"></el-image>
+      <el-text class="slogan">区块链赋能绿色转型</el-text>
     </div>
-    <el-divider>其它登录方式</el-divider>
-    <div class="other_method_box">
-      <div class="method_box"
-           v-if="login_method!==0"
-           @click="setLoginMethod(0)">
-        <el-image :src="require('@/assets/images/login/id.png')" style="height: 50px; width: auto"></el-image>
-        <el-text class="method_text">账户ID登录</el-text>
+    <div class="login_box">
+      <el-text class="title">登录CNTS</el-text>
+      <el-form
+          ref="ruleFormRef"
+          :model="ruleForm"
+          :rules="rules"
+          class="form"
+          :size="formSize"
+          status-icon>
+        <div class="ID_login_box" v-if="login_method===0">
+          <el-form-item
+              prop="username"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.username"
+                placeholder="请输入账户ID/手机号码/邮箱"
+                maxlength="16"
+                :prefix-icon="User"
+                class="input"/>
+          </el-form-item>
+          <el-form-item
+              prop="password"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.password"
+                placeholder="请输入密码"
+                maxlength="18"
+                :prefix-icon="Lock"
+                show-password
+                class="input"/>
+          </el-form-item>
+          <el-form-item
+              prop="verification_code"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.verification_code"
+                placeholder="请输入验证码"
+                maxlength="4"
+                class="input"/>
+            <div class="code_box" id="code_box">
+              <VerificationCode
+                  :contentWidth=196
+                  :contentHeight=70
+                  ref="vCode" />
+            </div>
+          </el-form-item>
+        </div>
+        <div class="email_login_box" v-if="login_method===1">
+          <el-form-item
+              prop="email"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.email"
+                placeholder="请输入邮箱"
+                maxlength="20"
+                class="input"/>
+          </el-form-item>
+          <el-form-item
+              prop="email_code"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.email_code"
+                placeholder="请输入验证码"
+                maxlength="4"
+                class="input"/>
+            <el-button
+                class="get_code_btn"
+                @click="sendMessage(ruleFormRef)"
+                :disabled="email_counting">
+              {{get_email_code_text}}
+            </el-button>
+          </el-form-item>
+        </div>
+        <div class="phone_login_box" v-if="login_method===2">
+          <el-form-item
+              prop="phone"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.phone"
+                placeholder="请输入手机号码"
+                maxlength="11"
+                class="input"/>
+          </el-form-item>
+          <el-form-item
+              prop="phone_code"
+              class="form_item">
+            <el-input
+                v-model="ruleForm.phone_code"
+                placeholder="请输入验证码"
+                maxlength="4"
+                class="input"/>
+            <el-button
+                class="get_code_btn"
+                @click="sendMessage(ruleFormRef)"
+                :disabled="phone_counting">
+              {{get_phone_code_text}}
+            </el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+      <el-text class="go_login" @click="openLogin">立即注册</el-text>
+      <div class="button_box">
+        <el-button
+            type="primary"
+            class="button"
+            @click="submitForm(ruleFormRef)">
+          登录
+        </el-button>
+        <el-button
+            class="button"
+            @click="reset">
+          重置
+        </el-button>
       </div>
-      <div class="method_box"
-           v-if="login_method!==1"
-           @click="setLoginMethod(1)">
-        <el-image :src="require('@/assets/images/login/email.png')" style="height: 50px; width: auto"></el-image>
-        <el-text class="method_text">邮箱登录</el-text>
-      </div>
-      <div class="method_box"
-           v-if="login_method!==2"
-           @click="setLoginMethod(2)">
-        <el-image :src="require('@/assets/images/login/phone.png')" style="height: 50px; width: auto"></el-image>
-        <el-text class="method_text">手机号登录</el-text>
+      <el-divider>其它登录方式</el-divider>
+      <div class="other_method_box">
+        <div class="method_box"
+             v-if="login_method!==0"
+             @click="setLoginMethod(0)">
+          <el-image :src="require('@/assets/images/login/id.png')" style="height: 50px; width: auto"></el-image>
+          <el-text class="method_text">账户ID登录</el-text>
+        </div>
+        <div class="method_box"
+             v-if="login_method!==1"
+             @click="setLoginMethod(1)">
+          <el-image :src="require('@/assets/images/login/email.png')" style="height: 50px; width: auto"></el-image>
+          <el-text class="method_text">邮箱登录</el-text>
+        </div>
+        <div class="method_box"
+             v-if="login_method!==2"
+             @click="setLoginMethod(2)">
+          <el-image :src="require('@/assets/images/login/phone.png')" style="height: 50px; width: auto"></el-image>
+          <el-text class="method_text">手机号登录</el-text>
+        </div>
       </div>
     </div>
   </div>
@@ -155,8 +157,6 @@ import axios from 'axios';
 import { useRouter } from "vue-router";
 import $ from 'jquery';
 
-// 设置背景颜色
-document.body.style.backgroundColor="#5F72F4"
 // vue router初始化
 const router = useRouter()
 // 验证码长宽
