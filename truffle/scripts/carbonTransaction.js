@@ -1,14 +1,24 @@
 const CarbonCoin = artifacts.require("CarbonCoin")
 const CarbonCredits = artifacts.require("CarbonCredits")
 module.exports = async function (callback) {
-    const accounts = await new web3.eth.getAccounts()
+    const accounts = await web3.eth.getAccounts()
     const carbonCoin = await CarbonCoin.deployed()
     const carbonCredits = await CarbonCredits.deployed()
+
+    // 基本测试操作
+    web3.eth.getBalance(accounts[0], (error, balance) => {
+        if (!error) {
+            console.log(`账户 ${accounts[0]} 的余额为 ${web3.utils.fromWei(balance, 'ether')} ETH`);
+        } else {
+            console.error(error);
+        }
+    });
+    
 
     // 查询第一个用户的货币
     balanceBeforeAccount0 = await carbonCoin.balanceOf(accounts[0])
     console.log(
-        "Amount of account0 is "+
+        "Amount of account0 Before is "+
         web3.utils.fromWei(balanceBeforeAccount0.toString()))
     
     // 向第二个用户和第三个用户发行碳排放额度
@@ -17,30 +27,39 @@ module.exports = async function (callback) {
     allownance1 = await carbonCredits.allowanceOf(accounts[1])
     allownance2 = await carbonCredits.allowanceOf(accounts[2])
     console.log(
-        "Amount of account1 is "+
+        "Allowance of account1 is "+
         allownance1.toString()
     )
     console.log(
-        "Amount of account2 is "+
+        "Allowance of account2 is "+
         allownance2.toString()
     )
-
-    // 创建交易发送碳币
-    const transaction = {
-        from: accounts[0],
-        to: accounts[1],
-        // value should be passed in wei. For easier use and to avoid mistakes,
-        //	we utilize the auxiliary `toWei` function:
-        value: web3.utils.toWei('1', 'ether'),
-      };
-    
-    const transactionHash = await web3.eth.sendTransaction(transaction);
-    console.log('transactionHash', transactionHash); 
-
 
     // 最新区块号
     const latestBlockNumber = await web3.eth.getBlockNumber()
     console.log("Latest block number is "+ latestBlockNumber)
+
+    // 发送碳币
+    await carbonCoin.transfer(accounts[1],web3.utils.toWei("100", "ether"), { from: accounts[2] })
+    await carbonCoin.transfer(accounts[2],web3.utils.toWei("200", "ether"))
+
+    // 查询碳币
+    balanceAfterAccount0 = await carbonCoin.balanceOf(accounts[0])
+    balanceAfterAccount1 = await carbonCoin.balanceOf(accounts[1])
+    balanceAfterAccount2 = await carbonCoin.balanceOf(accounts[2])
+ 
+    console.log(
+        "Amount of account0 after is "+
+        web3.utils.fromWei(balanceAfterAccount0.toString())
+    )
+    console.log(
+        "Amount of account1 after is "+
+        web3.utils.fromWei(balanceAfterAccount1.toString())
+    )
+    console.log(
+        "Amount of account2 after is "+
+        web3.utils.fromWei(balanceAfterAccount2.toString())
+    )
 
 
 
