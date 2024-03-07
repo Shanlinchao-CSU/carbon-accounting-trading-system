@@ -164,7 +164,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -207,7 +208,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -220,7 +222,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -233,7 +236,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -246,7 +250,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -259,7 +264,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -9973,10 +9979,47 @@
       "links": {},
       "address": "0x8Ad74e1F18ffE16869Fd739B57B534e3E241F8b0",
       "transactionHash": "0xc1a31fc34d5d1da965064695904f2d426d7a4dc891067233111d46b9ee65a775"
+    },
+    "1709628856133": {
+      "events": {},
+      "links": {},
+      "address": "0x66e9C5FBD8C212b2a924AbC2092869DDe0Ed475B",
+      "transactionHash": "0xb57c50cd66fa25e7b634a918d0e8ca98d1da7f970da396cb7ea98b89fd852469"
+    },
+    "1709629644459": {
+      "events": {},
+      "links": {},
+      "address": "0xc7Db5FE17d76e81Ad5c761A41199869fFfecb065",
+      "transactionHash": "0x29c5fb3bb84e1d3e31df302babab4738ce617bf87b20af997d8801844b930057"
+    },
+    "1709704607278": {
+      "events": {},
+      "links": {},
+      "address": "0xD5f583d4828159540205A1B31F9fE5FAa61942C0",
+      "transactionHash": "0x58deec7f863851ecf997ffb8c955e08861733f25be42db5d70de8e353ad804dc"
+    },
+    "1709712831978": {
+      "events": {},
+      "links": {},
+      "address": "0xB22022a3A205c7F288B22958F81b9eC9DC22aFaF",
+      "transactionHash": "0xe33e4e25e46169625740ddf302f3363aa0ba0bef0d75a5937d02085476c0ae0d"
+    },
+    "1709774689306": {
+      "events": {},
+      "links": {},
+      "address": "0x53B97c3f7282e57FaC5AB8C143Ca7010C24c4db4",
+      "transactionHash": "0x5e00d6577c5c8fc4c1e8a78c8922867ab4970c0c294f4a1a8b4a013a38be1042"
+    },
+    "1709777062007": {
+      "events": {},
+      "links": {},
+      "address": "0x55BAdc0518a3EBC746580012AF0E557430f0eb1c",
+      "transactionHash": "0xd26f1f4147c0d4a7e21a02f6a6865a3ed337e3f01d5873dad912bdfb4e614b69"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-03-01T04:50:57.776Z",
+  "updatedAt": "2024-03-07T02:05:51.510Z",
+  "networkType": "ethereum",
   "devdoc": {
     "errors": {
       "ERC20InsufficientAllowance(address,uint256,uint256)": [
