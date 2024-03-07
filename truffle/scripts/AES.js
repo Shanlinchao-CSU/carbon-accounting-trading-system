@@ -44,34 +44,27 @@ function generateKey(address) {
 }
 
 
+function demo() {
 //
-const address = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
+    const address = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
 
 // 使用address生成密匙
-const key = generateKey(address);
+    const key = generateKey(address);
 
-console.log('密钥:', key.toString('hex')); // 密钥根据地址来计算——区块链的公钥
+    console.log('密钥:', key.toString('hex')); // 密钥根据地址来计算——区块链的公钥
 // 要加密的数据
-const originalText = 'Hello World!Where are you?I am here!';
+    const originalText = 'Hello World!Where are you?I am here!';
 
 
 // 加密数据
-const encryptedText  = encrypt(originalText, key);
-console.log('加密后的数据:', encryptedText);
-console.log('加密数据长度:', encryptedText.length); // 加密数据长度不固定，根据原始数据长度变化
+    const encryptedText = encrypt(originalText, key);
+    console.log('加密后的数据:', encryptedText);
+    console.log('加密数据长度:', encryptedText.length); // 加密数据长度不固定，根据原始数据长度变化
 
 // 解密数据
-const decryptedText = decrypt(encryptedText, key);
-console.log('解密后的数据:', decryptedText);
+    const decryptedText = decrypt(encryptedText, key);
+    console.log('解密后的数据:', decryptedText);
 
+}
 
-// // 加密数据但是不存储初始化向量
-// const encryptedText1 = encrypt(originalText, key);
-// console.log('加密后的数据:', encryptedText1.encryptedText);
-// console.log('初始化向量:', encryptedText1.iv);      // 要存储初始化向量？和加密数据一起存储到区块链上
-// console.log('加密数据长度:', encryptedText1.encryptedText.length); // 加密数据长度不固定，根据原始数据长度变化
-// console.log('初始化向量长度:', encryptedText1.iv.length); // 向量长度恒为32
-//
-// // 加密数据但是不存储初始化向量
-// const encryptedText2 = encrypt(originalText, key);
-// console.log('加密后的数据:', encryptedText2.encryptedText);
+demo();
