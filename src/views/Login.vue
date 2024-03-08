@@ -9,7 +9,11 @@
       <el-text class="slogan">区块链赋能绿色转型</el-text>
     </div>
     <div class="login_box">
-      <el-text class="title">登录CNTS</el-text>
+      <Transition :name="transition_name" mode="out-in">
+        <el-text class="title" v-if="login_method === 0">账户ID登录</el-text>
+        <el-text class="title" v-else-if="login_method === 1">邮箱登录</el-text>
+        <el-text class="title" v-else>手机号登录</el-text>
+      </Transition>
       <el-form
           ref="ruleFormRef"
           :model="ruleForm"
@@ -17,96 +21,98 @@
           class="form"
           :size="formSize"
           status-icon>
-        <div class="ID_login_box" v-if="login_method===0">
-          <el-form-item
-              prop="username"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.username"
-                placeholder="请输入账户ID/手机号码/邮箱"
-                maxlength="16"
-                :prefix-icon="User"
-                class="input"/>
-          </el-form-item>
-          <el-form-item
-              prop="password"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.password"
-                placeholder="请输入密码"
-                maxlength="18"
-                :prefix-icon="Lock"
-                show-password
-                class="input"/>
-          </el-form-item>
-          <el-form-item
-              prop="verification_code"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.verification_code"
-                placeholder="请输入验证码"
-                maxlength="4"
-                class="input"/>
-            <div class="code_box" id="code_box">
-              <VerificationCode
-                  :contentWidth=196
-                  :contentHeight=70
-                  ref="vCode" />
-            </div>
-          </el-form-item>
-        </div>
-        <div class="email_login_box" v-if="login_method===1">
-          <el-form-item
-              prop="email"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.email"
-                placeholder="请输入邮箱"
-                maxlength="20"
-                class="input"/>
-          </el-form-item>
-          <el-form-item
-              prop="email_code"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.email_code"
-                placeholder="请输入验证码"
-                maxlength="4"
-                class="input"/>
-            <el-button
-                class="get_code_btn"
-                @click="sendMessage(ruleFormRef)"
-                :disabled="email_counting">
-              {{get_email_code_text}}
-            </el-button>
-          </el-form-item>
-        </div>
-        <div class="phone_login_box" v-if="login_method===2">
-          <el-form-item
-              prop="phone"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.phone"
-                placeholder="请输入手机号码"
-                maxlength="11"
-                class="input"/>
-          </el-form-item>
-          <el-form-item
-              prop="phone_code"
-              class="form_item">
-            <el-input
-                v-model="ruleForm.phone_code"
-                placeholder="请输入验证码"
-                maxlength="4"
-                class="input"/>
-            <el-button
-                class="get_code_btn"
-                @click="sendMessage(ruleFormRef)"
-                :disabled="phone_counting">
-              {{get_phone_code_text}}
-            </el-button>
-          </el-form-item>
-        </div>
+        <Transition :name="transition_name" mode="out-in">
+          <div class="ID_login_box" v-if="login_method===0">
+            <el-form-item
+                prop="username"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.username"
+                  placeholder="请输入账户ID/手机号码/邮箱"
+                  maxlength="16"
+                  :prefix-icon="User"
+                  class="input"/>
+            </el-form-item>
+            <el-form-item
+                prop="password"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.password"
+                  placeholder="请输入密码"
+                  maxlength="18"
+                  :prefix-icon="Lock"
+                  show-password
+                  class="input"/>
+            </el-form-item>
+            <el-form-item
+                prop="verification_code"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.verification_code"
+                  placeholder="请输入验证码"
+                  maxlength="4"
+                  class="input"/>
+              <div class="code_box" id="code_box">
+                <VerificationCode
+                    :contentWidth=196
+                    :contentHeight=70
+                    ref="vCode" />
+              </div>
+            </el-form-item>
+          </div>
+          <div class="email_login_box" v-else-if="login_method===1">
+            <el-form-item
+                prop="email"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.email"
+                  placeholder="请输入邮箱"
+                  maxlength="20"
+                  class="input"/>
+            </el-form-item>
+            <el-form-item
+                prop="email_code"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.email_code"
+                  placeholder="请输入验证码"
+                  maxlength="4"
+                  class="input"/>
+              <el-button
+                  class="get_code_btn"
+                  @click="sendMessage(ruleFormRef)"
+                  :disabled="email_counting">
+                {{get_email_code_text}}
+              </el-button>
+            </el-form-item>
+          </div>
+          <div class="phone_login_box" v-else-if="login_method===2">
+            <el-form-item
+                prop="phone"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.phone"
+                  placeholder="请输入手机号码"
+                  maxlength="11"
+                  class="input"/>
+            </el-form-item>
+            <el-form-item
+                prop="phone_code"
+                class="form_item">
+              <el-input
+                  v-model="ruleForm.phone_code"
+                  placeholder="请输入验证码"
+                  maxlength="4"
+                  class="input"/>
+              <el-button
+                  class="get_code_btn"
+                  @click="sendMessage(ruleFormRef)"
+                  :disabled="phone_counting">
+                {{get_phone_code_text}}
+              </el-button>
+            </el-form-item>
+          </div>
+        </Transition>
       </el-form>
       <el-text class="go_login" @click="openLogin">立即注册</el-text>
       <div class="button_box">
@@ -149,7 +155,7 @@
 
 <script setup lang="ts">
 import VerificationCode from "@/components/common/VerificationCode.vue";
-import {onMounted, reactive, ref} from 'vue';
+import {computed, onMounted, reactive, ref} from 'vue';
 import { User,Lock } from "@element-plus/icons-vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
@@ -193,6 +199,7 @@ const get_email_code_text = ref("获取验证码")
 const get_phone_code_text = ref("获取验证码")
 let email_counting = ref(false) //邮箱登录发送验证码状态
 let phone_counting = ref(false)
+let transition_name = ref("left")
 
 // 用户名的校验方法
 const validateName = (rule: any, value: any, callback: any) => {
@@ -247,7 +254,7 @@ const validateEmail = (rule:any, value:any, callback:any) => {
 const validatePhone = (rule:any, value:any, callback:any) => {
   const phoneRule = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
   if (value === ""){
-    return callback(new Error("请输入邮箱"))
+    return callback(new Error("请输入手机号码"))
   }else if (phoneRule.test(value)){
     return callback()
   }else{
@@ -255,12 +262,11 @@ const validatePhone = (rule:any, value:any, callback:any) => {
   }
 }
 
-const rules = reactive<FormRules<typeof ruleForm>>({
+let rules = reactive<FormRules<typeof ruleForm>>({
   username: [{ validator: validateName, trigger: 'blur' }],
   password: [{ validator: validatePass, trigger: 'blur' }],
-  verification_code: [{ validator: validateCode, trigger: 'blur' }],
   email: [{ validator: validateEmail, trigger: 'blur' }],
-  phone: [{ validator: validatePhone, trigger: 'blur' }]
+  phone: [{ validator: validatePhone, trigger: 'blur' }],
 })
 
 const submitForm = (formEl: FormInstance) => {
@@ -304,6 +310,26 @@ const reset = () => {
 }
 
 const setLoginMethod = (type : number) => {
+  // 切换动画效果判断
+  if (login_method.value === 0) {
+    if (type === 1) {
+      transition_name.value = "left"
+    }else {
+      transition_name.value = "right"
+    }
+  }else if (login_method.value === 1) {
+    if (type === 0) {
+      transition_name.value = "left"
+    }else {
+      transition_name.value = "right"
+    }
+  }else {
+    if (type === 0) {
+      transition_name.value = "left"
+    }else {
+      transition_name.value = "right"
+    }
+  }
   login_method.value = type
 }
 

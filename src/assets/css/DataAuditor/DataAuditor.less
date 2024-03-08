@@ -1,0 +1,28 @@
+@import "src/assets/css/VariableDefine";
+.menu {
+  width: 200px;
+  height: calc(100% - @main_header_height - 1.5px);
+  margin-top: 1.5px;
+  .menu_item {
+    height: 80px;
+    .menu_icon {
+      width: 30px;
+      height: 30px;
+      svg {
+        height: 100%;
+        width: 100%;
+      }
+    }
+    .menu_text {
+      font-size: 21px;
+      margin-left: 10px;
+    }
+  }
+}
+.content_box {
+  position: absolute;
+  left: calc(10% + 180px);
+  top: 160px;
+  width: calc(80% - 160px);
+  height: 75%;
+}
