@@ -7,6 +7,7 @@ module.exports = async function (callback) {
   // Returns the remaining number of tokens that spender will be allowed to spend on behalf of owner through transferFrom.
   // This is zero by default. 返回被授权的账户剩余的可以代表代币持有者转账的数量，默认为0
 
+  // 当前用户默认为账户0
   const allowanceBefore = await carbonCoin.allowance(
     accounts[0], // 授权账户
     farmToken.address // 被授权账户
