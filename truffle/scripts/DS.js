@@ -68,10 +68,10 @@ confirmButton.addEventListener('click', async () => {
                 message: message.toString(),
                 address: address.toString(),
             })
-        }).then(response => response.json())   //TODO 此处返回404，why？
+        }).then(response => response.json())
             .then(data => {
                 console.log(data);
-                if (data.valid) {
+                if (data.data) {
                     alert('签名有效！');
                 } else {
                     alert('签名无效！');
