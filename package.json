@@ -14,10 +14,12 @@
     "core-js": "^3.8.3",
     "element-plus": "^2.5.5",
     "jquery": "^3.7.1",
+    "truffle-deployer": "^3.0.32",
     "typings": "^2.1.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0",
+    "web3": "^4.5.0",
     "webpack": "^5.90.1"
   },
   "devDependencies": {
