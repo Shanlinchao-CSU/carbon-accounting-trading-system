@@ -150,7 +150,7 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -199,7 +199,7 @@ const get_phone_code_text = ref("获取验证码")
 let email_counting = ref(false) //邮箱登录发送验证码状态
 let phone_counting = ref(false)
 let transition_name = ref("left")
-let path = undefined
+let path = ref("")
 
 // 用户名的校验方法
 const validateName = (rule: any, value: any, callback: any) => {
@@ -276,6 +276,36 @@ const submitForm = (formEl: FormInstance) => {
       if (login_method.value === 0) {
         if (vCode.value!["code"] == ruleForm.verification_code){
           url="http://localhost:8080/general/id?id="+ruleForm.username+"&password="+ruleForm.password
+          axios
+              .get(url)
+              .then(resp => {
+                if (resp.status === 200) {
+                  if (resp.data.code === 0) {
+                    ElMessage({
+                      message: "登 录 成 功 !",
+                      type: 'success',
+                      offset: 70
+                    })
+                    let account = resp.data.data.Account
+                    let token = resp.data.data.token
+                    localStorage.setItem("account",account)
+                    localStorage.setItem("token",token)
+                    jump(account.type)
+                  }else {
+                    ElMessage({
+                      message: "用 户 不 存 在 !",
+                      type: 'error',
+                      offset: 70
+                    })
+                  }
+                }else {
+                  ElMessage({
+                    message: "失 败 , 请 检 查 网 络 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }
+              })
         }else{
           ElMessage({
             message: " 验 证 码 错 误 ! ",
@@ -295,7 +325,7 @@ const submitForm = (formEl: FormInstance) => {
               }
             })
       }else {
-
+        //TODO 验证邮箱
       }
     }
   })
@@ -410,25 +440,25 @@ const openLogin = () => {
   })
   window.open(url.href,"_blank")
 }
-const jump = (type: string) => {
+const jump = (type: number) => {
   switch (type) {
       //用户
-    case '1':
-      path = ""
+    case 1:
+      path.value = ""
       break
       //第三方
-    case '2':
-      path = ""
+    case 2:
+      path.value = ""
       break
       //数据审核员
-    case '3':
-      path = "/auditing"
+    case 3:
+      path.value = "/data_auditor/auditing"
       break
-    case '4':
-      path = ""
+    case 4:
+      path.value = ""
       break
   }
-  router.push({path: "/auditing"})
+  router.push({path: path.value})
 }
 </script>
 

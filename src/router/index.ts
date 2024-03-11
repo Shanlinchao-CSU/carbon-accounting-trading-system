@@ -17,11 +17,11 @@ const routes: Array<RouteRecordRaw> = [
     component: DataAuditor,
     children: [
         {
-          path: '/auditing',
+          path: 'auditing',
           component: Auditing
         },
         {
-          path: '/history',
+          path: 'history',
           component: AuditingHistory
         }]
   },

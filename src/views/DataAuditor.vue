@@ -3,15 +3,14 @@
   <MainHeader/>
   <el-menu
       class="menu"
-      default-active="1"
       background-color="#f1f5f8"
       router="router"
-      :default-active="route.path">
-    <el-menu-item index="auditing" class="menu_item"  id="item1">
+      :default-active="route.path.match(/\/.*?\/(.*)/)[1]">
+    <el-menu-item index="auditing" class="menu_item">
       <el-icon class="menu_icon"><Edit /></el-icon>
       <span class="menu_text">数据审核</span>
     </el-menu-item>
-    <el-menu-item index="history" class="menu_item"  id="item2">
+    <el-menu-item index="history" class="menu_item">
       <el-icon class="menu_icon"><Tickets /></el-icon>
       <span class="menu_text">审核记录</span>
     </el-menu-item>

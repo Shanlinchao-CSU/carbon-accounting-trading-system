@@ -1,4 +1,11 @@
 <template>
+  <div class="search_box">
+    <el-input
+        v-model="search_input"
+        placeholder="搜索核算历史数据"
+        class="input"/>
+    <el-button type="primary" :icon="Search" class="btn">搜索</el-button>
+  </div>
 <!--审核历史组件-->
   <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '80px'}">
     <el-table-column fixed="left" label="序号" width="160">
@@ -54,6 +61,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
+import {Search} from "@element-plus/icons-vue";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -62,6 +70,7 @@ const record_show = ref([])
 let dialog_list = ref([])
 const dialog_show = ref(false)
 let jsonObject = undefined
+const search_input = ref("")
 
 function getData() {
   //TODO 获取所有数据
