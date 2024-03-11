@@ -8,6 +8,7 @@
     </el-table-column>
     <el-table-column prop="enterprise_id" label="企业ID" width="200"/>
     <el-table-column prop="enterprise_name" label="企业名称" width="400"/>
+    <el-table-column prop="enterprise_type" label="企业类型" width="300"/>
     <el-table-column prop="month" label="核算月份" width="170"/>
     <el-table-column prop="time" label="提交时间" width="280"/>
     <el-table-column prop="result" label="核算结果" width="180">
@@ -17,7 +18,7 @@
     </el-table-column>
     <el-table-column label="证明材料" width="200">
       <template #default="scope">
-        <el-button link type="primary" @click="downloadFile(scope.row.enterprise_id)">下载材料</el-button>
+        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载材料</el-button>
       </template>
     </el-table-column>
     <el-table-column fixed="right" label="操作" width="200">
@@ -70,20 +71,19 @@ const dialog_show = ref(false)
 const dialog_list = ref([])
 let jsonObject = undefined
 
-function downloadFile(enterprise_id) {
-  const link = document.createElement('a')
-  //TODO 完成下载后端链接
-  link.href = 'http'
-  link.download = enterprise_id+'-证明材料'
-  link.click()
-}
 function getData() {
+  // axios
+  //     .get(`http://localhost:8080/administrator/accounting_record/review`)
+  //     .then(resp=>{
+  //       console.log(resp)
+  //     })
   //TODO 获取所有数据
   for (let i=0;i<64;i++) {
     accounting_record.value.push({
+      id: "1",
       enterprise_name: "北京三快在线科技有限公司",
       enterprise_id: i+"",
-      month: "9",
+      month: "2024-9",
       time: "2024-3-5 18:44",
       result: "4396",
       enterprise_type: "煤炭型企业",
@@ -100,7 +100,13 @@ function getData() {
     currentPage.value = pageTotal.value / 10 + 1
   }
   record_show.value = get_data_for_show(currentPage.value)
-  console.log(record_show.value)
+}
+function downloadFile(id,enterprise_id,month) {
+  const link = document.createElement('a')
+  //TODO 完成下载后端链接
+  link.href = 'http'
+  link.download = enterprise_id+" "+month
+  link.click()
 }
 function get_data_for_show(page) {
   return accounting_record.value.slice(page*10-10,page*10)

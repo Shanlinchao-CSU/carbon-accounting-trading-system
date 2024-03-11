@@ -67,7 +67,7 @@
               <el-input
                   v-model="ruleForm.email"
                   placeholder="请输入邮箱"
-                  maxlength="20"
+                  maxlength="26"
                   class="input"/>
             </el-form-item>
             <el-form-item
@@ -161,7 +161,6 @@ import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
 import axios from 'axios';
 import { useRouter } from "vue-router";
-import $ from 'jquery';
 
 // vue router初始化
 const router = useRouter()
@@ -200,6 +199,7 @@ const get_phone_code_text = ref("获取验证码")
 let email_counting = ref(false) //邮箱登录发送验证码状态
 let phone_counting = ref(false)
 let transition_name = ref("left")
+let path = undefined
 
 // 用户名的校验方法
 const validateName = (rule: any, value: any, callback: any) => {
@@ -266,34 +266,36 @@ let rules = reactive<FormRules<typeof ruleForm>>({
   username: [{ validator: validateName, trigger: 'blur' }],
   password: [{ validator: validatePass, trigger: 'blur' }],
   email: [{ validator: validateEmail, trigger: 'blur' }],
-  phone: [{ validator: validatePhone, trigger: 'blur' }],
+  phone: [{ validator: validatePhone, trigger: 'blur' }]
 })
 
 const submitForm = (formEl: FormInstance) => {
   formEl.validate((valid) => {
     if (valid) {
-      //TODO 登录逻辑
+      let url = undefined
       if (login_method.value === 0) {
-
+        if (vCode.value!["code"] == ruleForm.verification_code){
+          url="http://localhost:8080/general/id?id="+ruleForm.username+"&password="+ruleForm.password
+        }else{
+          ElMessage({
+            message: " 验 证 码 错 误 ! ",
+            type: 'error',
+            offset: 70
+          })
+          vCode.value?.refresh()
+          ruleForm.verification_code = ''
+        }
       }else if (login_method.value === 1) {
+        //TODO 验证手机验证码
+        axios
+            .get("")
+            .then(resp=>{
+              if (resp.status === 200) {
 
+              }
+            })
       }else {
 
-      }
-      if (vCode.value!["code"] == ruleForm.verification_code){
-        ElMessage({
-          message: " 登 录 成 功 ! ",
-          type: 'success',
-          offset: 70
-        })
-      }else{
-        ElMessage({
-          message: " 验 证 码 错 误 ! ",
-          type: 'error',
-          offset: 70
-        })
-        vCode.value?.refresh()
-        ruleForm.verification_code = ''
       }
     }
   })
@@ -336,68 +338,64 @@ const setLoginMethod = (type : number) => {
 const sendMessage = (formEl: FormInstance) => {
   formEl.validate((valid) => {
     if (valid) {
-      // TODO 发送验证码逻辑
+      let url = undefined
       if (login_method.value === 1) {
-        axios
-            .get("")
-            .then(response => {
-              if (response.status === 0) {
-                ElMessage({
-                  message: " 验 证 码 已 发 送 ",
-                  type: 'success',
-                  offset: 70
-                })
-                let count = 60
-                email_counting.value = true
-                let interval = setInterval(() => {
-                  if (count != 0) {
-                    get_email_code_text.value = count + "s后重新发送"
-                  } else {
-                    get_email_code_text.value = "获取验证码"
-                    email_counting.value = false
-                    cancelInterval(interval)
-                  }
-                  count--
-                }, 1000)
-              }else {
-                ElMessage({
-                  message: " 验 证 码 发 送 失 败 ",
-                  type: 'error',
-                  offset: 70
-                })
-              }
-            })
+        url = "http://localhost:8080/general/code/email?email="+ruleForm.email
       }else {
-        axios
-            .get("")
-            .then(response => {
-              if (response.status === 0) {
+        url = "http://localhost:8080/general/code/phone?phone="+ruleForm.phone
+      }
+      axios
+          .get(url)
+          .then(resp => {
+            if (resp.status === 200) {
+              if (resp.data.code === 0) {
                 ElMessage({
                   message: " 验 证 码 已 发 送 ",
                   type: 'success',
                   offset: 70
                 })
-                let count = 60
-                phone_counting.value = true
-                let interval = setInterval(() => {
-                  if (count != 0) {
-                    get_phone_code_text.value = count + "s后重新发送"
-                  } else {
-                    get_phone_code_text.value = "获取验证码"
-                    phone_counting.value = false
-                    cancelInterval(interval)
-                  }
-                  count--
-                }, 1000)
+                if (login_method.value === 1) {
+                  let count = 60
+                  email_counting.value = true
+                  let interval = setInterval(() => {
+                    if (count != 0) {
+                      get_email_code_text.value = count + "s后重新发送"
+                    } else {
+                      get_email_code_text.value = "获取验证码"
+                      email_counting.value = false
+                      cancelInterval(interval)
+                    }
+                    count--
+                  }, 1000)
+                }else {
+                  let count = 60
+                  phone_counting.value = true
+                  let interval = setInterval(() => {
+                    if (count != 0) {
+                      get_phone_code_text.value = count + "s后重新发送"
+                    } else {
+                      get_phone_code_text.value = "获取验证码"
+                      phone_counting.value = false
+                      cancelInterval(interval)
+                    }
+                    count--
+                  }, 1000)
+                }
               }else {
                 ElMessage({
-                  message: " 验 证 码 发 送 失 败 ",
+                  message: `该${login_method.value===1?" 邮 箱 ":" 手 机 号 "}未 被 注 册 !`,
                   type: 'error',
                   offset: 70
                 })
               }
-            })
-      }
+            }else {
+              ElMessage({
+                message: "失 败 , 请 检 查 网 络",
+                type: 'error',
+                offset: 70
+              })
+            }
+          })
     }
   })
 }
@@ -411,6 +409,26 @@ const openLogin = () => {
     path: "/register"
   })
   window.open(url.href,"_blank")
+}
+const jump = (type: string) => {
+  switch (type) {
+      //用户
+    case '1':
+      path = ""
+      break
+      //第三方
+    case '2':
+      path = ""
+      break
+      //数据审核员
+    case '3':
+      path = "/auditing"
+      break
+    case '4':
+      path = ""
+      break
+  }
+  router.push({path: "/auditing"})
 }
 </script>
 

@@ -8,9 +8,19 @@
     </el-table-column>
     <el-table-column prop="enterprise_id" label="企业ID" width="200"/>
     <el-table-column prop="enterprise_name" label="企业名称" width="400"/>
+    <el-table-column prop="enterprise_type" label="企业类型" width="300"/>
     <el-table-column prop="month" label="核算月份" width="170"/>
     <el-table-column prop="time" label="提交时间" width="280"/>
-    <el-table-column prop="result" label="核算结果" width="180"/>
+    <el-table-column prop="result" label="核算结果" width="180">
+      <template #default="scope">
+        <span @click="showDialog(scope.row.variable_json)" class="table_result">{{scope.row.result}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column fixed="right" label="证明材料" width="200">
+      <template #default="scope">
+        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载材料</el-button>
+      </template>
+    </el-table-column>
   </el-table>
   <el-pagination
       background
@@ -20,15 +30,38 @@
       @update:current-page="changePage"
       :page-size="10"
       style="position: absolute;right: 200px;margin-top: 10px"/>
+  <el-dialog v-model="dialog_show" width="520" center>
+    <el-table
+        :data="dialog_list"
+        :row-style="{height: '60px'}"
+        max-height="600px"
+        style="font-size: 22px"
+        :header-cell-style="{'text-align':'center'}"
+        :cell-style="{'text-align':'center'}">
+      <el-table-column label="参数名" width="180">
+        <template #default="scope">
+          <div class="dialog_cell">{{scope.row.key}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="属性值" width="330">
+        <template #default="scope">
+          <div class="dialog_cell">{{scope.row.value}}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
 const accounting_record = ref([])
 const record_show = ref([])
+let dialog_list = ref([])
+const dialog_show = ref(false)
+let jsonObject = undefined
 
 function getData() {
   //TODO 获取所有数据
@@ -37,8 +70,8 @@ function getData() {
       enterprise_name: "北京三快在线科技有限公司",
       enterprise_id: i+"",
       enterprise_type: "煤炭型企业",
-      variable_json: "{age:30,url:'www.baidu.com'}",
-      month: "9",
+      variable_json: `{"age":"30","url":"www.baidu.com"}`,
+      month: "2024-9",
       time: "2024-3-5 18:44",
       result: "4396"
     })
@@ -48,7 +81,6 @@ function getData() {
     currentPage.value = pageTotal.value / 10 + 1
   }
   record_show.value = get_data_for_show(currentPage.value)
-  console.log(record_show.value)
 }
 function get_data_for_show(page) {
   return accounting_record.value.slice(page*10-10,page*10)
@@ -57,8 +89,29 @@ function changePage(page) {
   record_show.value = get_data_for_show(page)
   currentPage.value = page
 }
+function showDialog(json) {
+  jsonObject = JSON.parse(json)
+  dialog_list.value = Object.keys(jsonObject).map(key => {
+    return {
+      key: key,
+      value: jsonObject[key]
+    };
+  });
+  dialog_show.value = true
+}
+function downloadFile(id,enterprise_id,month) {
+  const link = document.createElement('a')
+  //TODO 完成下载后端链接
+  link.href = 'http'
+  link.download = enterprise_id+" "+month
+  link.click()
+}
+onMounted(()=>{
+  getData()
+
+})
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+@import "@/assets/css/DataAuditor/AuditData.less";
 </style>

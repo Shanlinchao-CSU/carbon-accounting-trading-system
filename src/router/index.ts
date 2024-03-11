@@ -7,6 +7,11 @@ import AuditingHistory from "@/components/data_auditor/AuditHistory.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/',
+    name: 'login',
+    component: Login
+  },
+  {
     path: '/data_auditor',
     name: 'data_auditor',
     component: DataAuditor,
@@ -19,11 +24,6 @@ const routes: Array<RouteRecordRaw> = [
           path: '/history',
           component: AuditingHistory
         }]
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login
   },
   {
     path: '/register',

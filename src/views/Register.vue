@@ -1,194 +1,193 @@
 <template>
-  <div class="register_box">
-    <div class="register_type_box">
-      <span :class="[{'active':register_type===0},'register_type']" @click="change_register_type(0)" ref="company_user">企业用户注册</span>
-      <span :class="[{'active':register_type===1},'register_type']" @click="change_register_type(1)" ref="monitor_institution">监管机构注册</span>
-      <div class="animation-shadow"></div>
-      <div class="animation"></div>
-    </div>
-    <el-form
-        ref="ruleFormRef"
-        :model="register_company_user"
-        :rules="rules"
-        class="main_input_box"
-        :size="'default'"
-        status-icon
-        v-if="register_type === 0">
-      <el-form-item
-        prop="name"
-        class="form_item">
-        <el-input
-            v-model="register_company_user.name"
-            placeholder="请输入公司全称"
-            maxlength="30"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="phone"
-          class="form_item">
-        <el-input
-            v-model="register_company_user.phone"
-            placeholder="请输入公司电话"
-            maxlength="11"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="password"
-          class="form_item">
-        <el-input
-            v-model="register_company_user.password"
-            placeholder="请设置密码"
-            maxlength="18"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="email"
-          class="form_item">
-        <el-input
-            v-model="register_company_user.email"
-            placeholder="请输入公司邮箱"
-            maxlength="20"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="confirm_password"
-          class="form_item">
-        <el-input
-            v-model="register_company_user.confirm_password"
-            placeholder="请确认密码"
-            maxlength="18"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="v_code"
-          class="form_item">
-        <div class="code_box">
-          <el-input
-              v-model="register_company_user.v_code"
-              placeholder="请输入联合验证码"
-              maxlength="8"
-              class="input"></el-input>
-          <el-button
-              class="get_code_btn"
-              @click="sendMessage(ruleFormRef)"
-              :disabled="counting">
-            {{get_code_text}}
+  <div class="background_box">
+    <el-dialog
+        v-model="dialogVisible"
+        title="提交成功!"
+        width="500"
+    >
+      <span>审核后会通过手机短信告知您结果,请留意!</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">
+            确定
           </el-button>
         </div>
-      </el-form-item>
-      <el-form-item
-          prop="enterprise_type"
-          class="form_item">
-        <el-select
-            v-model="enterprise_type"
-            placeholder="请选择企业类型"
-            size="large"
-            style="width: 260px;">
-          <el-option
-              v-for="item in all_enterprise_type"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"/>
-        </el-select>
-      </el-form-item>
-      <el-upload
-          action="#"
-          ref="uploadBox"
-          :limit="1"
-          :auto-upload="false"
-          :http-request="upload">
-        <el-button class="choose_file_btn">提交证明材料</el-button>
-      </el-upload>
-    </el-form>
+      </template>
+    </el-dialog>
 
-    <el-form
-        ref="ruleFormRef_monitor"
-        :model="monitor_institution"
-        :rules="rules"
-        class="main_input_box"
-        :size="'default'"
-        status-icon
-        v-if="register_type === 1">
-      <el-form-item
-          prop="name"
-          class="form_item">
-        <el-input
-            v-model="monitor_institution.name"
-            placeholder="请输入机构名称"
-            maxlength="30"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="phone"
-          class="form_item">
-        <el-input
-            v-model="monitor_institution.phone"
-            placeholder="请输入机构电话"
-            maxlength="11"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="password"
-          class="form_item">
-        <el-input
-            v-model="monitor_institution.password"
-            placeholder="请设置密码"
-            maxlength="18"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="email"
-          class="form_item">
-        <el-input
-            v-model="monitor_institution.email"
-            placeholder="请输入机构邮箱"
-            maxlength="20"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="confirm_password"
-          class="form_item">
-        <el-input
-            v-model="monitor_institution.confirm_password"
-            placeholder="请确认密码"
-            maxlength="18"
-            class="input"></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="v_code"
-          class="form_item">
-        <div class="code_box">
+    <div class="register_box">
+      <div class="register_type_box">
+        <span :class="[{'active':register_type===0},'register_type']" @click="change_register_type(0)" ref="company_user">企业用户注册</span>
+        <span :class="[{'active':register_type===1},'register_type']" @click="change_register_type(1)" ref="monitor_institution">监管机构注册</span>
+        <div class="animation-shadow"></div>
+        <div class="animation"></div>
+      </div>
+      <el-form
+          ref="ruleFormRef"
+          :model="register_company_user"
+          :rules="rules"
+          class="main_input_box"
+          :size="'default'"
+          status-icon
+          v-if="register_type === 0">
+        <el-form-item
+            prop="name"
+            class="form_item">
           <el-input
-              v-model="monitor_institution.v_code"
-              placeholder="请输入联合验证码"
-              maxlength="8"
+              v-model="register_company_user.name"
+              placeholder="请输入公司全称"
+              maxlength="30"
               class="input"></el-input>
-          <el-button
-              class="get_code_btn"
-              @click="sendMessage(ruleFormRef_monitor)"
-              :disabled="counting_monitor">
-            {{get_code_text_monitor}}
-          </el-button>
-        </div>
-      </el-form-item>
-      <div></div>
-      <el-upload
-          action="#"
-          ref="uploadBox_monitor"
-          :limit="1"
-          :auto-upload="false"
-          :http-request="upload">
-        <el-button class="choose_file_btn">提交证明材料</el-button>
-      </el-upload>
-    </el-form>
-    <div class="login_btn_box">
-      <el-button
-          class="reset_btn"
-          @click="reset">重置</el-button>
-      <el-button
-          type="primary"
-          class="upload_btn"
-          @click="submit(ruleFormRef)">提交</el-button>
+        </el-form-item>
+        <el-form-item
+            prop="phone"
+            class="form_item">
+          <el-input
+              v-model="register_company_user.phone"
+              placeholder="请输入公司电话"
+              maxlength="11"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="password"
+            class="form_item">
+          <el-input
+              v-model="register_company_user.password"
+              placeholder="请设置密码"
+              maxlength="18"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="v_code"
+            class="form_item">
+          <div class="code_box">
+            <el-input
+                v-model="register_company_user.v_code"
+                placeholder="请输入验证码"
+                maxlength="4"
+                class="input"></el-input>
+            <el-button
+                class="get_code_btn"
+                @click="sendMessage(ruleFormRef)"
+                :disabled="counting">
+              {{get_code_text}}
+            </el-button>
+          </div>
+        </el-form-item>
+        <el-form-item
+            prop="confirm_password"
+            class="form_item">
+          <el-input
+              v-model="register_company_user.confirm_password"
+              placeholder="请确认密码"
+              maxlength="18"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="enterprise_type"
+            class="form_item">
+          <el-select
+              v-model="enterprise_type"
+              placeholder="请选择企业类型"
+              size="large"
+              style="width: 260px;">
+            <el-option
+                v-for="item in all_enterprise_type"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <div></div>
+        <el-upload
+            action="#"
+            ref="uploadBox"
+            :limit="1"
+            :auto-upload="false"
+            :http-request="upload">
+          <el-button class="choose_file_btn">提交证明材料</el-button>
+        </el-upload>
+      </el-form>
+
+      <el-form
+          ref="ruleFormRef_monitor"
+          :model="monitor_institution"
+          :rules="rules"
+          class="main_input_box"
+          :size="'default'"
+          status-icon
+          v-if="register_type === 1">
+        <el-form-item
+            prop="name"
+            class="form_item">
+          <el-input
+              v-model="monitor_institution.name"
+              placeholder="请输入机构名称"
+              maxlength="30"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="phone"
+            class="form_item">
+          <el-input
+              v-model="monitor_institution.phone"
+              placeholder="请输入机构电话"
+              maxlength="11"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="password"
+            class="form_item">
+          <el-input
+              v-model="monitor_institution.password"
+              placeholder="请设置密码"
+              maxlength="18"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
+            prop="v_code"
+            class="form_item">
+          <div class="code_box">
+            <el-input
+                v-model="monitor_institution.v_code"
+                placeholder="请输入验证码"
+                maxlength="4"
+                class="input"></el-input>
+            <el-button
+                class="get_code_btn"
+                @click="sendMessage(ruleFormRef_monitor)"
+                :disabled="counting_monitor">
+              {{get_code_text_monitor}}
+            </el-button>
+          </div>
+        </el-form-item>
+        <el-form-item
+            prop="confirm_password"
+            class="form_item">
+          <el-input
+              v-model="monitor_institution.confirm_password"
+              placeholder="请确认密码"
+              maxlength="18"
+              class="input"></el-input>
+        </el-form-item>
+        <el-upload
+            action="#"
+            ref="uploadBox_monitor"
+            :limit="1"
+            :auto-upload="false"
+            :http-request="upload">
+          <el-button class="choose_file_btn">提交证明材料</el-button>
+        </el-upload>
+      </el-form>
+      <div class="login_btn_box">
+        <el-button
+            class="reset_btn"
+            @click="reset">重置</el-button>
+        <el-button
+            type="primary"
+            class="upload_btn"
+            @click="submit(ruleFormRef)">提交</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -211,12 +210,12 @@ let get_code_text_monitor = ref("获取验证码")
 let code_counting = ref(false)
 let code_counting_monitor = ref(false)
 let enterprise_type = ref(null)
+let dialogVisible = ref(false)
 const register_company_user = reactive({
   name:"",
   password:"",
   confirm_password:"",
   phone:"",
-  email:"",
   v_code:"",
   enterprise_type:0
 })
@@ -225,7 +224,6 @@ const register_monitor_institution = reactive({
   password:"",
   confirm_password:"",
   phone:"",
-  email:"",
   v_code:""
 })
 const all_enterprise_type = [
@@ -364,7 +362,6 @@ const rules = {
   password: [{validator: validatePass, trigger: "blur"}],
   confirm_password: [{validator: validateConfirmPass, trigger: "blur"}],
   phone: [{validator: validatePhone, trigger: "blur"}],
-  email: [{validator: validateEmail, trigger: "blur"}],
   enterprise_type: [{validator: validateType, trigger: "change"}]
 }
 
@@ -377,46 +374,59 @@ function change_register_type(type) {
 function sendMessage(formEl) {
   formEl.validate(valid => {
     if (valid) {
-      //TODO 发送验证码
+      let url = undefined
+      if (register_type.value === 0) {
+        url = "http://localhost:8080/general/code/phone?phone="+register_company_user.phone
+      }else {
+        url = "http://localhost:8080/general/code/phone?phone="+register_monitor_institution.phone
+      }
       axios
-          .get("")
-          .then(response => {
-            if (response.status === 0) {
-              ElMessage({
-                message: " 验 证 码 已 发 送 ",
-                type: 'success',
-                offset: 70
-              })
-              if (register_type.value === 0) {
-                let count = 60
-                code_counting.value = true
-                let interval = setInterval(() => {
-                  if (count !== 0) {
-                    get_code_text.value = count + "s后重新发送"
-                  } else {
-                    get_code_text.value = "获取联合验证码"
-                    code_counting.value = false
-                    cancelInterval(interval)
-                  }
-                  count--
-                }, 1000)
+          .get(url)
+          .then(resp => {
+            if (resp.status === 200) {
+              if (resp.data.code === 0) {
+                ElMessage({
+                  message: " 验 证 码 已 发 送 ",
+                  type: 'success',
+                  offset: 70
+                })
+                if (register_type.value === 0) {
+                  let count = 60
+                  code_counting.value = true
+                  let interval = setInterval(() => {
+                    if (count !== 0) {
+                      get_code_text.value = count + "s后重新发送"
+                    } else {
+                      get_code_text.value = "获取验证码"
+                      code_counting.value = false
+                      cancelInterval(interval)
+                    }
+                    count--
+                  }, 1000)
+                }else {
+                  let count = 60
+                  code_counting_monitor.value = true
+                  let interval = setInterval(() => {
+                    if (count !== 0) {
+                      get_code_text_monitor.value = count + "s后重新发送"
+                    } else {
+                      get_code_text_monitor.value = "获取验证码"
+                      code_counting_monitor.value = false
+                      cancelInterval(interval)
+                    }
+                    count--
+                  }, 1000)
+                }
               }else {
-                let count_monitor = 60
-                code_counting_monitor.value = true
-                let interval_monitor = setInterval(() => {
-                  if (count_monitor !== 0) {
-                    get_code_text_monitor.value = count_monitor + "s后重新发送"
-                  } else {
-                    get_code_text_monitor.value = "获取联合验证码"
-                    code_counting_monitor.value = false
-                    cancelInterval(interval_monitor)
-                  }
-                  count_monitor--
-                }, 1000)
+                ElMessage({
+                  message: `该 手 机 号 未 被 注 册 !`,
+                  type: 'error',
+                  offset: 70
+                })
               }
             }else {
               ElMessage({
-                message: " 验 证 码 发 送 失 败 ",
+                message: "失 败 , 请 检 查 网 络",
                 type: 'error',
                 offset: 70
               })
@@ -431,29 +441,63 @@ const cancelInterval = (interval) => {
 }
 
 function upload(fileObject) {
-  let params = new FormData()
-  if (register_type.value === 0) {
-    params.append("file",fileObject.file)
-    params.append("name",register_company_user.name)
-    params.append("password",register_company_user.password)
-    params.append("phone",register_company_user.phone)
-    params.append("email",register_company_user.email)
-    params.append("enterprise_type",register_company_user.enterprise_type)
-  }else {
-    params.append("file",fileObject.file)
-    params.append("name",register_monitor_institution.name)
-    params.append("password",register_monitor_institution.password)
-    params.append("phone",register_monitor_institution.phone)
-    params.append("email",register_monitor_institution.email)
-  }
-  axios({
-    url:"",
-    method:"POST",
-    data:params,
-    headers:{"Content-Type": "multipart/form-data"}
-  }).then(resp => {
-    //TODO 处理返回结果
-  })
+  axios
+      //TODO 验证手机验证码
+      .get("")
+      .then(resp => {
+        if (resp.status === 200) {
+          if (resp.data.code === 0) {
+            let params = new FormData()
+            let url
+            if (register_type.value === 0) {
+              params.append("file",fileObject.file)
+              params.append("name",register_company_user.name)
+              params.append("password",register_company_user.password)
+              params.append("phone",register_company_user.phone)
+              params.append("enterprise_type",register_company_user.enterprise_type)
+              params.append("type",register_type.value)
+              url = "http://localhost:8080/enterprise/info"
+            }else {
+              params.append("file",fileObject.file)
+              params.append("name",register_monitor_institution.name)
+              params.append("password",register_monitor_institution.password)
+              params.append("phone",register_monitor_institution.phone)
+              params.append("type",register_type.value)
+              url = "http://localhost:8080/enterprise/info"
+            }
+            axios({
+              url:url,
+              method:"POST",
+              data:params,
+              headers:{"Content-Type": "multipart/form-data"}
+            }).then(resp => {
+              if (resp.status === 200) {
+                if (resp.data.code === 0) {
+                  dialogVisible.value = true
+                }else {
+                  ElMessage({
+                    message: "该 手 机 号 已 被 注 册 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }
+              }else {
+                ElMessage({
+                  message: "失 败 , 请 检 查 网 络 !",
+                  type: 'error',
+                  offset: 70
+                })
+              }
+            })
+          }else {
+            ElMessage({
+              message: "验 证 码 错 误 !",
+              type: 'error',
+              offset: 70
+            })
+          }
+        }
+      })
 }
 function submit(formEl) {
   formEl.validate(valid => {
