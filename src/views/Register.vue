@@ -196,6 +196,11 @@
 import { ref,reactive } from 'vue'
 import axios from "axios";
 import {ElMessage} from "element-plus";
+// const fs = require('fs');
+// const path = require('path');
+// const crypto = require('crypto');
+// const getEtag = require("@/assets/js/qetag")
+// const buffer = fs.readFileSync(path.join(__dirname, 'FulXa-5czsCtfGnavTTbwwdyChlc.txt'));
 const company_user = ref()
 const monitor_institution = ref()
 const uploadBox = ref()
@@ -441,74 +446,81 @@ const cancelInterval = (interval) => {
 }
 
 function upload(fileObject) {
-  axios
-      //TODO 验证手机验证码
-      .get("")
-      .then(resp => {
-        if (resp.status === 200) {
-          if (resp.data.code === 0) {
-            let params = new FormData()
-            let url
-            if (register_type.value === 0) {
-              params.append("file",fileObject.file)
-              params.append("name",register_company_user.name)
-              params.append("password",register_company_user.password)
-              params.append("phone",register_company_user.phone)
-              params.append("enterprise_type",register_company_user.enterprise_type)
-              params.append("type",register_type.value)
-              url = "http://localhost:8080/enterprise/info"
-            }else {
-              params.append("file",fileObject.file)
-              params.append("name",register_monitor_institution.name)
-              params.append("password",register_monitor_institution.password)
-              params.append("phone",register_monitor_institution.phone)
-              params.append("type",register_type.value)
-              url = "http://localhost:8080/enterprise/info"
-            }
-            axios({
-              url:url,
-              method:"POST",
-              data:params,
-              headers:{"Content-Type": "multipart/form-data"}
-            }).then(resp => {
-              if (resp.status === 200) {
-                if (resp.data.code === 0) {
-                  dialogVisible.value = true
-                }else {
-                  ElMessage({
-                    message: "该 手 机 号 已 被 注 册 !",
-                    type: 'error',
-                    offset: 70
-                  })
-                }
-              }else {
-                ElMessage({
-                  message: "失 败 , 请 检 查 网 络 !",
-                  type: 'error',
-                  offset: 70
-                })
-              }
-            })
-          }else {
-            ElMessage({
-              message: "验 证 码 错 误 !",
-              type: 'error',
-              offset: 70
-            })
-          }
-        }
-      })
+  // let file = fileObject.file
+  // console.log(file)
+  // getEtag(buffer, function (etag) {
+  //   console.log(etag);
+  // })
+
+  // axios
+  //     //TODO 验证手机验证码
+  //     .get("")
+  //     .then(resp => {
+  //       if (resp.status === 200) {
+  //         if (resp.data.code === 0) {
+  //           let params = new FormData()
+  //           let url
+  //           if (register_type.value === 0) {
+  //             params.append("file",fileObject.file)
+  //             params.append("name",register_company_user.name)
+  //             params.append("password",register_company_user.password)
+  //             params.append("phone",register_company_user.phone)
+  //             params.append("enterprise_type",register_company_user.enterprise_type)
+  //             params.append("type",register_type.value)
+  //             url = "http://localhost:8080/enterprise/info"
+  //           }else {
+  //             params.append("file",fileObject.file)
+  //             params.append("name",register_monitor_institution.name)
+  //             params.append("password",register_monitor_institution.password)
+  //             params.append("phone",register_monitor_institution.phone)
+  //             params.append("type",register_type.value)
+  //             url = "http://localhost:8080/enterprise/info"
+  //           }
+  //           axios({
+  //             url:url,
+  //             method:"POST",
+  //             data:params,
+  //             headers:{"Content-Type": "multipart/form-data"}
+  //           }).then(resp => {
+  //             if (resp.status === 200) {
+  //               if (resp.data.code === 0) {
+  //                 dialogVisible.value = true
+  //               }else {
+  //                 ElMessage({
+  //                   message: "该 手 机 号 已 被 注 册 !",
+  //                   type: 'error',
+  //                   offset: 70
+  //                 })
+  //               }
+  //             }else {
+  //               ElMessage({
+  //                 message: "失 败 , 请 检 查 网 络 !",
+  //                 type: 'error',
+  //                 offset: 70
+  //               })
+  //             }
+  //           })
+  //         }else {
+  //           ElMessage({
+  //             message: "验 证 码 错 误 !",
+  //             type: 'error',
+  //             offset: 70
+  //           })
+  //         }
+  //       }
+  //     })
 }
 function submit(formEl) {
-  formEl.validate(valid => {
-    if (valid) {
-      if (register_type.value === 0) {
-        uploadBox.value.submit()
-      }else {
-        uploadBox_monitor.value.submit()
-      }
-    }
-  })
+  // formEl.validate(valid => {
+  //   if (valid) {
+  //     if (register_type.value === 0) {
+  //       uploadBox.value.submit()
+  //     }else {
+  //       uploadBox_monitor.value.submit()
+  //     }
+  //   }
+  // })
+  uploadBox.value.submit()
 }
 
 function reset() {
