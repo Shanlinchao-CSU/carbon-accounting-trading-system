@@ -1,6 +1,13 @@
 <template>
+  <div class="search_box">
+    <el-input
+        v-model="search_input"
+        placeholder="搜索企业ID/名称/类型或核算月份"
+        class="input"/>
+    <el-button type="primary" :icon="Search" class="btn" @click="Searching">搜索</el-button>
+  </div>
 <!--审核核算结果组件-->
-  <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '80px'}">
+  <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '65px'}" class="table">
     <el-table-column fixed="left" label="序号" width="160">
       <template #default="scope">
         {{scope.$index + 10*currentPage - 9}}
@@ -62,42 +69,52 @@
 import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
+import {Search} from "@element-plus/icons-vue";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
 const accounting_record = ref([])
+const all_accounting_record = ref([])
 const record_show = ref([])
 const dialog_show = ref(false)
 const dialog_list = ref([])
 let jsonObject = undefined
+const search_input = ref("")
 
-function getData() {
+function getData(reload=true) {
   // axios
   //     .get(`http://localhost:8080/administrator/accounting_record/review`)
   //     .then(resp=>{
   //       console.log(resp)
   //     })
-  //TODO 获取所有数据
-  for (let i=0;i<64;i++) {
-    accounting_record.value.push({
-      id: "1",
-      enterprise_name: "北京三快在线科技有限公司",
-      enterprise_id: i+"",
-      month: "2024-9",
-      time: "2024-3-5 18:44",
-      result: "4396",
-      enterprise_type: "煤炭型企业",
-      variable_json: `{
+  if (reload) {
+    //TODO 获取所有数据
+    for (let i=0;i<64;i++) {
+      all_accounting_record.value.push({
+        id: "1",
+        enterprise_name: "北京三快在线科技有限公司",
+        enterprise_id: i+"",
+        month: "2024-9",
+        time: "2024-3-5 18:44",
+        result: "4396",
+        enterprise_type: "煤炭型企业",
+        variable_json: `{
         "name": "John Doe",
         "age": "30",
         "city": "New York",
         "occupation": "Software Engineer"
       }`
-    })
+      })
+    }
+    accounting_record.value = all_accounting_record.value
   }
   pageTotal.value = accounting_record.value.length
-  if (pageTotal.value <= currentPage.value*10-10) {
-    currentPage.value = pageTotal.value / 10 + 1
+  if (reload) {
+    if (pageTotal.value <= currentPage.value*10-10) {
+      currentPage.value = pageTotal.value / 10 + 1
+    }
+  }else {
+    currentPage.value = 1
   }
   record_show.value = get_data_for_show(currentPage.value)
 }
@@ -174,7 +191,22 @@ function showDialog(json) {
   });
   dialog_show.value = true
 }
-
+function Searching() {
+  if (!search_input.value || !search_input.value.trim()){
+    accounting_record.value = all_accounting_record.value
+  }else {
+    accounting_record.value = []
+    all_accounting_record.value.forEach(item => {
+      if (item.enterprise_name.includes(search_input.value)
+          ||item.enterprise_id.includes(search_input.value)
+          ||item.enterprise_type.includes(search_input.value)
+          ||item.month.includes(search_input.value)){
+        accounting_record.value.push(item)
+      }
+    })
+  }
+  getData(false)
+}
 onMounted(()=>{
   getData()
 })

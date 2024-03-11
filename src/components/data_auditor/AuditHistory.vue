@@ -2,12 +2,12 @@
   <div class="search_box">
     <el-input
         v-model="search_input"
-        placeholder="搜索核算历史数据"
+        placeholder="搜索企业ID/名称/类型或核算月份"
         class="input"/>
-    <el-button type="primary" :icon="Search" class="btn">搜索</el-button>
+    <el-button type="primary" :icon="Search" class="btn" @click="Searching">搜索</el-button>
   </div>
 <!--审核历史组件-->
-  <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '80px'}">
+  <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '65px'}">
     <el-table-column fixed="left" label="序号" width="160">
       <template #default="scope">
         {{scope.$index + 10*currentPage - 9}}
@@ -66,28 +66,36 @@ import {Search} from "@element-plus/icons-vue";
 const currentPage = ref(1)
 const pageTotal = ref(0)
 const accounting_record = ref([])
+const all_accounting_record = ref([])
 const record_show = ref([])
 let dialog_list = ref([])
 const dialog_show = ref(false)
 let jsonObject = undefined
 const search_input = ref("")
 
-function getData() {
-  //TODO 获取所有数据
-  for (let i=0;i<64;i++) {
-    accounting_record.value.push({
-      enterprise_name: "北京三快在线科技有限公司",
-      enterprise_id: i+"",
-      enterprise_type: "煤炭型企业",
-      variable_json: `{"age":"30","url":"www.baidu.com"}`,
-      month: "2024-9",
-      time: "2024-3-5 18:44",
-      result: "4396"
-    })
+function getData(reload=true) {
+  if (reload){
+    //TODO 获取所有数据
+    for (let i=0;i<64;i++) {
+      all_accounting_record.value.push({
+        enterprise_name: "北京三快在线科技有限公司",
+        enterprise_id: i+"",
+        enterprise_type: "煤炭型企业",
+        variable_json: `{"age":"30","url":"www.baidu.com"}`,
+        month: "2024-9",
+        time: "2024-3-5 18:44",
+        result: "4396"
+      })
+    }
+    accounting_record.value = all_accounting_record.value
   }
   pageTotal.value = accounting_record.value.length
-  if (pageTotal.value <= currentPage.value*10-10) {
-    currentPage.value = pageTotal.value / 10 + 1
+  if (reload) {
+    if (pageTotal.value <= currentPage.value*10-10) {
+      currentPage.value = pageTotal.value / 10 + 1
+    }
+  }else {
+    currentPage.value = 1
   }
   record_show.value = get_data_for_show(currentPage.value)
 }
@@ -115,9 +123,24 @@ function downloadFile(id,enterprise_id,month) {
   link.download = enterprise_id+" "+month
   link.click()
 }
+function Searching() {
+  if (!search_input.value || !search_input.value.trim()){
+    accounting_record.value = all_accounting_record.value
+  }else {
+    accounting_record.value = []
+    all_accounting_record.value.forEach(item => {
+      if (item.enterprise_name.includes(search_input.value)
+          ||item.enterprise_id.includes(search_input.value)
+          ||item.enterprise_type.includes(search_input.value)
+          ||item.month.includes(search_input.value)){
+        accounting_record.value.push(item)
+      }
+    })
+  }
+  getData(false)
+}
 onMounted(()=>{
   getData()
-
 })
 </script>
 
