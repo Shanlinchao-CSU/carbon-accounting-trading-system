@@ -69,6 +69,7 @@ module.exports = {
             host: "127.0.0.1",     // Localhost (default: none)
             port: 8545,            // Standard Ethereum port (default: none)
             network_id: "*",       // Any network (default: none)
+            from : "0xEec1A7BA74955f3D75f98A0F3D70F2eFE9FA18ec"
         },
         sepolia: {
             provider: function () {
@@ -80,7 +81,7 @@ module.exports = {
             host: "119.23.143.76",
             port: 8545,
             network_id: "726",
-            from: "0xfe9873c13d2e643ffd5135868b40524c1cd7b4fb",
+            from: "0x96a0cfe920bf1ccd1ef1cae4b9592c41334cac81",
             password: "123456mm"
         }
         //
