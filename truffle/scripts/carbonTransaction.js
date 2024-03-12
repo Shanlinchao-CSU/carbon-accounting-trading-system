@@ -23,8 +23,8 @@ module.exports = async function (callback) {
         web3.utils.fromWei(balanceBeforeAccount0.toString()))
     
     // 向第二个用户和第三个用户发行碳排放额度
-    await carbonCredits.issueCarbonAllowance(accounts[0],accounts[1],1000)
-    await carbonCredits.issueCarbonAllowance(accounts[0],accounts[2],100)
+    await carbonCredits.issueCarbonAllowance(accounts[0],accounts[1],1000,{from:accounts[0]})
+    await carbonCredits.issueCarbonAllowance(accounts[0],accounts[2],100,{from:accounts[0]})
     allownance1 = await carbonCredits.allowanceOf(accounts[1])
     allownance2 = await carbonCredits.allowanceOf(accounts[2])
     console.log(
@@ -94,7 +94,17 @@ module.exports = async function (callback) {
         allownanceBefore2.toString()
     )
 
-    await carbonCredits.carbonTransaction(accounts[2],100,50) // 账户1向账户2购买100额度，价格50碳币
+
+    // 授权给合约地址
+    await carbonCoin.approve(carbonCredits.address, web3.utils.toWei("100", "ether"))
+    const allowanceAfter = await carbonCoin.allowance(accounts[1], carbonCredits.address)
+    console.log(
+    "Amount of CarbonCoin CarbonCredits is allowed to transfer on our behalf After: " +
+        web3.utils.toWei(allowanceAfter.toString())
+    )
+
+
+    await carbonCredits.carbonTransaction(accounts[2],100,web3.utils.toWei("50", "ether")) // 账户1向账户2购买100额度，价格50碳币
     
     allownanceAfter1 = await carbonCredits.allowanceOf(accounts[1])
     allownanceAfter2 = await carbonCredits.allowanceOf(accounts[2])

@@ -12,6 +12,9 @@ module.exports = async function (callback) {
     const carbonCoin = await CarbonCoin.deployed()
     const carbonCredits = await CarbonCredits.deployed()
 
+    balanceBeforeAccount0 = await carbonCoin.balanceOf(accounts[0])
+    console.log(web3.utils.fromWei(balanceBeforeAccount0.toString()))
+
 
     // -- transaction
     allownanceBefore1 = await carbonCredits.allowanceOf(accounts[1])
@@ -26,7 +29,8 @@ module.exports = async function (callback) {
     )
 
     await carbonCredits.carbonTransaction(accounts[2],100,50) // 账户1向账户2购买100额度，价格50碳币
-    
+    // await carbonCoin.transfer(accounts[1],web3.utils.toWei("100", 'ether'), { from: accounts[0y] })
+
     allownanceAfter1 = await carbonCredits.allowanceOf(accounts[1])
     allownanceAfter2 = await carbonCredits.allowanceOf(accounts[2])
     console.log(

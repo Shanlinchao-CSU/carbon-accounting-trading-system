@@ -42,7 +42,7 @@ contract CarbonCredits {
         require(carbonCoin.balanceOf(msg.sender) >= _price, "Insufficent carbon coin"); // 买家有足够碳币
         carbonAllowance[msg.sender] = carbonAllowance[msg.sender] + _amount; // 买家排放额增加
         carbonAllowance[_to] = carbonAllowance[_to] - _amount; // 卖家排放额减少
-        carbonCoin.safeTransferFrom(msg.sender, _to, _amount); // 碳币转移      
+        carbonCoin.transferFrom( msg.sender,_to, _price); // 碳币转移      
         emit CarbonTransaction(msg.sender,_to,_amount,_price);
     }
 
