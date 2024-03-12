@@ -2,8 +2,12 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import DataAuditor from "@/views/DataAuditor.vue";
+import Admin from "@/views/Admin.vue";
 import Auditing from "@/components/data_auditor/AuditData.vue";
 import AuditingHistory from "@/components/data_auditor/AuditHistory.vue";
+import HandleRegister from "@/components/admin/HandleRegister.vue";
+import UserInformation from "@/components/admin/UserInformation.vue";
+import illegalityQuery from "@/components/admin/illegalityQuery.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +28,25 @@ const routes: Array<RouteRecordRaw> = [
           path: 'history',
           component: AuditingHistory
         }]
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: Admin,
+    children: [
+      {
+        path: 'handle_register',
+        component: HandleRegister
+      },
+      {
+        path: 'user_information',
+        component: UserInformation
+      },
+      {
+        path: 'illegality_query',
+        component: illegalityQuery
+      }
+    ]
   },
   {
     path: '/register',

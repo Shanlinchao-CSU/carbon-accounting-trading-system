@@ -3,7 +3,7 @@
     <div class="logo_and_search">
       <div class="logo">
         <el-image
-            style="height: 90px; width: auto"
+            style="height: 70px; width: auto"
             title="CNTS首页"
             :fit="'cover'"
             :src="require('@/assets/images/logo.png')">
@@ -16,7 +16,7 @@
             class="input"/>
         <el-icon
             class="search_icon"
-            :size="40">
+            :size="35">
           <Search/>
         </el-icon>
       </div>
