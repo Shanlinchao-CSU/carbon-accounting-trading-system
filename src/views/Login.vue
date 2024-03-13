@@ -319,17 +319,110 @@ const submitForm = (formEl: FormInstance) => {
           vCode.value?.refresh()
           ruleForm.verification_code = ''
         }
-      }else if (login_method.value === 1) {
-        //TODO 验证手机验证码
+      }else if (login_method.value === 2) {
         axios
-            .get("")
+            .get("http://localhost:8080/general/verify/phone/code?phoneNumber="+ruleForm.phone+"&code="+ruleForm.phone_code)
             .then(resp=>{
               if (resp.status === 200) {
-
+                if (resp.data.code === 0) {
+                  axios
+                      .get("http://localhost:8080/general/phone?phone="+ruleForm.phone)
+                      .then(resp=>{
+                        if (resp.status === 200) {
+                          if (resp.data.code === 0) {
+                            ElMessage({
+                              message: "登 录 成 功 !",
+                              type: 'success',
+                              offset: 70
+                            })
+                            let account = resp.data.data.Account
+                            let token = resp.data.data.token
+                            localStorage.setItem("account",account)
+                            localStorage.setItem("token",token)
+                            jump(account.type)
+                          }else {
+                            ElMessage({
+                              message: "该 用 户 不 存 在 !",
+                              type: 'error',
+                              offset: 70
+                            })
+                          }
+                        }else {
+                          ElMessage({
+                            message: "失 败 , 请 检 查 网 络 !",
+                            type: 'error',
+                            offset: 70
+                          })
+                        }
+                      })
+                }else {
+                  ElMessage({
+                    message: "验 证 码 错 误 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }
+              }else {
+                ElMessage({
+                  message: "失 败 , 请 检 查 网 络 !",
+                  type: 'error',
+                  offset: 70
+                })
               }
             })
       }else {
-        //TODO 验证邮箱
+        axios
+            .get("http://localhost:8080/general/verify/email/code?email="+ruleForm.email+"&code="+ruleForm.email_code)
+            .then(resp=>{
+              if (resp.status === 200) {
+                if (resp.data.code === 0) {
+                  axios
+                      .get("http://localhost:8080/general/email?email="+ruleForm.email)
+                      .then(resp=>{
+                        if (resp.status === 200) {
+                          if (resp.data.code === 0) {
+                            console.log(resp)
+                            console.log(resp.data)
+                            // ElMessage({
+                            //   message: "登 录 成 功 !",
+                            //   type: 'success',
+                            //   offset: 70
+                            // })
+                            // let account = resp.data.data.Account
+                            // let token = resp.data.data.token
+                            // localStorage.setItem("account",account)
+                            // localStorage.setItem("token",token)
+                            // jump(account.type)
+                          }else {
+                            ElMessage({
+                              message: "该 用 户 不 存 在 !",
+                              type: 'error',
+                              offset: 70
+                            })
+                          }
+                        }else {
+                          ElMessage({
+                            message: "失 败 , 请 检 查 网 络 !",
+                            type: 'error',
+                            offset: 70
+                          })
+                        }
+                      })
+                }else {
+                  ElMessage({
+                    message: "验 证 码 错 误 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }
+              }else {
+                ElMessage({
+                  message: "失 败 , 请 检 查 网 络 !",
+                  type: 'error',
+                  offset: 70
+                })
+              }
+            })
       }
     }
   })

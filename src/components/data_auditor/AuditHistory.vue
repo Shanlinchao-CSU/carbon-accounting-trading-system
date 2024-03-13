@@ -1,31 +1,52 @@
 <template>
-  <div class="search_box">
-    <el-input
-        v-model="search_input"
-        placeholder="搜索企业ID/名称/类型或核算月份"
-        class="input"/>
-    <el-button type="primary" :icon="Search" class="btn" @click="Searching">搜索</el-button>
-  </div>
 <!--审核历史组件-->
-  <el-table :data="record_show" style="font-size: 23px" :row-style="{height: '65px'}">
+  <el-table
+      :data="record_show"
+      style="font-size: 23px"
+      :row-style="{height: '65px'}"
+      @sort-change="sortChange">
     <el-table-column fixed="left" label="序号" width="160">
       <template #default="scope">
         {{scope.$index + 10*currentPage - 9}}
       </template>
     </el-table-column>
-    <el-table-column prop="enterprise_id" label="企业ID" width="200"/>
+    <el-table-column prop="enterprise_id" label="企业ID" width="200" sortable="custom"/>
     <el-table-column prop="enterprise_name" label="企业名称" width="400"/>
-    <el-table-column prop="enterprise_type" label="企业类型" width="300"/>
-    <el-table-column prop="month" label="核算月份" width="170"/>
-    <el-table-column prop="time" label="提交时间" width="280"/>
-    <el-table-column prop="result" label="核算结果" width="180">
+    <el-table-column
+        prop="enterprise_type"
+        label="企业类型"
+        width="300"
+        :filter-method="filterHandler"
+        :filters="[
+            {text:'电网企业',value:'电网企业'},
+            {text:'化工生产企业',value:'化工生产企业'},
+            {text:'电解铝生产企业',value:'电解铝生产企业'},
+            {text:'镁冶炼企业',value:'镁冶炼企业'},
+            {text:'平板玻璃生产企业',value:'平板玻璃生产企业'},
+            {text:'水泥生产企业',value:'水泥生产企业'},
+            {text:'陶瓷生产企业',value:'陶瓷生产企业'},
+            {text:'民航企业',value:'民航企业'},
+            {text:'钢铁生产企业',value:'钢铁生产企业'},
+            {text:'发电企业',value:'发电企业'},
+            {text:'其它企业',value:'其它企业'},
+        ]"/>
+    <el-table-column prop="month" label="核算月份" width="170" sortable="custom"/>
+    <el-table-column prop="time" label="提交时间" width="280" sortable="custom"/>
+    <el-table-column prop="result" label="核算结果" width="180" sortable="custom">
       <template #default="scope">
         <span @click="showDialog(scope.row.variable_json)" class="table_result">{{scope.row.result}}</span>
       </template>
     </el-table-column>
-    <el-table-column fixed="right" label="证明材料" width="200">
+    <el-table-column fixed="right" width="240" align="center">
+      <template #header>
+        <el-input
+            v-model="search_input"
+            size="default"
+            placeholder="在碳核算历史中搜索"
+            @keyup.enter="Searching"/>
+      </template>
       <template #default="scope">
-        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载材料</el-button>
+        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载证明材料</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -138,6 +159,51 @@ function Searching() {
     })
   }
   getData(false)
+}
+function sortChange(column) {
+  let order = column.order
+  let prop = column.prop
+  if (order === "ascending") {
+    accounting_record.value = accounting_record.value.sort((a,b) => {
+      if (prop === "enterprise_id" || prop === "result") {
+        let id_a = parseInt(a[prop])
+        let id_b = parseInt(b[prop])
+        if (id_a < id_b) return -1
+        else if (id_a > id_b) return 1
+        else return 0
+      }else {
+        let time_a = new Date(a[prop])
+        let time_b = new Date(b[prop])
+        if (time_a.getTime() === time_b.getTime()) {
+          return 0
+        }else {
+          return time_a-time_b
+        }
+      }
+    })
+  }else if (order === "descending") {
+    accounting_record.value = accounting_record.value.sort((a,b) => {
+      if (prop === "enterprise_id" || prop === "result") {
+        let id_a = parseInt(a[prop])
+        let id_b = parseInt(b[prop])
+        if (id_a < id_b) return 1
+        else if (id_a > id_b) return -1
+        else return 0
+      }else {
+        let time_a = new Date(a[prop])
+        let time_b = new Date(b[prop])
+        if (time_a.getTime() === time_b.getTime()) {
+          return 0
+        }else {
+          return time_b-time_a
+        }
+      }
+    })
+  }
+  getData(false)
+}
+function filterHandler(value,row) {
+  return row.enterprise_type === value
 }
 onMounted(()=>{
   getData()
