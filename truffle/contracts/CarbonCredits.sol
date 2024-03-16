@@ -20,6 +20,7 @@ contract CarbonCredits {
     mapping(address => CarbonReport) public carbonReports; // 每个账户的碳排放报告
 
     event CarbonAllowanceIssued(address account,address target, uint256 amount);
+    event CarbonAllowanceBurned(address target, uint256 amount);
     event CarbonTransaction(address _from, address _to, uint256 _amount, uint256 _price);
     event CarbonReportSubmitted(address account,CarbonReport carbonReport);
 
@@ -34,6 +35,13 @@ contract CarbonCredits {
         require(carbonAllowance[target] < carbonAllowance[target] + amount, "Overflow!");
         carbonAllowance[target] = carbonAllowance[target] + amount;
         emit CarbonAllowanceIssued(account,target,amount);
+    }
+
+    // 销毁指定数量的碳排放额度
+    function burnCarbonAllowance(address target, uint256 amount) public {
+        require(msg.sender == carbonIssuer, "Only carbon issuer can burn allowance");
+        carbonAllowance[target] = carbonAllowance[target] - amount;
+        emit CarbonAllowanceBurned(target, amount);
     }
 
     // 碳交易，msg.sender是买家

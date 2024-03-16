@@ -47,6 +47,10 @@ const mnemonic = "<Your mnemonic>"; //自己的助记词
 //contract address:0xAccb25c8325f6918BCb66E3E3319b19a7A5423C5
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
+const accounts = ["0x96a0cfE920bF1CcD1ef1cAe4b9592C41334CaC81",
+                  "0xeca22D8b437C94c15C26CbA5EDbAF736Ff2fc214",
+                  "0xfE903511B4d04aAD828c3473cf5253d6F61eaF65"]
+
 module.exports = {
     /**
      * Networks define how you connect to your ethereum client and let you set the
@@ -81,7 +85,7 @@ module.exports = {
             host: "119.23.143.76",
             port: 8545,
             network_id: "726",
-            from: "0x96a0cfe920bf1ccd1ef1cae4b9592c41334cac81",
+            from: accounts[1],
             password: "123456mm"
         }
         //

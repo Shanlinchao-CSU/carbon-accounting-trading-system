@@ -4,9 +4,9 @@ const CarbonCredits = artifacts.require("CarbonCredits")
 // const web3 = new Web3('http://119.23.143.76:8545');
 // const web3 = new Web3('http://localhost:8545');
 
-const accounts = ["0xfE9873C13D2e643FFD5135868b40524C1cd7b4fb",
-                  "0x9D7148a5fD954B3ae709B17D0E437EedFF5D8b07",
-                  "0xdC232902604206C38cb64f4144934a02FA4470D3"]
+const accounts = ["0x96a0cfE920bF1CcD1ef1cAe4b9592C41334CaC81",
+                  "0xeca22D8b437C94c15C26CbA5EDbAF736Ff2fc214",
+                  "0xfE903511B4d04aAD828c3473cf5253d6F61eaF65"]
 
 module.exports = async function (callback) {
     const carbonCoin = await CarbonCoin.deployed()
@@ -14,6 +14,22 @@ module.exports = async function (callback) {
 
     balanceBeforeAccount0 = await carbonCoin.balanceOf(accounts[0])
     console.log(web3.utils.fromWei(balanceBeforeAccount0.toString()))
+
+
+
+    // -- issue allowance
+    // await carbonCredits.issueCarbonAllowance(accounts[0],accounts[1],1000)
+    // await carbonCredits.issueCarbonAllowance(accounts[0],accounts[2],100)
+    // allownance1 = await carbonCredits.allowanceOf(accounts[1])
+    // allownance2 = await carbonCredits.allowanceOf(accounts[2])
+    // console.log(
+    //     "Allowance of account1 is "+
+    //     allownance1.toString()
+    // )
+    // console.log(
+    //     "Allowance of account2 is "+
+    //     allownance2.toString()
+    // )
 
 
     // -- transaction
@@ -28,8 +44,15 @@ module.exports = async function (callback) {
         allownanceBefore2.toString()
     )
 
-    await carbonCredits.carbonTransaction(accounts[2],100,50) // 账户1向账户2购买100额度，价格50碳币
-    // await carbonCoin.transfer(accounts[1],web3.utils.toWei("100", 'ether'), { from: accounts[0y] })
+    // 授权给合约地址
+    await carbonCoin.approve(carbonCredits.address, web3.utils.toWei("100", "ether"))
+    const allowanceAfter = await carbonCoin.allowance(accounts[1], carbonCredits.address)
+    console.log(
+    "Amount of CarbonCoin CarbonCredits is allowed to transfer on our behalf After: " +
+        web3.utils.fromWei(allowanceAfter.toString())
+    )
+    await carbonCredits.carbonTransaction(accounts[2],100,web3.utils.toWei("100", "ether")) // 账户1向账户2购买100额度，价格100碳币
+    
 
     allownanceAfter1 = await carbonCredits.allowanceOf(accounts[1])
     allownanceAfter2 = await carbonCredits.allowanceOf(accounts[2])
