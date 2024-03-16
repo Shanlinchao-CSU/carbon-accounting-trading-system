@@ -2,16 +2,17 @@
 <!--审核历史组件-->
   <el-table
       :data="record_show"
-      style="font-size: 23px"
-      :row-style="{height: '65px'}"
-      @sort-change="sortChange">
+      style="font-size: 20px"
+      :row-style="{height: '55px'}"
+      @sort-change="sortChange"
+      border="border">
     <el-table-column fixed="left" label="序号" width="160">
       <template #default="scope">
-        {{scope.$index + 10*currentPage - 9}}
+        {{scope.$index + onePageNumber*currentPage - onePageNumber + 1}}
       </template>
     </el-table-column>
     <el-table-column prop="enterprise_id" label="企业ID" width="200" sortable="custom"/>
-    <el-table-column prop="enterprise_name" label="企业名称" width="400"/>
+    <el-table-column prop="account_name" label="企业名称" width="400"/>
     <el-table-column
         prop="enterprise_type"
         label="企业类型"
@@ -46,7 +47,7 @@
             @keyup.enter="Searching"/>
       </template>
       <template #default="scope">
-        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载证明材料</el-button>
+        <el-button link type="primary" @click="downloadFile(scope.row.id)">下载证明材料</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -56,7 +57,7 @@
       :total="pageTotal"
       :current-page="currentPage"
       @update:current-page="changePage"
-      :page-size="10"
+      :page-size="onePageNumber"
       style="position: absolute;right: 200px;margin-top: 10px"/>
   <el-dialog v-model="dialog_show" width="520" center>
     <el-table
@@ -82,7 +83,8 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {Search} from "@element-plus/icons-vue";
+import axios from "axios";
+import {ElMessage} from "element-plus";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -93,35 +95,45 @@ let dialog_list = ref([])
 const dialog_show = ref(false)
 let jsonObject = undefined
 const search_input = ref("")
+let onePageNumber = 15
 
 function getData(reload=true) {
-  if (reload){
-    //TODO 获取所有数据
-    for (let i=0;i<64;i++) {
-      all_accounting_record.value.push({
-        enterprise_name: "北京三快在线科技有限公司",
-        enterprise_id: i+"",
-        enterprise_type: "煤炭型企业",
-        variable_json: `{"age":"30","url":"www.baidu.com"}`,
-        month: "2024-9",
-        time: "2024-3-5 18:44",
-        result: "4396"
-      })
-    }
-    accounting_record.value = all_accounting_record.value
-  }
-  pageTotal.value = accounting_record.value.length
   if (reload) {
-    if (pageTotal.value <= currentPage.value*10-10) {
-      currentPage.value = pageTotal.value / 10 + 1
-    }
+    axios
+        .get(`http://localhost:8080/administrator/accounting_record`)
+        .then(resp=>{
+          if (resp.status === 200) {
+            if (resp.data.code === 0) {
+              all_accounting_record.value = resp.data.data
+              accounting_record.value = all_accounting_record.value
+              pageTotal.value = accounting_record.value.length
+              if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+                currentPage.value = pageTotal.value / onePageNumber + 1
+              }
+              record_show.value = get_data_for_show(currentPage.value)
+            }else {
+              ElMessage({
+                message: "获 取 数 据 异 常 !",
+                type: 'error',
+                offset: 70
+              })
+            }
+          }else {
+            ElMessage({
+              message: "失 败 , 请 检 查 网 络 !",
+              type: 'error',
+              offset: 70
+            })
+          }
+        })
   }else {
+    pageTotal.value = accounting_record.value.length
     currentPage.value = 1
+    record_show.value = get_data_for_show(currentPage.value)
   }
-  record_show.value = get_data_for_show(currentPage.value)
 }
 function get_data_for_show(page) {
-  return accounting_record.value.slice(page*10-10,page*10)
+  return accounting_record.value.slice(page*onePageNumber-onePageNumber,page*onePageNumber)
 }
 function changePage(page) {
   record_show.value = get_data_for_show(page)
@@ -137,11 +149,9 @@ function showDialog(json) {
   });
   dialog_show.value = true
 }
-function downloadFile(id,enterprise_id,month) {
+function downloadFile(id) {
   const link = document.createElement('a')
-  //TODO 完成下载后端链接
-  link.href = 'http'
-  link.download = enterprise_id+" "+month
+  link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
   link.click()
 }
 function Searching() {
@@ -150,7 +160,7 @@ function Searching() {
   }else {
     accounting_record.value = []
     all_accounting_record.value.forEach(item => {
-      if (item.enterprise_name.includes(search_input.value)
+      if (item.account_name.includes(search_input.value)
           ||item.enterprise_id.includes(search_input.value)
           ||item.enterprise_type.includes(search_input.value)
           ||item.month.includes(search_input.value)){

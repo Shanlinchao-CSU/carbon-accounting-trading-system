@@ -1,0 +1,116 @@
+/* liiePrompt*/
+:root{
+    --error-color:rgb(181, 10, 10);
+}
+/* avatarUpload */
+:root{
+    --box--overlay--background-color:rgb(35,38,43);
+    --box-header-color:rgb(231, 231, 231);
+    --upload-button-background-color:rgb(63, 63, 63);
+    --upload-button-hover-background-color:rgb(154, 154, 154);
+    --upload-button-font-color:rgb(167, 167, 167);
+    --upload-button-hover-font-color:black;
+    --box-header-bottom-border-color:gray;
+}
+/* :defaultDialogBox */
+:root{
+    --dialog-container-border-color:#54285c;
+    --dialog-container-font-color:#a171aa;
+}
+/* confirmButton */
+:root{
+    --confirm-button-color:gray;
+}
+/* personalMsgSettingSubpage */
+:root{
+    --scrollbar-thumb-background:rgba(130, 80, 138, 0.3);
+    --scrollbar-background-color:rgba(75, 75, 75, 0.485);
+}
+/* baseBox */
+:root{
+    --baseBox-container-background-color:rgb(35,38,43)
+}
+/* borderInput*/
+:root{
+    --input_ele-font-color:rgba(144, 119, 149, 0.5);
+    --input-focus-color:#673a70;
+    --input-after-background-color:rgb(35,38,43);
+    --input-ele-background-color:rgb(35,38,43);
+}
+/* borderSelect */
+:root{
+    --border-select-list-hover-background-color:#393737;
+}
+
+/* confirmButton*/
+:root{
+    --confirm-hover-color:#2e1134;
+}
+/* loginMsg */
+:root{
+    --msg_login_register_text-color:rgb(174, 174, 174);
+}
+/* loginAndRegister*/
+:root{
+    --login-background-color:rgb(35,38,43);
+    --login_container-box-shadow:rgba(213, 117, 232, 0.5);
+    --login-msg-background-color:#4e2e54;
+}
+/* homeview */
+:root{
+    --homeview-bg-color:rgb(0, 0, 0);
+}
+/* 主页背景 */
+:root{
+    --bg-img-src:url("./img/bg/bg_dark.png");
+}
+/* 主页文字 */
+:root{
+    --main-bar-font-color:#822296;
+    --main-text-font-color:#822296;
+    --main-text-after-font-color:rgb(0, 0, 0);
+}
+/* shutter */
+:root{
+    --shutter-top-img-src:url("./img/shutter/top_dark.png");
+    --shutter-bottom-img-src:url("./img/shutter/bottom_dark.png");
+}
+/* navbar */
+:root{
+    --navbar-bg-bg-img:url("./img/bar/nav/bg_dark_new.png");
+    --navbar-bar-bg-img:url("./img/bar/nav/nav_bar_dark.png");
+    --navbar-font-color:#822296;
+    --nav-user-name-color:#822296;
+}
+/* functionSubpage */
+:root{
+    --functionSubpage-title-color:#822296;
+}
+/* otherSubpage */
+:root{
+    --subpage-button-selected-border:solid 2px #822296;
+    --subpage-button-selected-background-color: #822296;
+    --subpage-button-selected-color:rgb(0, 0, 0);
+    --subpage-button-unselected-border:solid 2px #822296;
+    --subpage-button-unselected-background-color: auto;
+    --subpage-button-unselected-color:#822296;
+    --subpage-button-unselected-hover-color:rgb(0, 0, 0);
+    --subpage-button-webkit-text-stroke:8px #822296;
+    --subpage-aboutSubpage-color:#822296;
+}
+/* flowButton */
+:root{
+    --flowButton-border-color:rgb(205, 199, 199);
+    --flowButton-color: #822296;
+    --flowButton-after-background-color:black;
+    --flowButton-hover-button-color:black;
+    --flowButton-hover-button-after-webkit-text-stroke-color:#822296;
+    --flowButton-selected-background-color:#822296;
+    --flowButton-selected-border-color:rgb(205, 199, 199);
+    --flowButton-selected-color: black;
+    --flowButton-selected-after-background-color:black;
+}
+/* showerBar */
+:root{
+    --shower-bar-color:gray;
+}

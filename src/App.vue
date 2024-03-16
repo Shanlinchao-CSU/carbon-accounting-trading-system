@@ -1,28 +1,30 @@
 <template>
-  <router-view v-slot="{ Component }">
-    <keep-alive>
-      <component :is="Component" />
-    </keep-alive>
-  </router-view>
+  <router-view></router-view>
 </template>
+<script>
+import Storage from "@/assets/js/storage/storage.js";
+const debounce = (fn, delay) => {
+  let timer = null;
+  return function () {
+    let context = this;
+    let args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+};
 
-<script setup>
-import DevicePixelRatio from "@/util/evice"
-import {onMounted} from "vue";
-
-const bodyScale = () => {
-  const devicewidth = document.documentElement.clientWidth;//获取当前分辨率下的可是区域宽度
-  const scale = devicewidth / 1920; // 分母——设计稿的尺寸
-  document.body.style.zoom = scale;//放大缩小相应倍数
-}
-
-onMounted(()=>{
-  new DevicePixelRatio().init()
-  bodyScale()
-})
+const _ResizeObserver = window.ResizeObserver;
+window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
+  constructor(callback) {
+    callback = debounce(callback, 16);
+    super(callback);
+  }
+};
+export default {
+  mounted() {
+    this.$i18n.locale = Storage.get(0, "LANGUAGE", "zh-Hans");
+  },
+};
 </script>
-<style scoped lang="less">
-html,body,#app{
-  height: 100%;
-}
-</style>

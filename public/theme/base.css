@@ -1,0 +1,300 @@
+html,
+body,
+div,
+ol,
+ul,
+li,
+img {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* font: inherit; */
+    vertical-align: baseline;
+}
+span {
+    line-height: 1.5;
+}
+ol,
+ul,
+li {
+    list-style: none;
+    margin-left: 0.7rem;
+    word-wrap: normal;
+}
+ol > div,
+ul > div,
+li > div {
+    word-wrap: normal;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+p {
+    /* box-sizing: inherit; */
+    word-wrap: break-word;
+    text-align: left;
+}
+div {
+    word-wrap: break-word;
+}
+input {
+    border: 0; /*清除自带的2px的边框*/
+    padding: 0; /*清除自带的padding间距*/
+    outline: none; /*清除input点击之后的黑色边框*/
+}
+
+:root {
+    --login-width: 800px;
+    --login-height: 494px;
+
+    --nav-bar-font-size: 35px;
+    /* --avatar-border: url("./theme/avatarFrame/de.png"); */
+}
+:root {
+    /* 吉祥物相关 */
+    --harvest-probe-default-src: url("./img/mascots/harvest/probe_default.png"); /* harvest 探头默认图片 */
+    --harvest-probe-password-src: url("./img/mascots/harvest/probe_default_password.png"); /* harvest 探头输入密码时图片 */
+    --harvest-probe-hand-src: url("./img/mascots/harvest/probe_default_hand.png"); /* harvest 手图片 */
+
+    --snow-probe-default-src: url("./img/mascots/snow/probe_default.png"); /* snow 探头默认图片 */
+    --snow-probe-password-src: "./img/mascots/snow/probe_base.png"; /* snow 探头输入密码时图片 */
+}
+:root{
+    /* element plus */
+    --el-color-primary: #822269;
+}
+@font-face {
+    font-family: "FZZJ-WHJZTJW";
+    src: url("../fonts/FZZJ-WHJZTJW.TTF");
+}
+@font-face {
+    font-family: "ZKKLT";
+    src: url("../fonts/ZKKLT.TTF");
+}
+.app_subpage-enter-active,
+.app_subpage-leave-active {
+    transition: opacity 0.4s ease;
+}
+.app_subpage-enter-from,
+.app_subpage-leave-to {
+    opacity: 0;
+}
+.app_subpage-enter-active > div,
+.app_subpage-leave-active > div {
+    transition: scale 0.4s ease;
+}
+.app_subpage-enter-from > div,
+.app_subpage-leave-to > div {
+    scale: 1.1;
+}
+.rotateX300-enter-active,
+.rotateX300-leave-active {
+    transition: all 0.3s ease;
+}
+.rotateX300-enter-from {
+    opacity: 0;
+    transform: rotateX(-90deg);
+}
+.rotateX300-leave-to {
+    opacity: 0;
+    transform: rotateX(90deg);
+}
+
+.opacity400-enter-active,
+.opacity400-leave-active {
+    transition: opacity 0.4s ease;
+    pointer-events: none !important;
+}
+.opacity400-enter-from,
+.opacity400-leave-to {
+    opacity: 0;
+}
+
+.opacity300-enter-active,
+.opacity300-leave-active {
+    transition: opacity 0.3s ease;
+    pointer-events: none !important;
+}
+.opacity300-enter-from,
+.opacity300-leave-to {
+    opacity: 0;
+}
+
+.opacity1000-enter-active,
+.opacity1000-leave-active {
+    transition: opacity 1s ease;
+    pointer-events: none !important;
+}
+.opacity1000-enter-from,
+.opacity1000-leave-to {
+    opacity: 0;
+}
+
+.shutter-enter-active,
+.shutter-leave-active {
+    transition: opacity 0.8s ease-out;
+}
+.shutter-enter-from,
+.shutter-leave-to {
+    opacity: 0;
+}
+.shutter-enter-active > .shutter_top {
+    transition: transform 0.7s ease-out;
+}
+.shutter-enter-active > .shutter_top_container {
+    transition: transform 0.7s ease-out;
+}
+.shutter-leave-active > .shutter_top {
+    transition: transform 0.7s ease 0.1s;
+}
+.shutter-leave-active > .shutter_top_container {
+    transition: transform 0.7s ease 0.1s;
+}
+.shutter-enter-active > .shutter_bottom {
+    transition: transform 0.7s ease-out 0.1s;
+}
+.shutter-leave-active > .shutter_bottom {
+    transition: transform 0.7s ease;
+}
+.shutter-enter-from > .shutter_bottom,
+.shutter-leave-to > .shutter_bottom {
+    transform: translateX(800px);
+}
+.shutter-enter-from > .shutter_top,
+.shutter-leave-to > .shutter_top {
+    transform: translateX(500px);
+}
+.shutter-enter-from > .shutter_top_container,
+.shutter-leave-to > .shutter_top_container {
+    transform: translateX(500px);
+}
+.bar_change_0-enter-active,
+.bar_change_0-leave-active {
+    transition: all 0.4s ease;
+}
+.bar_change_0-enter-from {
+    transform-origin: 50% 50% -120px;
+    transform: rotateY(-90deg);
+}
+.bar_change_0-leave-to {
+    transform-origin: 50% 50% -120px;
+    transform: rotateY(90deg);
+}
+.bar_change_1-enter-active,
+.bar_change_1-leave-active {
+    transition: all 0.4s ease;
+}
+.bar_change_1-enter-from {
+    transform-origin: 50% 50% -120px;
+    transform: rotateY(90deg);
+}
+.bar_change_1-leave-to {
+    transform-origin: 50% 50% -120px;
+    transform: rotateY(-90deg);
+}
+
+/* ----- 渲染器 ------ */
+.curtain {
+    position: relative;
+    z-index: 0;
+    color: black !important;
+    transition: all 0.5s;
+    background-color: black;
+}
+.curtain:hover {
+    color: white !important;
+    transition: all 0.5s;
+}
+.blur {
+    filter: blur(4px);
+    transition: all 0.5s;
+}
+.blur:hover {
+    filter: blur(0px);
+    transition: all 0.5s;
+}
+.li_div {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+.li_span_index {
+    position: absolute;
+    font-size: 14px;
+    margin-right: 5px;
+    opacity: 0.5;
+    transform: translate(-100%, -50%);
+    top: 50%;
+    margin-left: -0.5rem;
+}
+.default_paragraph {
+    font-size: 16px;
+}
+.cata_selected {
+    background-color: #dc63bc;
+}
+.quote_table {
+    display: table;
+    border-collapse: collapse;
+    margin: auto;
+    background-color: transparent;
+}
+.quote_td_s {
+    /* color: #b2b7f2; */
+    color: #822296;
+    font-size: 36px;
+    font-family: "Times New Roman", serif;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+    line-height: 100%;
+}
+.quote_td_c {
+    text-align: left;
+    padding: 10px;
+    vertical-align: middle;
+}
+.quote_td_f {
+    font-size: smaller;
+    text-align: right;
+    padding-right: 4%;
+}
+.entity_link {
+    cursor: pointer;
+    position: relative;
+    /* border: 1px solid red; */
+}
+.prompt {
+    /* display: inline-block; */
+    position:absolute;
+    z-index: 1000;
+    border: 0.1px solid rgba(128, 128, 128, 0.056);
+    box-shadow: 0px 0px 1px gray;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: Heiti;
+    color: #000;
+    background-color: white;
+    border-radius: 5px;
+    width: 500px;
+    min-height: 250px;
+    max-height: 400px;
+    overflow: auto;
+    padding: 5px;
+}
+.infobox_table{
+    border-collapse: collapse;
+}
+.infobox_tr,
+.infobox_td {
+    border: 1px solid black;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.95);
+}
+.infobox_td{
+    padding: 5px;
+}
+.infobox_title {
+    font-size: 1.2em !important;
+    font-weight: 600;
+    color: black;
+}

@@ -1,0 +1,20 @@
+CACHE MANIFEST
+
+CACHE:
+# 需要缓存的列表
+/img/shutter/bottom_dark.png
+/img/shutter/top_dark.png
+/img/shutter/bottom_light.png
+/img/shutter/top_light.png
+/img/bg/bg_dark.png
+/img/bg/bg_light.png
+/img/mascots/harvest/probe_default.png
+/img/mascots/harvest/probe_default_password.png
+/img/mascots/harvest/probe_default_hand.png
+/img/mascots/snow/probe_default.png
+NETWORK:
+# 不需要缓存的
+
+FALLBACK:
+# 访问缓存失败后，备用访问的资源，第一个是访问源，第二个是替换文件*.html /offline.html
+# 2.jpg/3.jpg

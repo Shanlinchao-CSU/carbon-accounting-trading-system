@@ -1,6 +1,5 @@
 <template>
   <!--管理员界面-->
-  <MainHeader/>
   <el-menu
       class="menu"
       background-color="#545c64"

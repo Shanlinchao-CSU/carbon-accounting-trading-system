@@ -1,0 +1,115 @@
+/* linePrompt*/
+:root{
+    --error-color:red;
+}
+/* avatarUpload */
+:root{
+    --box--overlay--background-color:white;
+    --box-header-color:#822269;
+    --upload-button-background-color:#822269;
+    --upload-button-hover-background-color:#621b6b;
+    --upload-button-font-color:white;
+    --upload-button-hover-font-color:white;
+    --box-header-bottom-border-color:black;
+}
+/* :defaultDialogBox */
+:root{
+    --dialog-container-border-color:rgb(230, 146, 255);
+    --dialog-container-font-color:black;
+}
+/* confirmButton */
+:root{
+    --confirm-button-color:white;
+}
+/* personalMsgSettingSubpage */
+:root{
+    --scrollbar-thumb-background:rgba(165, 94, 177, 0.3);
+    --scrollbar-background-color:rgba(255, 255, 255, 0.485);
+}
+/* baseBox */
+:root{
+    --baseBox-container-background-color:white;
+}
+/* borderInput*/
+:root{
+    --input_ele-font-color:black;
+    --input-focus-color:#d24fec;
+    --input-after-background-color:white;
+    --input-ele-background-color:white;
+}
+/* borderSelect */
+:root{
+    --border-select-list-hover-background-color:rgb(132, 132, 132);
+}
+/* confirmButton*/
+:root{
+    --confirm-hover-color:rgb(217, 149, 230);
+}
+/* loginMsg */
+:root{
+    --msg_login_register_text-color:white;
+}
+/* loginAndRegister*/
+:root{
+    --login-background-color:rgb(255, 255, 255);
+    --login_container-box-shadow:rgba(130, 34, 150, 0.5);
+    --login-msg-background-color:#d5b4dc
+}
+/* homeview */
+:root{
+    --homeview-bg-color:rgb(255, 255, 255);
+}
+/* 主页背景 */
+:root{
+    --bg-img-src:url("./img/bg/bg_light.png");
+}
+/* 主页文字 */
+:root{
+    --main-bar-font-color:rgb(0, 0, 0);
+    --main-text-font-color:rgb(0, 0, 0);
+    --main-text-after-font-color:rgb(255, 255, 255);
+}
+/* shutter */
+:root{
+    --shutter-top-img-src:url("./img/shutter/top_light.png");
+    --shutter-bottom-img-src:url("./img/shutter/bottom_light.png");
+}
+/* navbar */
+:root{
+    --navbar-bg-bg-img:url("./img/bar/nav/bg_light_new.png");
+    --navbar-bar-bg-img:url("./img/bar/nav/nav_bar_light.png");
+    --navbar-font-color:rgb(0, 0, 0);
+    --nav-user-name-color:rgb(0, 0, 0);
+}
+/* functionSubpage */
+:root{
+    --functionSubpage-title-color:#d5b4dc;
+}
+/* otherSubpage */
+:root{
+    --subpage-button-selected-border:solid 2px #d5b4dc;
+    --subpage-button-selected-background-color: #d5b4dc;
+    --subpage-button-selected-color:rgb(255, 255, 255);
+    --subpage-button-unselected-border:solid 2px #d5b4dc;
+    --subpage-button-unselected-background-color: auto;
+    --subpage-button-unselected-color:#d5b4dc;
+    --subpage-button-unselected-hover-color:rgb(255, 255, 255);
+    --subpage-button-webkit-text-stroke:8px #d5b4dc;
+    --subpage-aboutSubpage-color:auto;
+}
+/* flowButton */
+:root{
+    --flowButton-border-color:rgb(205, 199, 199);
+    --flowButton-color: #d5b4dc;
+    --flowButton-after-background-color:white;
+    --flowButton-hover-button-color:white;
+    --flowButton-hover-button-after-webkit-text-stroke-color:#d5b4dc;
+    --flowButton-selected-background-color:#d5b4dc;
+    --flowButton-selected-border-color:rgb(205, 199, 199);
+    --flowButton-selected-color: white;
+    --flowButton-selected-after-background-color:white;
+}
+/* showerBar */
+:root{
+    --shower-bar-color:white;
+}

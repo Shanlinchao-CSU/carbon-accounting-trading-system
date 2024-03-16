@@ -2,13 +2,13 @@
 <!--审核核算结果组件-->
   <el-table
       :data="record_show"
-      style="font-size: 21px"
-      :row-style="{height: '65px'}"
+      style="font-size: 20px"
+      :row-style="{height: '55px'}"
       @sort-change="sortChange"
       border="border">
     <el-table-column fixed="left" label="序号" width="120">
       <template #default="scope">
-        {{scope.$index + 10*currentPage - 9}}
+        {{scope.$index + onePageNumber*currentPage - onePageNumber + 1}}
       </template>
     </el-table-column>
     <el-table-column prop="enterprise_id" label="企业ID" width="200" sortable="custom"/>
@@ -40,7 +40,7 @@
     </el-table-column>
     <el-table-column label="证明材料" width="200">
       <template #default="scope">
-        <el-button link type="primary" @click="downloadFile(scope.row.id,scope.row.enterprise_id,scope.row.month)">下载材料</el-button>
+        <el-button link type="primary" @click="downloadFile(scope.row.id)">下载材料</el-button>
       </template>
     </el-table-column>
     <el-table-column fixed="right" width="240" align="right">
@@ -65,7 +65,7 @@
       :total="pageTotal"
       :current-page="currentPage"
       @update:current-page="changePage"
-      :page-size="10"
+      :page-size="onePageNumber"
       style="position: absolute;right: 200px;margin-top: 10px"/>
   <el-dialog v-model="dialog_show" width="520" center>
     <el-table
@@ -103,6 +103,8 @@ const dialog_show = ref(false)
 const dialog_list = ref([])
 let jsonObject = undefined
 const search_input = ref("")
+// 设置一页多少条记录
+let onePageNumber = 15
 
 function getData(reload=true) {
   if (reload) {
@@ -114,11 +116,10 @@ function getData(reload=true) {
               all_accounting_record.value = resp.data.data
               accounting_record.value = all_accounting_record.value
               pageTotal.value = accounting_record.value.length
-              if (pageTotal.value <= currentPage.value*10-10) {
-                currentPage.value = pageTotal.value / 10 + 1
+              if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+                currentPage.value = pageTotal.value / onePageNumber + 1
               }
               record_show.value = get_data_for_show(currentPage.value)
-              console.log(record_show.value)
             }else {
               ElMessage({
                 message: "获 取 数 据 异 常 !",
@@ -140,14 +141,13 @@ function getData(reload=true) {
     record_show.value = get_data_for_show(currentPage.value)
   }
 }
-function downloadFile(id,enterprise_id,month) {
+function downloadFile(id) {
   const link = document.createElement('a')
   link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
-  link.download = enterprise_id+" "+month
   link.click()
 }
 function get_data_for_show(page) {
-  return accounting_record.value.slice(page*10-10,page*10)
+  return accounting_record.value.slice(page*onePageNumber-onePageNumber,page*onePageNumber)
 }
 function changePage(page) {
   record_show.value = get_data_for_show(page)

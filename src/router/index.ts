@@ -3,17 +3,19 @@ import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import DataAuditor from "@/views/DataAuditor.vue";
 import Admin from "@/views/Admin.vue";
+import thirdParty from "@/views/Admin.vue";
 import Auditing from "@/components/data_auditor/AuditData.vue";
 import AuditingHistory from "@/components/data_auditor/AuditHistory.vue";
 import HandleRegister from "@/components/admin/HandleRegister.vue";
 import UserInformation from "@/components/admin/UserInformation.vue";
 import illegalityQuery from "@/components/admin/illegalityQuery.vue";
+import HomeView from "@/views/HomeView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'login',
-    component: Login
+    component: HomeView
   },
   {
     path: '/data_auditor',
