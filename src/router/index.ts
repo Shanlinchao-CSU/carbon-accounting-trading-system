@@ -18,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
+    path: '/aaa',
+    name: 'login1',
+    component: Login
+  },
+  {
     path: '/data_auditor',
     name: 'data_auditor',
     component: DataAuditor,
