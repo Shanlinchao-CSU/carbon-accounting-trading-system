@@ -1,7 +1,8 @@
 <template>
     <div class="shower_subpage" ref="shower_subpage">
         <carbonGuideSubpage ref="son_0"></carbonGuideSubpage>
-        <carbonAccountingSubpage ref="son_1"></carbonAccountingSubpage>
+        <!-- <carbonAccountingSubpage_2 ref="son_1"></carbonAccountingSubpage_2> -->
+        <carbonAccountingSubpage_10 ref="son_1"></carbonAccountingSubpage_10>
         <carbonTransaction
             ref="son_2"
         ></carbonTransaction>
@@ -9,7 +10,8 @@
 </template>
 
 <script>
-import carbonAccountingSubpage from "./components/carbonAccountingSubpage.vue";
+import carbonAccountingSubpage_2 from "./components/carbonAccountingSubpage_2.vue";
+import carbonAccountingSubpage_10 from "./components/carbonAccountingSubpage_10.vue";
 import carbonGuideSubpage from "./components/carbonGuideSubpage.vue";
 import carbonTransaction from "./components/carbonTransaction.vue";
 import overviewSubpage from "./components/functionSubpage.vue";
@@ -24,7 +26,8 @@ export default {
     },
     components: {
         carbonTransaction,
-        carbonAccountingSubpage,
+        carbonAccountingSubpage_2,
+        carbonAccountingSubpage_10,
         carbonGuideSubpage,
     },
     mounted() {
@@ -44,13 +47,13 @@ export default {
             this.$refs.son_1.fromRelation(id);
         },
         videoPause(){
-            this.$refs.son_0.videoPause();
+            // this.$refs.son_0.videoPause();
         },
         videoDelete(){
-            this.$refs.son_0.videoDelete();
+            // this.$refs.son_0.videoDelete();
         },
         videoAppear(){
-            this.$refs.son_0.videoAppear();
+            // this.$refs.son_0.videoAppear();
         }
     },
 };

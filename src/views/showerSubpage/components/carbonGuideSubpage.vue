@@ -104,67 +104,67 @@ export default {
             case 1: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1429";
-                this.type_name = "发电企业";
+                this.company_type_name = "发电企业";
                 return;
             }
             case 2: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1430";
-                this.type_name = "电网企业";
+                this.company_type_name = "电网企业";
                 return;
             }
             case 3: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1438";
-                this.type_name = "钢铁生产企业";
+                this.company_type_name = "钢铁生产企业";
                 return;
             }
             case 4: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1431";
-                this.type_name = "化工生产企业";
+                this.company_type_name = "化工生产企业";
                 return;
             }
             case 5: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1432";
-                this.type_name = "电解铝生产企业";
+                this.company_type_name = "电解铝生产企业";
                 return;
             }
             case 6: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1433";
-                this.type_name = "镁冶炼企业";
+                this.company_type_name = "镁冶炼企业";
                 return;
             }
             case 7: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1434";
-                this.type_name = "平板玻璃生产";
+                this.company_type_name = "平板玻璃生产";
                 return;
             }
             case 8: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1435";
-                this.type_name = "水泥生产企业";
+                this.company_type_name = "水泥生产企业";
                 return;
             }
             case 9: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1436";
-                this.type_name = "陶瓷生产企业";
+                this.company_type_name = "陶瓷生产企业";
                 return;
             }
             case 10: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1437";
-                this.type_name = "民航企业";
+                this.company_type_name = "民航企业";
                 return;
             }
             default: {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1429";
-                this.type_name = "发电企业";
+                this.company_type_name = "发电企业";
                 return;
             }
         }
