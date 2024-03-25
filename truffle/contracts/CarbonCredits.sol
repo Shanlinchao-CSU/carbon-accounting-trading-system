@@ -10,16 +10,16 @@ contract CarbonCredits {
     using SafeERC20 for IERC20;
     using Address for address;
 
-    IERC20 public carbonCoin; // 碳币代币合约地址 --IERC20与SafeERC20
-    address public carbonIssuer; // 碳排放额发行者地址
+    IERC20 public carbonCoin; // 碳币代币合约地址 
+    address private carbonIssuer; // 碳排放额发行者地址
     struct CarbonReport {
-        string reportText; // 碳报告
+        string reportText; // 碳报告内容
     }
 
     mapping(address => uint256) public carbonAllowance; // 每个账户的碳排放额度
     mapping(address => CarbonReport) public carbonReports; // 每个账户的碳排放报告
 
-    event CarbonAllowanceIssued(address account,address target, uint256 amount);
+    event CarbonAllowanceIssued(address target, uint256 amount);
     event CarbonAllowanceBurned(address target, uint256 amount);
     event CarbonTransaction(address _from, address _to, uint256 _amount, uint256 _price);
     event CarbonReportSubmitted(address account,CarbonReport carbonReport);
@@ -30,11 +30,11 @@ contract CarbonCredits {
     }
 
     // 发行碳排放额度
-    function issueCarbonAllowance(address account,address target, uint256 amount) public {
+    function issueCarbonAllowance(address target, uint256 amount) public {
         require(msg.sender == carbonIssuer, "Only carbon issuer can issue allowance");
         require(carbonAllowance[target] < carbonAllowance[target] + amount, "Overflow!");
         carbonAllowance[target] = carbonAllowance[target] + amount;
-        emit CarbonAllowanceIssued(account,target,amount);
+        emit CarbonAllowanceIssued(target,amount);
     }
 
     // 销毁指定数量的碳排放额度

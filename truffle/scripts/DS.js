@@ -43,15 +43,15 @@ const confirmButton = document.getElementById('confirm-button');
 confirmButton.addEventListener('click', async () => {
     try {
         // 请求 MetaMask 进行签名
-        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const account = accounts[0];
-        const signature = await ethereum.request({
+        const signature = await window.ethereum.request({
             method: 'personal_sign',
             params: [message, account]
         });
 
         // 获取地址
-        const address = await ethereum.request({ method: 'eth_accounts' });
+        const address = await window.ethereum.request({ method: 'eth_accounts' });
 
         console.log(signature);
         console.log(message);
