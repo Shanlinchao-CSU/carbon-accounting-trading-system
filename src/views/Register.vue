@@ -5,7 +5,7 @@
         title="提交成功!"
         width="500"
     >
-      <span>审核后会通过手机短信告知您结果,请留意!</span>
+      <span>审核后会通过邮件告知结果,请留意!</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">
