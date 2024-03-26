@@ -13,9 +13,9 @@
     <div class="right_box">
       <div class="login_box">
         <Transition :name="transition_name" mode="out-in">
-          <el-text class="title" v-if="login_method === 0">账户ID登录</el-text>
-          <el-text class="title" v-else-if="login_method === 1">邮箱登录</el-text>
-          <el-text class="title" v-else>手机号登录</el-text>
+          <el-text class="title" v-if="login_method === 0"><span>账户ID登</span>录</el-text>
+          <el-text class="title" v-else-if="login_method === 1"><span>邮箱登</span>录</el-text>
+          <el-text class="title" v-else><span>手机号登</span>录</el-text>
         </Transition>
         <el-form
             ref="ruleFormRef"
