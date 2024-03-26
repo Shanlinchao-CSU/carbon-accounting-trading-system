@@ -3,7 +3,6 @@
 </template>
 <script>
 import Storage from "@/assets/js/storage/storage.js";
-import autofit from "autofit.js"
 // const debounce = (fn, delay) => {
 //   let timer = null;
 //   return function () {
@@ -26,7 +25,6 @@ import autofit from "autofit.js"
 export default {
   mounted() {
     this.$i18n.locale = Storage.get(0, "LANGUAGE", "zh-Hans");
-    autofit.init({resize:false})
   },
 };
 </script>
