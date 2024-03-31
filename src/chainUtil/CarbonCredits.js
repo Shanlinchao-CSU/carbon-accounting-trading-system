@@ -1,4 +1,5 @@
 import {Web3} from 'web3'
+
 const App = {
     web3: null,
     web3Provider: null,
@@ -8,6 +9,14 @@ const App = {
         return App.initWeb3()
     },
     initWeb3: async function() {
+        const web3 = new Web3(Web3.givenProvider || 'http://119.23.143.76:8545');
+        const accounts = await web3.eth.getAccounts();
+        console.log(accounts[0]); // 打印第一个账户
+
+        // 获取地址
+        const address = await window.ethereum.request({ method: 'eth_accounts' });
+        console.log(address);
+
         if (window.ethereum) {
             App.web3Provider = window.ethereum
             try {
