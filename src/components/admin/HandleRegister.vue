@@ -1,8 +1,8 @@
 <template>
   <el-table
-      :data="application_show"
-      style="font-size: 20px"
-      :row-style="{height: '55px'}"
+      :data="data_show"
+      style="font-size: 2vh"
+      :row-style="{height: '5.8vh'}"
       border="border">
     <el-table-column fixed="left" label="序号" width="160">
       <template #default="scope">
@@ -59,20 +59,22 @@
       </template>
       <template #default="scope">
         <div style="display: flex;justify-content: space-around">
-          <el-button link type="success" @click="handle_register(true)" style="font-size: 18px">批准</el-button>
-          <el-button link type="danger" @click="handle_register(false)" style="font-size: 18px">驳回</el-button>
+          <el-button link type="success" @click="handle_register('POST',scope.row.data_id)" style="font-size: 18px">批准</el-button>
+          <el-button link type="danger" @click="handle_register('DELETE',scope.row.data_id)" style="font-size: 18px">驳回</el-button>
         </div>
       </template>
     </el-table-column>
   </el-table>
-  <el-pagination
-      background
-      layout="prev,pager,next"
-      :total="pageTotal"
-      :current-page="currentPage"
-      @update:current-page="changePage"
-      :page-size="onePageNumber"
-      style="position: absolute;right: 200px;margin-top: 10px"/>
+  <div class="pagination_box" style="display: flex;justify-content: right">
+    <el-pagination
+        background
+        layout="prev,pager,next"
+        :total="pageTotal"
+        :current-page="currentPage"
+        @update:current-page="changePage"
+        :page-size="onePageNumber"
+        style="margin-top: 1vh"/>
+  </div>
 </template>
 
 <script setup>
@@ -82,83 +84,122 @@ import {ElMessage} from "element-plus";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
-const register_application = ref([])
-const all_register_application = ref([])
-const application_show = ref([])
+const data = ref([])
+const all_data = ref([])
+const data_show = ref([])
 const search_input = ref("")
 const onePageNumber = 15
+let account = undefined
 
-function getData(reload=true) {
+function getData(reload=true,real=true) {
   if (reload) {
-    axios
-        .get(`http://localhost:8080/administrator/application/review`)
-        .then(resp=>{
-          if (resp.status === 200) {
-            if (resp.data.code === 0) {
-              all_register_application.value = resp.data.data
-              register_application.value = all_register_application.value
-              pageTotal.value = register_application.value.length
-              if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
-                currentPage.value = pageTotal.value / onePageNumber + 1
+    if (real) {
+      axios
+          .get(`http://localhost:8080/administrator/application/review`)
+          .then(resp=>{
+            if (resp.status === 200) {
+              if (resp.data.code === 0) {
+                console.log(resp.data.data)
+                all_data.value = resp.data.data
+                data.value = all_data.value
+                pageTotal.value = data.value.length
+                if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+                  currentPage.value = pageTotal.value / onePageNumber + 1
+                }
+                data_show.value = get_data_for_show(currentPage.value)
+              }else {
+                ElMessage({
+                  message: "获 取 数 据 异 常 !",
+                  type: 'error',
+                  offset: 70
+                })
               }
-              application_show.value = get_data_for_show(currentPage.value)
-              console.log(application_show.value)
             }else {
               ElMessage({
-                message: "获 取 数 据 异 常 !",
+                message: "失 败 , 请 检 查 网 络 !",
                 type: 'error',
                 offset: 70
               })
             }
-          }else {
-            ElMessage({
-              message: "失 败 , 请 检 查 网 络 !",
-              type: 'error',
-              offset: 70
-            })
-          }
-        })
+          })
+    }else {
+      data.value = all_data.value
+      pageTotal.value = data.value.length
+      if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+        currentPage.value = pageTotal.value / onePageNumber + 1
+      }
+      data_show.value = get_data_for_show(currentPage.value)
+    }
   }else {
-    pageTotal.value = register_application.value.length
+    pageTotal.value = data.value.length
     currentPage.value = 1
-    application_show.value = get_data_for_show(currentPage.value)
+    data_show.value = get_data_for_show(currentPage.value)
   }
 }
 function get_data_for_show(page) {
-  return register_application.value.slice(page*onePageNumber-onePageNumber,page*onePageNumber)
+  return data.value.slice(page*onePageNumber-onePageNumber,page*onePageNumber)
 }
 function filterHandler(value,row) {
   return row.enterprise_type === value
 }
 function Searching() {
   if (!search_input.value || !search_input.value.trim()){
-    register_application.value = all_register_application.value
+    data.value = all_data.value
   }else {
-    register_application.value = []
-    all_register_application.value.forEach(item => {
+    data.value = []
+    all_data.value.forEach(item => {
       if (item.account_name.includes(search_input.value)
           || item.phone.includes(search_input.value)){
-        register_application.value.push(item)
+        data.value.push(item)
       }
     })
   }
   getData(false)
 }
-function downloadFile(id,enterprise_id,month) {
+function downloadFile(id) {
   const link = document.createElement('a')
   link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
-  link.download = enterprise_id+" "+month
   link.click()
 }
-function handle_register(method) {
-  //TODO 处理注册请求
+function handle_register(method,id) {
+  let url = 'http://localhost:8080/administrator/application?data_id='+id+'&account_id='+account.account_id
+  axios({
+    method: method,
+    url: url
+  }).then(resp => {
+    if (resp.status === 200) {
+      if (resp.data.code === 0) {
+        ElMessage({
+          message: "操 作 成 功 !",
+          type: 'success',
+          offset: 70
+        })
+        all_data.value = all_data.value.filter(item => item.data_id === id)
+        getData(false,false)
+      }else {
+        ElMessage({
+          message: "失 败 , 正 在 重 新 加 载 !",
+          type: 'error',
+          offset: 70
+        })
+        getData()
+      }
+    }else {
+      ElMessage({
+        message: "失 败 , 请 检 查 网 络 !",
+        type: 'error',
+        offset: 70
+      })
+    }
+  })
 }
 function changePage(page) {
-  application_show.value = get_data_for_show(page)
+  data_show.value = get_data_for_show(page)
   currentPage.value = page
 }
 onMounted(()=>{
   getData()
+  account = JSON.parse(localStorage.getItem("account"))
 })
 </script>
 

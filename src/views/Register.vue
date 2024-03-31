@@ -40,6 +40,15 @@
               class="input"></el-input>
         </el-form-item>
         <el-form-item
+            prop="private_key"
+            class="form_item">
+          <el-input
+              v-model="register_company_user.public_key"
+              placeholder="请输入以太坊账号公钥"
+              maxlength="50"
+              class="input"></el-input>
+        </el-form-item>
+        <el-form-item
             prop="phone"
             class="form_item">
           <el-input
@@ -98,13 +107,13 @@
                 :value="item.value"/>
           </el-select>
         </el-form-item>
-        <div></div>
         <el-upload
             action="#"
             ref="uploadBox"
             :limit="1"
             :auto-upload="false"
-            :http-request="upload">
+            :http-request="upload"
+            :on-success="handle_upload_success">
           <el-button class="choose_file_btn">提交证明材料</el-button>
         </el-upload>
       </el-form>
@@ -175,7 +184,8 @@
             ref="uploadBox_monitor"
             :limit="1"
             :auto-upload="false"
-            :http-request="upload">
+            :http-request="upload"
+            :on-success="handle_upload_success">
           <el-button class="choose_file_btn">提交证明材料</el-button>
         </el-upload>
       </el-form>
@@ -196,6 +206,8 @@
 import { ref,reactive } from 'vue'
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import App from "../chainUtil/CarbonCredits.js"
+
 const company_user = ref()
 const monitor_institution = ref()
 const uploadBox = ref()
@@ -207,8 +219,6 @@ let ruleFormRef = ref()
 let ruleFormRef_monitor = ref()
 let get_code_text = ref("获取验证码")
 let get_code_text_monitor = ref("获取验证码")
-let code_counting = ref(false)
-let code_counting_monitor = ref(false)
 let enterprise_type = ref(null)
 let dialogVisible = ref(false)
 let register_company_user = reactive({
@@ -217,7 +227,8 @@ let register_company_user = reactive({
   confirm_password:"",
   phone:"",
   v_code:"",
-  enterprise_type:0
+  enterprise_type:0,
+  public_key:""
 })
 let register_monitor_institution = reactive({
   name:"",
@@ -326,7 +337,7 @@ const validateEmail = (rule, value, callback) => {
 const validatePhone = (rule, value, callback) => {
   const phoneRule = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
   if (value === ""){
-    return callback(new Error("请输入邮箱"))
+    return callback(new Error("请输入手机号码"))
   }else if (phoneRule.test(value)){
     return callback()
   }else{
@@ -357,12 +368,21 @@ const validateCode = (rule, value, callback) => {
   }
 }
 
+const validateKey = (rule, value, callback) => {
+  if (value === "") {
+    return callback(new Error("请输入以太坊账户公钥"))
+  }else {
+    return callback()
+  }
+}
+
 const rules = {
   name: [{validator: validateName, trigger: "blur"}],
   password: [{validator: validatePass, trigger: "blur"}],
   confirm_password: [{validator: validateConfirmPass, trigger: "blur"}],
   phone: [{validator: validatePhone, trigger: "blur"}],
-  enterprise_type: [{validator: validateType, trigger: "change"}]
+  enterprise_type: [{validator: validateType, trigger: "change"}],
+  public_key: [{validator: validateKey, trigger: "blur"}]
 }
 
 function change_register_type(type) {
@@ -376,9 +396,9 @@ function sendMessage(formEl) {
     if (valid) {
       let url = undefined
       if (register_type.value === 0) {
-        url = "http://localhost:8080/general/verify/phone?phone="+register_company_user.phone
+        url = "http://localhost:8080/general/verify/phone?phone="+register_company_user.phone+"&token="+localStorage.getItem("token")
       }else {
-        url = "http://localhost:8080/general/verify/phone?phone="+register_monitor_institution.phone
+        url = "http://localhost:8080/general/verify/phone?phone="+register_monitor_institution.phone+"&token="+localStorage.getItem("token")
       }
       axios
           .get(url)
@@ -392,34 +412,40 @@ function sendMessage(formEl) {
                 })
                 if (register_type.value === 0) {
                   let count = 60
-                  code_counting.value = true
+                  counting.value = true
                   let interval = setInterval(() => {
                     if (count !== 0) {
                       get_code_text.value = count + "s后重新发送"
                     } else {
                       get_code_text.value = "获取验证码"
-                      code_counting.value = false
+                      counting.value = false
                       cancelInterval(interval)
                     }
                     count--
                   }, 1000)
                 }else {
                   let count = 60
-                  code_counting_monitor.value = true
+                  counting_monitor.value = true
                   let interval = setInterval(() => {
                     if (count !== 0) {
                       get_code_text_monitor.value = count + "s后重新发送"
                     } else {
                       get_code_text_monitor.value = "获取验证码"
-                      code_counting_monitor.value = false
+                      counting_monitor.value = false
                       cancelInterval(interval)
                     }
                     count--
                   }, 1000)
                 }
-              }else {
+              }else if (resp.data.code === 1) {
                 ElMessage({
                   message: `该 手 机 号 已 被 注 册 !`,
+                  type: 'error',
+                  offset: 70
+                })
+              }else if (resp.data.code === -1) {
+                ElMessage({
+                  message: `无 效 请 求 !`,
                   type: 'error',
                   offset: 70
                 })
@@ -440,23 +466,46 @@ const cancelInterval = (interval) => {
   clearInterval(interval)
 }
 
-function upload(fileObject) {
+async function upload(fileObject) {
   let params = new FormData()
   let url
   if (register_type.value === 0) {
+    const message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions"
+    const account = register_company_user.public_key
+    let signature,address
+    try {
+      signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [message, account]
+      });
+      address = await window.ethereum.request({method: 'eth_accounts'})
+    }catch (error) {
+      ElMessage({
+        message: "签名出现错误,请正确安装MetaMask并登录输入公钥对应的以太坊账户",
+        type: 'error',
+        offset: 70
+      })
+      return 1
+    }
     params.append("file",fileObject.file)
     params.append("name",register_company_user.name)
     params.append("password",register_company_user.password)
     params.append("phone",register_company_user.phone)
     params.append("enterprise_type",register_company_user.enterprise_type)
     params.append("type",register_type.value)
-    url = "http://localhost:8080/enterprise/info"
+    params.append("code",register_company_user.v_code)
+    params.append("signature",signature)
+    params.append("message",message)
+    params.append("address",address)
+    params.append("public_key",account)
+    url = "http://localhost:8080/enterprise/info?"
   }else {
     params.append("file",fileObject.file)
     params.append("name",register_monitor_institution.name)
     params.append("password",register_monitor_institution.password)
     params.append("phone",register_monitor_institution.phone)
     params.append("type",register_type.value)
+    params.append("code",register_monitor_institution.v_code)
     url = "http://localhost:8080/thirdParty/info"
   }
   axios({
@@ -468,15 +517,21 @@ function upload(fileObject) {
     if (resp.status === 200) {
       if (resp.data.code === 0) {
         dialogVisible.value = true
-      }else if (resp.data.code === 1){
+      }else if (resp.data.code === 1) {
         ElMessage({
-          message: "该 手 机 号 已 被 注 册 !",
+          message: "验 证 码 错 误 !",
           type: 'error',
           offset: 70
         })
-      }else {
+      }else if (resp.data.code === 2) {
         ElMessage({
-          message: "验 证 码 错 误 !",
+          message: "文 件 已 被 使 用 !",
+          type: 'error',
+          offset: 70
+        })
+      }else if (resp.data.code === 3) {
+        ElMessage({
+          message: "签 名 验 证 不 通 过 !",
           type: 'error',
           offset: 70
         })
@@ -490,37 +545,79 @@ function upload(fileObject) {
     }
   })
 }
+
+function handle_upload_success() {
+  if (register_type.value === 0) {
+    uploadBox.value.clearFiles()
+  }else {
+    uploadBox_monitor.value.clearFiles()
+  }
+}
 function submit(formEl) {
-  formEl.validate(valid => {
+  formEl.validate(async valid => {
     if (valid) {
       if (register_type.value === 0) {
         uploadBox.value.submit()
-      }else {
+      } else {
         uploadBox_monitor.value.submit()
       }
     }
   })
 }
 
-function reset() {
-  if (register_type.value === 0) {
-    register_company_user = reactive({
-      name:"",
-      password:"",
-      confirm_password:"",
-      phone:"",
-      v_code:"",
-      enterprise_type:0
-    })
-  }else {
-    register_monitor_institution = reactive({
-      name:"",
-      password:"",
-      confirm_password:"",
-      phone:"",
-      v_code:""
-    })
+async function signature() {
+  const message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions";
+  try {
+    const account = register_company_user.public_key
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [message, account]
+    });
+    const address = await window.ethereum.request({method: 'eth_accounts'});
+    const response = await fetch('http://localhost:8080/general/signature', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify({
+        signature: signature.toString(),
+        message: message.toString(),
+        address: address.toString(),
+      })
+    }).then(response => response.json())
+        .then(data => {
+          if (data.data) {
+            return 0
+          } else {
+            return 1
+          }
+        })
+  } catch (error) {
+    alert('签名过程出现错误，请检查您的 MetaMask 插件是否正确安装和配置。')
+    return 2
   }
+}
+
+function reset() {
+  App.init()
+  // if (register_type.value === 0) {
+  //   register_company_user = reactive({
+  //     name:"",
+  //     password:"",
+  //     confirm_password:"",
+  //     phone:"",
+  //     v_code:"",
+  //     enterprise_type:0
+  //   })
+  // }else {
+  //   register_monitor_institution = reactive({
+  //     name:"",
+  //     password:"",
+  //     confirm_password:"",
+  //     phone:"",
+  //     v_code:""
+  //   })
+  // }
 }
 </script>
 

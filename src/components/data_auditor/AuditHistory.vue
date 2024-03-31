@@ -2,8 +2,8 @@
 <!--审核历史组件-->
   <el-table
       :data="record_show"
-      style="font-size: 20px"
-      :row-style="{height: '55px'}"
+      style="font-size: 2vh"
+      :row-style="{height: '5.8vh'}"
       @sort-change="sortChange"
       border="border">
     <el-table-column fixed="left" label="序号" width="160">
@@ -51,20 +51,23 @@
       </template>
     </el-table-column>
   </el-table>
-  <el-pagination
-      background
-      layout="prev,pager,next"
-      :total="pageTotal"
-      :current-page="currentPage"
-      @update:current-page="changePage"
-      :page-size="onePageNumber"
-      style="position: absolute;right: 200px;margin-top: 10px"/>
+  <div class="pagination_box" style="display: flex;justify-content: right">
+    <el-pagination
+        background
+        layout="prev,pager,next"
+        :total="pageTotal"
+        :current-page="currentPage"
+        @update:current-page="changePage"
+        :page-size="onePageNumber"
+        style="margin-top: 1vh"/>
+  </div>
+
   <el-dialog v-model="dialog_show" width="520" center>
     <el-table
         :data="dialog_list"
-        :row-style="{height: '60px'}"
-        max-height="600px"
-        style="font-size: 22px"
+        :row-style="{height: '3vh'}"
+        max-height="40vh"
+        style="font-size: 1.6vh"
         :header-cell-style="{'text-align':'center'}"
         :cell-style="{'text-align':'center'}">
       <el-table-column label="参数名" width="180">
@@ -221,5 +224,5 @@ onMounted(()=>{
 </script>
 
 <style scoped lang="less">
-@import "@/assets/css/DataAuditor/AuditData.less";
+@import "@/assets/css/AuditData.less";
 </style>

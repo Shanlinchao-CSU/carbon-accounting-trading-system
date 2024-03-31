@@ -10,12 +10,14 @@ import AuditingHistory from "@/components/data_auditor/AuditHistory.vue";
 import HandleRegister from "@/components/admin/HandleRegister.vue";
 import UserInformation from "@/components/admin/UserInformation.vue";
 import illegalityQuery from "@/components/admin/illegalityQuery.vue";
+import transaction from "@/components/thirdParty/transaction.vue";
+import accounting from "@/components/thirdParty/accounting.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'login',
-    component: Login
+    component: Register
   },
   {
     path: '/aaa',
@@ -52,6 +54,21 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'illegality_query',
         component: illegalityQuery
+      }
+    ]
+  },
+  {
+    path: '/thirdParty',
+    name: 'thirdParty',
+    component: thirdParty,
+    children: [
+      {
+        path: 'transaction_monitor',
+        component: transaction
+      },
+      {
+        path: 'accounting_monitor',
+        component: accounting
       }
     ]
   },

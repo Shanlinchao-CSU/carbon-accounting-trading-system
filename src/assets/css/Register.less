@@ -7,115 +7,110 @@
   justify-content: center;
   .register_box {
     position: relative;
-    top: 10%;
-    width: 60%;
-    height: auto;
+    top: 10vh;
+    width: 60vw;
+    height: fit-content;
+    padding-bottom: 6vh;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
     background: #f6f8f6;
     .register_type_box {
       position: relative;
       text-align: center;
       width: 100%;
-      height: 7%;
+      height: 8vh;
       background: linear-gradient(to top left,#7dc4b9, #67b26f);
       .register_type {
-        font-size: 38px;
+        height: 8vh;
+        width: 12vw;
+        line-height: 8vh;
+        font-size: 3.4vh;
         font-weight: bold;
         text-transform: uppercase;
-        /* 文字阴影 */
         text-shadow: 1px 2px 3px rgba(0, 0, 0, .6);
         color: white;
         text-decoration: none;
-        line-height: 90px;
         position: relative;
         z-index: 1;
         display: inline-block;
         text-align: center;
-        width: 240px;
       }
       .register_type:nth-child(1) {
-        margin-right: 150px;
+        margin-right: 8vw;
       }
       .register_type:nth-child(2) {
-        margin-left: 150px;
+        margin-left: 8vw;
       }
       .animation,.animation-shadow {
         position: absolute;
         height: 100%;
-        width: 260px;
+        width: 13vw;
         top: 0;
         background: linear-gradient(to top left, #2fbdc2, #3fc982);
         transition: all .5s ease 0s;
       }
       .animation-shadow {
         background: rgba(56, 189, 166, 0.6);
-        left: 200px;
+        left: 9.5vw;
       }
       .register_type:nth-child(1).active~.animation,
       .register_type:nth-child(1).active~.animation-shadow {
-        left: 200px;
+        left: 9.5vw;
       }
       .register_type:nth-child(1):hover~.animation-shadow {
-        left: 200px !important;
+        left: 9.5vw !important;
       }
       .register_type:nth-child(2).active~.animation,
       .register_type:nth-child(2).active~.animation-shadow {
-        left: 740px;
+        left: 37.5vw;
       }
       .register_type:nth-child(2):hover~.animation-shadow {
-        left: 740px !important;
+        left: 37.5vw !important;
       }
       .register_type:hover {
         cursor: pointer;
       }
     }
     .main_input_box {
+      position: relative;
       height: fit-content;
-      margin-top: 70px;
-      padding-left: 100px;
-      padding-right: 100px;
+      width: 80%;
+      margin: 4vh auto;
       display: grid;
-      grid-template-columns: 450px 450px;
-      grid-column-gap: 100px;
-      grid-template-rows: 70px 70px 70px;
-      grid-row-gap: 50px;
+      grid-template-columns: 21vw 21vw;
+      grid-column-gap: 6vw;
+      grid-template-rows: 5vh 5vh 5vh;
+      grid-row-gap: 4.2vh;
       .input {
-        height: 70px;
-        font-size: 24px;
+        height: 6vh;
+        font-size: 2vh;
       }
       .code_box {
         width: 100%;
-        height: 70px;
+        height: 6vh;
         .input {
-          width: calc(65% - 10px);
+          width: calc(70% - 2px);
         }
         .get_code_btn {
-          margin-left: 10px;
-          width: 35%;
-          height: 70px;
-          font-size: 20px;
+          margin-left: 2px;
+          width: 30%;
+          height: 6vh;
+          font-size: 1.6vh;
         }
       }
       .choose_file_btn {
-        height: 45px;
-        width: 130px;
-        font-size: 19px;
+        height: 4vh;
+        width: 5vw;
+        font-size: 1.4vh;
       }
     }
     .login_btn_box {
       width: 100%;
-      margin-top: 40px;
       display: flex;
       justify-content: space-around;
-      .reset_btn {
-        width: 120px;
-        height: 55px;
-        font-size: 25px;
-      }
-      .upload_btn {
-        width: 120px;
-        height: 55px;
-        font-size: 25px;
+      .reset_btn,.upload_btn {
+        width: 5.4vw;
+        height: 5.4vh;
+        font-size: 2.4vh;
       }
     }
   }
