@@ -53,8 +53,8 @@
       </template>
       <template #default="scope">
         <div style="display: flex;justify-content: space-around">
-          <el-button link type="success" @click="handle_record(true)" style="font-size: 18px">批准</el-button>
-          <el-button link type="danger" @click="handle_record(false)" style="font-size: 18px">驳回</el-button>
+          <el-button link type="success" @click="handle_record(true,scope.row)" style="font-size: 18px">批准</el-button>
+          <el-button link type="danger" @click="handle_record(false,scope.row)" style="font-size: 18px">驳回</el-button>
         </div>
       </template>
     </el-table-column>
@@ -167,11 +167,11 @@ function handle_record(state) {
         }
     )
         .then(() => {
-          //TODO 向后端发送处理申请请求
           axios
               .get("")
               .then(res => {
                 if (res.data.code === 0) {
+
                   ElMessage({
                     type: 'success',
                     message: '审核通过!',

@@ -206,7 +206,6 @@
 import { ref,reactive } from 'vue'
 import axios from "axios";
 import {ElMessage} from "element-plus";
-import App from "../chainUtil/CarbonCredits.js"
 
 const company_user = ref()
 const monitor_institution = ref()
@@ -599,25 +598,24 @@ async function signature() {
 }
 
 function reset() {
-  App.init()
-  // if (register_type.value === 0) {
-  //   register_company_user = reactive({
-  //     name:"",
-  //     password:"",
-  //     confirm_password:"",
-  //     phone:"",
-  //     v_code:"",
-  //     enterprise_type:0
-  //   })
-  // }else {
-  //   register_monitor_institution = reactive({
-  //     name:"",
-  //     password:"",
-  //     confirm_password:"",
-  //     phone:"",
-  //     v_code:""
-  //   })
-  // }
+  if (register_type.value === 0) {
+    register_company_user = reactive({
+      name:"",
+      password:"",
+      confirm_password:"",
+      phone:"",
+      v_code:"",
+      enterprise_type:0
+    })
+  }else {
+    register_monitor_institution = reactive({
+      name:"",
+      password:"",
+      confirm_password:"",
+      phone:"",
+      v_code:""
+    })
+  }
 }
 </script>
 

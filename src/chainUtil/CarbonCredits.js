@@ -1,198 +1,152 @@
 import {Web3} from 'web3'
 
-
-const address = "0xA045eaB120103e7dcBA7E45c66b2c5843261f2c1"
-
 const App = {
     web3: null,
     web3Provider: null,
-    contracts: {},
+    contract: null,
 
-    init: function () {
-        return App.initWeb3()
+    init: async function () {
+        if (App.web3 == null) {
+            App.web3 = new Web3(Web3.givenProvider || 'http://119.23.143.76:8545');
+            const accounts = await App.web3.eth.getAccounts();
+            App.web3.eth.defaultAccount = accounts[0]
+            App.contract = new App.web3.eth.Contract(abi, address)
+        }
     },
-    initWeb3: async function() {
-        const web3 = new Web3(Web3.givenProvider || 'http://119.23.143.76:8545');
-        const accounts = await web3.eth.getAccounts();
-        console.log(accounts[0]); // 打印第一个账户
-
-        // 获取地址
-        const address = await window.ethereum.request({ method: 'eth_accounts' });
-        console.log(address);
-
-        App.web3 = web3
-
-        App.web3.eth.defaultAccount = App.web3.eth.accounts[0]
-        return App.initContract()
+    getTransactionHistory: async function() {
+        // const balance = await App.contracts.cc_Contract.methods.
+        // balanceOf("0x1BbC291855D576E335f1C0C2AF71a15ddFe6751E").call()
+        await App.init()
+        return await App.contract.getPastEvents("CarbonTransaction", {
+            fromBlock: 0,
+            toBlock: 'latest'
+        })
     },
-    initContract: function() {
-        App.contracts.cc_Contract = new App.web3.eth.Contract(abi, address)
-        console.log(App.contracts.cc_Contract.methods)
-        App.getInfo()
+    getCarbonReport: async function() {
+        await App.init()
+        return await App.contract.getPastEvents("CarbonReportSubmitted", {
+            fromBlock: 0,
+            toBlock: 'latest'
+        })
     },
-    getInfo:async function() {
-        console.log(22222)
-        const balance = await App.contracts.cc_Contract.methods.
-        balanceOf("0x1BbC291855D576E335f1C0C2AF71a15ddFe6751E").call()
-        console.log(balance)
+    uploadReport: async function(report) {
+        await App.init()
+        return await App.contract.methods.submitCarbonReport(report)
+            .send({from: App.web3.eth.defaultAccount})
+            .on('receipt',receipt => {
+                console.log(receipt)
+            })
     }
 }
+const address = "0x7E9669D0087Bb44Effba97D7EEc18eC258962dB8"
 const abi = [
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "contract IERC20",
+                "name": "_carbonCoin",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_carbonIssuer",
+                "type": "address"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "constructor"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "allowance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC20InsufficientAllowance",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "balance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC20InsufficientBalance",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "approver",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidApprover",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidReceiver",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidSender",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidSpender",
-        "type": "error"
-    },
-    {
         "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
+                "indexed": false,
                 "internalType": "address",
-                "name": "owner",
+                "name": "account",
                 "type": "address"
             },
             {
-                "indexed": true,
+                "indexed": false,
                 "internalType": "address",
-                "name": "spender",
+                "name": "target",
                 "type": "address"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "value",
+                "name": "amount",
                 "type": "uint256"
             }
         ],
-        "name": "Approval",
+        "name": "CarbonAllowanceIssued",
         "type": "event"
     },
     {
         "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
+                "indexed": false,
                 "internalType": "address",
-                "name": "from",
+                "name": "account",
                 "type": "address"
             },
             {
-                "indexed": true,
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "reportText",
+                        "type": "string"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct CarbonCredits.CarbonReport",
+                "name": "carbonReport",
+                "type": "tuple"
+            }
+        ],
+        "name": "CarbonReportSubmitted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "address",
-                "name": "to",
+                "name": "_from",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_to",
                 "type": "address"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "value",
+                "name": "_amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_price",
                 "type": "uint256"
             }
         ],
-        "name": "Transfer",
+        "name": "CarbonTransaction",
         "type": "event"
     },
     {
         "inputs": [
             {
                 "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
+                "name": "",
                 "type": "address"
             }
         ],
-        "name": "allowance",
+        "name": "carbonAllowance",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -205,26 +159,109 @@ const abi = [
         "constant": true
     },
     {
+        "inputs": [],
+        "name": "carbonCoin",
+        "outputs": [
+            {
+                "internalType": "contract IERC20",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+    },
+    {
+        "inputs": [],
+        "name": "carbonIssuer",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
-                "name": "spender",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "carbonReports",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "reportText",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "target",
                 "type": "address"
             },
             {
                 "internalType": "uint256",
-                "name": "value",
+                "name": "amount",
                 "type": "uint256"
             }
         ],
-        "name": "approve",
-        "outputs": [
+        "name": "issueCarbonAllowance",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
             }
         ],
+        "name": "carbonTransaction",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "report",
+                "type": "string"
+            }
+        ],
+        "name": "submitCarbonReport",
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -236,63 +273,7 @@ const abi = [
                 "type": "address"
             }
         ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
+        "name": "allowanceOf",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -308,54 +289,21 @@ const abi = [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "to",
+                "name": "account",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
             }
         ],
-        "name": "transfer",
+        "name": "reportOf",
         "outputs": [
             {
-                "internalType": "bool",
+                "internalType": "string",
                 "name": "",
-                "type": "bool"
+                "type": "string"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
     }
 ]
 export default App;

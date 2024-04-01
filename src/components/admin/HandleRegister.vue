@@ -54,7 +54,7 @@
         <el-input
             v-model="search_input"
             size="default"
-            placeholder="在碳核算历史中搜索"
+            placeholder="在注册申请中中搜索"
             @keyup.enter="Searching"/>
       </template>
       <template #default="scope">
@@ -95,11 +95,10 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`http://localhost:8080/administrator/application/review`)
+          .get(`http://localhost:8080/administrator/enterprise/exceed`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
-                console.log(resp.data.data)
                 all_data.value = resp.data.data
                 data.value = all_data.value
                 pageTotal.value = data.value.length
