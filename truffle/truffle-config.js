@@ -47,9 +47,9 @@ const mnemonic = "<Your mnemonic>"; //自己的助记词
 //contract address:0xAccb25c8325f6918BCb66E3E3319b19a7A5423C5
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
-const accounts = ["0x96a0cfE920bF1CcD1ef1cAe4b9592C41334CaC81",
-                  "0xeca22D8b437C94c15C26CbA5EDbAF736Ff2fc214",
-                  "0xfE903511B4d04aAD828c3473cf5253d6F61eaF65"]
+const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3",
+                  "0x8b751a0226707ef8df389078b288d13a415343b7",
+                  "0x2f875a7c2069a7b389c24e6227755cde6494e56d"]
 
 module.exports = {
     /**
@@ -82,10 +82,10 @@ module.exports = {
             network_id: 11155111
         },
         cchain: {
-            host: "119.23.143.76",
+            host: "120.78.1.201",
             port: 8545,
             network_id: "726",
-            from: accounts[0],
+            from: accounts[1],
             password: "123456mm"
         }
         //
