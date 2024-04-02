@@ -2,7 +2,7 @@
 <!--审核核算结果组件-->
   <el-table
       :data="record_show"
-      style="font-size: 2vh"
+      style="font-size: 1.6vh"
       :row-style="{height: '5.8vh'}"
       @sort-change="sortChange"
       border="border">
@@ -11,7 +11,7 @@
         {{scope.$index + onePageNumber*currentPage - onePageNumber + 1}}
       </template>
     </el-table-column>
-    <el-table-column prop="enterprise_id" label="企业ID" width="200" sortable="custom"/>
+    <el-table-column prop="enterprise_id" label="企业ID" width="200"/>
     <el-table-column prop="account_name" label="企业名称" width="400"/>
     <el-table-column
         prop="enterprise_type"
@@ -108,41 +108,52 @@ const search_input = ref("")
 // 设置一页多少条记录
 let onePageNumber = 15
 
-function getData(reload=true) {
+function getData(reload=true,real=true) {
+  //reload用于删除数据的情况,非reload用于查询的情况
   if (reload) {
-    axios
-        .get(`http://localhost:8080/administrator/accounting_record/review`)
-        .then(resp=>{
-          if (resp.status === 200) {
-            if (resp.data.code === 0) {
-              all_accounting_record.value = resp.data.data
-              accounting_record.value = all_accounting_record.value
-              pageTotal.value = accounting_record.value.length
-              if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
-                currentPage.value = pageTotal.value / onePageNumber + 1
+    if (real) {
+      axios
+          .get(`http://localhost:8080/administrator/accounting_record/review`)
+          .then(resp=>{
+            if (resp.status === 200) {
+              if (resp.data.code === 0) {
+                all_accounting_record.value = resp.data.data
+                accounting_record.value = all_accounting_record.value
+                pageTotal.value = accounting_record.value.length
+                if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+                  currentPage.value = pageTotal.value / onePageNumber + 1
+                }
+                record_show.value = get_data_for_show(currentPage.value)
+              }else {
+                ElMessage({
+                  message: "获 取 数 据 异 常 !",
+                  type: 'error',
+                  offset: 70
+                })
               }
-              record_show.value = get_data_for_show(currentPage.value)
             }else {
               ElMessage({
-                message: "获 取 数 据 异 常 !",
+                message: "失 败 , 请 检 查 网 络 !",
                 type: 'error',
                 offset: 70
               })
             }
-          }else {
-            ElMessage({
-              message: "失 败 , 请 检 查 网 络 !",
-              type: 'error',
-              offset: 70
-            })
-          }
-        })
+          })
+    }else {
+      accounting_record.value = all_accounting_record.value
+      pageTotal.value = accounting_record.value.length
+      if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
+        currentPage.value = pageTotal.value / onePageNumber + 1
+      }
+      record_show.value = get_data_for_show(currentPage.value)
+    }
   }else {
     pageTotal.value = accounting_record.value.length
     currentPage.value = 1
     record_show.value = get_data_for_show(currentPage.value)
   }
 }
+
 function downloadFile(id) {
   const link = document.createElement('a')
   link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
@@ -221,14 +232,12 @@ function Searching() {
     accounting_record.value = []
     all_accounting_record.value.forEach(item => {
       if (item.account_name.includes(search_input.value)
-          ||item.enterprise_id.includes(search_input.value)
-          ||item.enterprise_type.includes(search_input.value)
-          ||item.month.includes(search_input.value)){
+          ||String(item.enterprise_id).includes(search_input.value)){
         accounting_record.value.push(item)
       }
     })
   }
-  getData(false)
+  getData(false,false)
 }
 function sortChange(column) {
   let order = column.order

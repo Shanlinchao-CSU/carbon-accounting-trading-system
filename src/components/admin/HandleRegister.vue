@@ -1,7 +1,7 @@
 <template>
   <el-table
       :data="data_show"
-      style="font-size: 2vh"
+      style="font-size: 1.6vh"
       :row-style="{height: '5.8vh'}"
       border="border">
     <el-table-column fixed="left" label="序号" width="160">
@@ -54,13 +54,13 @@
         <el-input
             v-model="search_input"
             size="default"
-            placeholder="在注册申请中中搜索"
+            placeholder="在注册申请中搜索"
             @keyup.enter="Searching"/>
       </template>
       <template #default="scope">
         <div style="display: flex;justify-content: space-around">
-          <el-button link type="success" @click="handle_register('POST',scope.row.data_id)" style="font-size: 18px">批准</el-button>
-          <el-button link type="danger" @click="handle_register('DELETE',scope.row.data_id)" style="font-size: 18px">驳回</el-button>
+          <el-button link type="success" @click="handle_register('POST',scope.row.register_application_id)" style="font-size: 18px">批准</el-button>
+          <el-button link type="danger" @click="handle_register('DELETE',scope.row.register_application_id)" style="font-size: 18px">驳回</el-button>
         </div>
       </template>
     </el-table-column>
@@ -95,10 +95,11 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`http://localhost:8080/administrator/enterprise/exceed`)
+          .get(`http://localhost:8080/administrator/application/review`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
+                console.log(resp.data.data)
                 all_data.value = resp.data.data
                 data.value = all_data.value
                 pageTotal.value = data.value.length
@@ -148,7 +149,7 @@ function Searching() {
     data.value = []
     all_data.value.forEach(item => {
       if (item.account_name.includes(search_input.value)
-          || item.phone.includes(search_input.value)){
+          || String(item.phone).includes(search_input.value)){
         data.value.push(item)
       }
     })
@@ -161,7 +162,7 @@ function downloadFile(id) {
   link.click()
 }
 function handle_register(method,id) {
-  let url = 'http://localhost:8080/administrator/application?data_id='+id+'&account_id='+account.account_id
+  let url = 'http://localhost:8080/administrator/application?register_application_id='+id+'&account_id='+account.account_id
   axios({
     method: method,
     url: url
@@ -173,8 +174,8 @@ function handle_register(method,id) {
           type: 'success',
           offset: 70
         })
-        all_data.value = all_data.value.filter(item => item.data_id === id)
-        getData(false,false)
+        all_data.value = all_data.value.filter(item => item.register_application_id === String(id))
+        getData(true,false)
       }else {
         ElMessage({
           message: "失 败 , 正 在 重 新 加 载 !",
@@ -203,5 +204,7 @@ onMounted(()=>{
 </script>
 
 <style scoped lang="less">
-
+.cell{
+  background: black;
+}
 </style>

@@ -7,15 +7,13 @@ const App = {
 
     init: async function () {
         if (App.web3 == null) {
-            App.web3 = new Web3(Web3.givenProvider || 'http://119.23.143.76:8545');
+            App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
             const accounts = await App.web3.eth.getAccounts();
             App.web3.eth.defaultAccount = accounts[0]
             App.contract = new App.web3.eth.Contract(abi, address)
         }
     },
     getTransactionHistory: async function() {
-        // const balance = await App.contracts.cc_Contract.methods.
-        // balanceOf("0x1BbC291855D576E335f1C0C2AF71a15ddFe6751E").call()
         await App.init()
         return await App.contract.getPastEvents("CarbonTransaction", {
             fromBlock: 0,
@@ -38,7 +36,7 @@ const App = {
             })
     }
 }
-const address = "0x7E9669D0087Bb44Effba97D7EEc18eC258962dB8"
+const address = "0xe1fC34A93039d1EAe8B00dbDf5101fAfE8A1dF9E"
 const abi = [
     {
         "inputs": [
@@ -62,9 +60,22 @@ const abi = [
             {
                 "indexed": false,
                 "internalType": "address",
-                "name": "account",
+                "name": "target",
                 "type": "address"
             },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "CarbonAllowanceBurned",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
                 "indexed": false,
                 "internalType": "address",
@@ -173,20 +184,6 @@ const abi = [
         "constant": true
     },
     {
-        "inputs": [],
-        "name": "carbonIssuer",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
@@ -210,9 +207,22 @@ const abi = [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "account",
+                "name": "target",
                 "type": "address"
             },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "issueCarbonAllowance",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
                 "internalType": "address",
                 "name": "target",
@@ -224,7 +234,7 @@ const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "issueCarbonAllowance",
+        "name": "burnCarbonAllowance",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
