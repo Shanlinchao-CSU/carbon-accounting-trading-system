@@ -1,5 +1,6 @@
 <template>
-  <el-button @click="test">测试</el-button>
+  <el-button @click="test1">测试1</el-button>
+  <el-button @click="test2">测试2</el-button>
   <el-table
       :data="data_show"
       style="font-size: 1.6vh"
@@ -96,8 +97,12 @@ const onePageNumber = 15
 
 let transaction_monitor = undefined
 
-function test() {
-  App.carbonTransaction("0x8b751a0226707Ef8Df389078B288D13A415343b7",200,34)
+async function test1() {
+  await App.uploadReport("123")
+}
+async function test2() {
+  let temp = await App.getCarbonReport()
+  console.log(temp)
 }
 async function getData(reload=true,real=true) {
   if (reload) {

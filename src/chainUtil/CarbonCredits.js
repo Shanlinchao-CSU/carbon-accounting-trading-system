@@ -7,7 +7,6 @@ const App = {
 
     init: async function () {
         if (App.web3 == null) {
-            // App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
             App.web3 = new Web3(window.ethereum);
             App.contract = new App.web3.eth.Contract(abi, address)
             App.carbonCoinContract = new App.web3.eth.Contract(carbonCoinABI, carbonCoinAddress)
@@ -59,11 +58,25 @@ const App = {
     },
     uploadReport: async function(report) {
         await App.init()
-        return await App.contract.methods.submitCarbonReport(report)
-            .send({from: App.web3.eth.defaultAccount})
-            .on('receipt',receipt => {
-                console.log(receipt)
-            })
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(async (accounts) => {
+                    await App.contract.methods.submitCarbonReport(report)
+                        .send({
+                            from: accounts[0],
+                            gas: '1000000',
+                            gasPrice: 1000000000
+                        })
+                        .on('receipt', receipt => {
+                            console.log(receipt)
+                        })
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+        } else {
+            console.error("MetaMask is not installed or unlocked.");
+        }
     },
     carbonTransaction: async function(_to, _amount, _price) {
         await App.init()
