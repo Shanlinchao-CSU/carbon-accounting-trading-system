@@ -104,6 +104,7 @@ async function getData(reload=true,real=true) {
     if (real) {
       let public_keys = []
       transaction_monitor = await App.getTransactionHistory()
+      console.log(transaction_monitor)
       transaction_monitor.forEach(value => {
         console.log(value)
         all_data.value.push(value)

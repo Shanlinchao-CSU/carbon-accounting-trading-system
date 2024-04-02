@@ -8,9 +8,21 @@ const App = {
     init: async function () {
         if (App.web3 == null) {
             App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
-            const accounts = await App.web3.eth.getAccounts();
-            App.web3.eth.defaultAccount = accounts[0]
             App.contract = new App.web3.eth.Contract(abi, address)
+        }
+    },
+    authorization: async function () {
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then((accounts) => {
+                    App.web3.eth.defaultAccount = accounts[0]
+                    return 0
+                })
+                .catch((error) => {
+                    return 1
+                });
+        } else {
+            return 2
         }
     },
     getTransactionHistory: async function() {
@@ -52,11 +64,26 @@ const App = {
     },
     carbonTransaction: async function(_to, _amount, _price) {
         await App.init()
-        return await App.contract.methods.carbonTransaction(_to,_amount,_price)
-            .send({from: App.web3.eth.defaultAccount})
-            .on('receipt',receipt => {
-                console.log(receipt)
-            })
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(async accounts => {
+                    await App.contract.methods.carbonTransaction(_to, _amount, _price)
+                        .send({
+                            from: accounts[0],
+                            gas: '1000000',
+                            gasPrice: 1000000000
+                        })
+                        .on('receipt', receipt => {
+                            console.log(receipt)
+                        })
+                    return 0
+                })
+                .catch((error) => {
+                    return 1
+                });
+        } else {
+            return 2
+        }
     }
 }
 const address = "0xe1fC34A93039d1EAe8B00dbDf5101fAfE8A1dF9E"
