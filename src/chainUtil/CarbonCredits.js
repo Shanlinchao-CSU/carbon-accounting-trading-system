@@ -80,16 +80,24 @@ const App = {
     carbonTransaction: async function(_to, _amount, _price) {
         await App.init()
         if (window.ethereum) {
-            await window.ethereum.enable()
-            await App.contract.methods.issueCarbonAllowance(_to,1000)
-                .send({
-                    from: "0x96a0cfE920bF1CcD1ef1cAe4b9592C41334CaC81",
-                    gas: '1000000',
-                    gasPrice: 1000000000
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(async accounts => {
+                    console.log(accounts[0])
+                    await App.contract.methods.issueCarbonAllowance(_to,1000)
+                        .send({
+                            from: accounts[0],
+                            gas: '1000000',
+                            gasPrice: 1000000000
+                        })
+                        .on('receipt', receipt => {
+                            console.log(receipt)
+                        })
+                    return 0
                 })
-                .on('receipt', receipt => {
-                    console.log(receipt)
-                })
+                .catch((error) => {
+                    console.log(error)
+                    return 1
+                });
         } else {
             console.log(33333)
             return 2
