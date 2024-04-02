@@ -15,10 +15,25 @@ const App = {
     },
     getTransactionHistory: async function() {
         await App.init()
-        return await App.contract.getPastEvents("CarbonTransaction", {
+        let value = undefined
+        let date = undefined
+        let transaction = await App.contract.getPastEvents("CarbonTransaction", {
             fromBlock: 0,
             toBlock: 'latest'
         })
+        transaction.forEach(item => {
+            value = item.returnValues
+            App.web3.eth.getBlock(item.blockHash)
+                .then(block => {
+                date = new Date(Number(block.timestamp)*1000).toISOString()
+                value.date = date})
+                .catch(error => {
+                    value.date = null})
+            value._amount = Number(value._amount)
+            value._price = Number(App.web3.utils.fromWei(value._price,"ether"))
+            value.unit_price = (value._amount / value._price).toFixed(2)
+        })
+        return transaction.map(item => item.returnValues)
     },
     getCarbonReport: async function() {
         await App.init()
@@ -30,6 +45,14 @@ const App = {
     uploadReport: async function(report) {
         await App.init()
         return await App.contract.methods.submitCarbonReport(report)
+            .send({from: App.web3.eth.defaultAccount})
+            .on('receipt',receipt => {
+                console.log(receipt)
+            })
+    },
+    carbonTransaction: async function(_to, _amount, _price) {
+        await App.init()
+        return await App.contract.methods.carbonTransaction(_to,_amount,_price)
             .send({from: App.web3.eth.defaultAccount})
             .on('receipt',receipt => {
                 console.log(receipt)

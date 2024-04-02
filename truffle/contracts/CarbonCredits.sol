@@ -44,13 +44,13 @@ contract CarbonCredits {
         emit CarbonAllowanceBurned(target, amount);
     }
 
-    // 碳交易，msg.sender是买家
+    // 碳交易，msg.sender是买家x
     function carbonTransaction(address _to, uint256 _amount, uint256 _price) public {
         require(carbonAllowance[_to] >= _amount, "Insufficient carbon allowance"); // 卖家有足够排放额
         require(carbonCoin.balanceOf(msg.sender) >= _price, "Insufficent carbon coin"); // 买家有足够碳币
         carbonAllowance[msg.sender] = carbonAllowance[msg.sender] + _amount; // 买家排放额增加
         carbonAllowance[_to] = carbonAllowance[_to] - _amount; // 卖家排放额减少
-        carbonCoin.transferFrom( msg.sender,_to, _price); // 碳币转移      
+        carbonCoin.transferFrom( msg.sender,_to, _price); // 碳币转移
         emit CarbonTransaction(msg.sender,_to,_amount,_price);
     }
 

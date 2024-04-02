@@ -6,3 +6,7 @@ declare module '*.vue' {
 }
 declare module "@/assets/i18n/index.js"
 declare module "@/assets/js/storage/storage"
+
+declare global {
+  const $target
+}

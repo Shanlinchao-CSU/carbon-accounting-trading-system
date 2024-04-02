@@ -115,6 +115,7 @@ function getData(reload=true,real=true) {
             if (resp.status === 200) {
               if (resp.data.code === 0) {
                 all_data.value = resp.data.data
+                console.log(all_data.value)
                 data.value = all_data.value
                 pageTotal.value = data.value.length
                 if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
