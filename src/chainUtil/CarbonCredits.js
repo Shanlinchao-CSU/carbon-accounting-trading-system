@@ -7,7 +7,7 @@ const App = {
 
     init: async function () {
         if (App.web3 == null) {
-            App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
+            App.web3 = new Web3(window.ethereum);
             App.contract = new App.web3.eth.Contract(abi, address)
         }
     },
@@ -57,19 +57,10 @@ const App = {
     },
     uploadReport: async function(report) {
         await App.init()
-        return await App.contract.methods.submitCarbonReport(report)
-            .send({from: App.web3.eth.defaultAccount})
-            .on('receipt',receipt => {
-                console.log(receipt)
-            })
-    },
-    carbonTransaction: async function(_to, _amount, _price) {
-        await App.init()
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(async accounts => {
-                    console.log(accounts[0])
-                    await App.contract.methods.issueCarbonAllowance(_to,1000)
+                .then(async (accounts) => {
+                    await App.contract.methods.submitCarbonReport(report)
                         .send({
                             from: accounts[0],
                             gas: '1000000',
@@ -78,12 +69,27 @@ const App = {
                         .on('receipt', receipt => {
                             console.log(receipt)
                         })
-                    return 0
                 })
                 .catch((error) => {
-                    console.log(error)
-                    return 1
-                });
+                    console.error(error);
+                })
+        } else {
+            console.error("MetaMask is not installed or unlocked.");
+        }
+    },
+    carbonTransaction: async function(_to, _amount, _price) {
+        await App.init()
+        if (window.ethereum) {
+            await window.ethereum.enable()
+            await App.contract.methods.issueCarbonAllowance(_to,1000)
+                .send({
+                    from: "0x96a0cfE920bF1CcD1ef1cAe4b9592C41334CaC81",
+                    gas: '1000000',
+                    gasPrice: 1000000000
+                })
+                .on('receipt', receipt => {
+                    console.log(receipt)
+                })
         } else {
             console.log(33333)
             return 2
