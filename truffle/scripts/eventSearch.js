@@ -5,7 +5,7 @@ module.exports = async function (callback) {
     const carbonCoin = await CarbonCoin.deployed()
     const carbonCredits = await CarbonCredits.deployed()
 
-    const events = await carbonCredits.getPastEvents('CarbonAllowanceIssued', {
+    const events = await carbonCredits.getPastEvents('CarbonTransaction', {
         fromBlock: 0,
         toBlock: 'latest'
     });

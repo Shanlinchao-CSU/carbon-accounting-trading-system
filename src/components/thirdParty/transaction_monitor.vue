@@ -1,6 +1,7 @@
 <template>
   <el-button @click="test1">测试1</el-button>
   <el-button @click="test2">测试2</el-button>
+  <el-button @click="test3">测试3</el-button>
   <el-table
       :data="data_show"
       style="font-size: 1.6vh"
@@ -102,6 +103,11 @@ async function test1() {
 }
 async function test2() {
   let temp = await App.getCarbonReport()
+  console.log(temp)
+}
+async function test3() {
+  const seller = "0x8b751a0226707Ef8Df389078B288D13A415343b7"
+  let temp = await App.carbonTransaction(seller,200,50)
   console.log(temp)
 }
 async function getData(reload=true,real=true) {

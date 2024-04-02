@@ -18,10 +18,10 @@ module.exports = async function (callback) {
 
 
     // -- issue allowance
-    // await carbonCredits.issueCarbonAllowance(accounts[1],1000)
-    // await carbonCredits.issueCarbonAllowance(accounts[2],100)
-    // allownance1 = await carbonCredits.allowanceOf(accounts[1])
-    // allownance2 = await carbonCredits.allowanceOf(accounts[2])
+    await carbonCredits.issueCarbonAllowance(accounts[1],1000)
+    await carbonCredits.issueCarbonAllowance(accounts[2],100)
+    allownance1 = await carbonCredits.allowanceOf(accounts[1])
+    allownance2 = await carbonCredits.allowanceOf(accounts[2])
     // console.log(
     //     "Allowance of account1 is "+
     //     allownance1.toString()
@@ -33,37 +33,37 @@ module.exports = async function (callback) {
 
 
     // -- transaction
-    allownanceBefore1 = await carbonCredits.allowanceOf(accounts[1])
-    allownanceBefore2 = await carbonCredits.allowanceOf(accounts[2])
-    console.log(
-        "Allowance of account1 before is "+
-        allownanceBefore1.toString()
-    )
-    console.log(
-        "Allowance of account2 before is "+
-        allownanceBefore2.toString()
-    )
+    // allownanceBefore1 = await carbonCredits.allowanceOf(accounts[1])
+    // allownanceBefore2 = await carbonCredits.allowanceOf(accounts[2])
+    // console.log(
+    //     "Allowance of account1 before is "+
+    //     allownanceBefore1.toString()
+    // )
+    // console.log(
+    //     "Allowance of account2 before is "+
+    //     allownanceBefore2.toString()
+    // )
 
     // 授权给合约地址
-    await carbonCoin.approve(carbonCredits.address, web3.utils.toWei("50", "ether"))
-    const allowanceAfter = await carbonCoin.allowance(accounts[1], carbonCredits.address)
-    console.log(
-    "Amount of CarbonCoin CarbonCredits is allowed to transfer on our behalf After: " +
-        web3.utils.fromWei(allowanceAfter.toString())
-    )
-    await carbonCredits.carbonTransaction(accounts[2],100,web3.utils.toWei("50", "ether")) // 账户1向账户2购买100额度，价格50碳币
+    // await carbonCoin.approve(carbonCredits.address, web3.utils.toWei("50", "ether"))
+    // const allowanceAfter = await carbonCoin.allowance(accounts[1], carbonCredits.address)
+    // console.log(
+    // "Amount of CarbonCoin CarbonCredits is allowed to transfer on our behalf After: " +
+    //     web3.utils.fromWei(allowanceAfter.toString())
+    // )
+    // await carbonCredits.carbonTransaction(accounts[2],100,web3.utils.toWei("50", "ether")) // 账户1向账户2购买100额度，价格50碳币
     
 
-    allownanceAfter1 = await carbonCredits.allowanceOf(accounts[1])
-    allownanceAfter2 = await carbonCredits.allowanceOf(accounts[2])
-    console.log(
-        "Allowance of account1 after is "+
-        allownanceAfter1.toString()
-    )
-    console.log(
-        "Allowance of account2 after is "+
-        allownanceAfter2.toString()
-    )
+    // allownanceAfter1 = await carbonCredits.allowanceOf(accounts[1])
+    // allownanceAfter2 = await carbonCredits.allowanceOf(accounts[2])
+    // console.log(
+    //     "Allowance of account1 after is "+
+    //     allownanceAfter1.toString()
+    // )
+    // console.log(
+    //     "Allowance of account2 after is "+
+    //     allownanceAfter2.toString()
+    // )
 
 
     callback()

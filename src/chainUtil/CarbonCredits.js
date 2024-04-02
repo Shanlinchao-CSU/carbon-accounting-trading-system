@@ -84,8 +84,16 @@ const App = {
             window.ethereum.request({ method: 'eth_requestAccounts' })
                 .then(async accounts => {
                     console.log(accounts[0])
-                    
-                    await App.contract.methods.issueCarbonAllowance(_to,1000)
+                    await App.carbonCoinContract.methods.approve(address, App.web3.utils.toWei(_price, "ether"))
+                        .send({
+                            from: accounts[0],
+                            gas: '1000000',
+                            gasPrice: 1000000000
+                        })
+                        .on('receipt', receipt => {
+                            console.log(receipt)
+                        })
+                    await App.contract.methods.carbonTransaction(_to,_amount,_price)
                         .send({
                             from: accounts[0],
                             gas: '1000000',
