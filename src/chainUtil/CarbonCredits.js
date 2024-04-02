@@ -7,7 +7,8 @@ const App = {
 
     init: async function () {
         if (App.web3 == null) {
-            App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
+            // App.web3 = new Web3(Web3.givenProvider || 'http://120.78.1.201:8545');
+            App.web3 = new Web3(window.ethereum);
             App.contract = new App.web3.eth.Contract(abi, address)
         }
     },
