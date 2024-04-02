@@ -33,6 +33,7 @@ const App = {
             fromBlock: 0,
             toBlock: 'latest'
         })
+        console.log(transaction)
         transaction.forEach(item => {
             value = item.returnValues
             App.web3.eth.getBlock(item.blockHash)
@@ -67,7 +68,8 @@ const App = {
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_requestAccounts' })
                 .then(async accounts => {
-                    await App.contract.methods.carbonTransaction(_to, _amount, _price)
+                    console.log(accounts[0])
+                    await App.contract.methods.issueCarbonAllowance(_to,1000)
                         .send({
                             from: accounts[0],
                             gas: '1000000',
@@ -79,9 +81,11 @@ const App = {
                     return 0
                 })
                 .catch((error) => {
+                    console.log(error)
                     return 1
                 });
         } else {
+            console.log(33333)
             return 2
         }
     }

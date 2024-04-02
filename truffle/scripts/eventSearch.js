@@ -5,12 +5,12 @@ module.exports = async function (callback) {
     const carbonCoin = await CarbonCoin.deployed()
     const carbonCredits = await CarbonCredits.deployed()
 
-    const events = await carbonCredits.getPastEvents('CarbonTransaction', {
+    const events = await carbonCredits.getPastEvents('CarbonAllowanceIssued', {
         fromBlock: 0,
         toBlock: 'latest'
     });
     
-    console.log(events[0].transactionHash); // 输出查询到的事件
+    console.log(events); // 输出查询到的事件
     const transactionHash = events[0].transactionHash
 
     // 获取交易收据
@@ -33,16 +33,14 @@ module.exports = async function (callback) {
             .catch(error => {
             console.error('获取区块信息失败:', error);
             });
-        })
-        .catch(error => {
-            console.error('获取交易收据失败:', error);
-        });
+    })
+    .catch(error => {
+        console.error('获取交易收据失败:', error);
+    });
 
     
     callback()
 }
-
-
 
 
 // 运行该脚本文件： truffle exec .\scripts\eventSearch.js --network cchain
