@@ -174,7 +174,7 @@ function handle_register(method,id) {
           type: 'success',
           offset: 70
         })
-        all_data.value = all_data.value.filter(item => item.register_application_id === String(id))
+        all_data.value = all_data.value.filter(item => item.register_application_id !== id)
         getData(true,false)
       }else {
         ElMessage({

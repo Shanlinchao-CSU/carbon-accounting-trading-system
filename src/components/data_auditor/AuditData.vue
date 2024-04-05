@@ -95,6 +95,7 @@
 import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
+import App from "@/chainUtil/CarbonCredits";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -107,6 +108,7 @@ let jsonObject = undefined
 const search_input = ref("")
 // 设置一页多少条记录
 let onePageNumber = 15
+let account = undefined
 
 function getData(reload=true,real=true) {
   //reload用于删除数据的情况,非reload用于查询的情况
@@ -166,7 +168,7 @@ function changePage(page) {
   record_show.value = get_data_for_show(page)
   currentPage.value = page
 }
-function handle_record(state) {
+function handle_record(state,row) {
   if (state) {
     ElMessageBox.confirm(
         '审批后永久无法更改,确定批准吗?',
@@ -179,41 +181,71 @@ function handle_record(state) {
     )
         .then(() => {
           axios
-              .get("")
-              .then(res => {
-                if (res.data.code === 0) {
-
+              .post("http://localhost:8080/dataAuditors/carbon_accounting?id="+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+              .then(async res => {
+                if (res.status === 200) {
+                  if (res.data.code === 0) {
+                    //TODO public_key
+                    console.log(await App.uploadReport(generateCarbonReport(row), parseInt(row.result), "0x2F875A7c2069a7b389C24e6227755cDE6494e56D"))
+                    ElMessage({
+                      type: 'success',
+                      message: '审核通过!',
+                    })
+                  } else {
+                    ElMessage({
+                      type: 'error',
+                      message: '该申请已被处理!',
+                    })
+                  }
+                  all_accounting_record.value = all_accounting_record.value.filter(item => item.id !== row.id)
+                  getData(true, false)
+                } else {
                   ElMessage({
-                    type: 'success',
-                    message: '审核通过!',
-                  })
-                }else {
-                  ElMessage({
+                    message: "失 败 , 请 检 查 网 络 !",
                     type: 'error',
-                    message: '该申请已被处理!',
+                    offset: 70
                   })
                 }
               })
         })
   }else {
-    //TODO 向后端发送处理申请请求
     axios
-        .get("")
+        .post("http://localhost:8080/dataAuditors/carbon_accounting?id="+row.id+"&approve="+state+"&conductor_id="+account.account_id)
         .then(res => {
-          if (res.data.code === 0) {
-            ElMessage({
-              type: 'success',
-              message: '驳回申请成功!'
-            })
+          if (res.status === 200) {
+            if (res.data.code === 0) {
+              ElMessage({
+                type: 'success',
+                message: '驳回申请成功!'
+              })
+            }else {
+              ElMessage({
+                type: 'error',
+                message: '该申请已被处理!',
+              })
+            }
+            all_accounting_record.value = all_accounting_record.value.filter(item => item.id !== row.id)
+            getData(true,false)
           }else {
             ElMessage({
+              message: "失 败 , 请 检 查 网 络 !",
               type: 'error',
-              message: '该申请已被处理!',
+              offset: 70
             })
           }
         })
   }
-  getData()
+}
+function generateCarbonReport(row) {
+  let report = {}
+  report.account_id = row.conductor_id
+  report.account_name = row.account_name
+  report.enterprise_type = row.enterprise_type
+  report.conductor_id = row.conductor_id
+  report.month = row.month
+  report.result = row.result
+  report.variable_json = row.variable_json
+  return JSON.stringify(report)
 }
 function showDialog(json) {
   jsonObject = JSON.parse(json)
@@ -286,6 +318,7 @@ function filterHandler(value,row) {
 }
 onMounted(()=>{
   getData()
+  account = JSON.parse(localStorage.getItem("account"))
 })
 </script>
 
