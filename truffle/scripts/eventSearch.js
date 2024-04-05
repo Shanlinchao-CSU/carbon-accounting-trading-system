@@ -10,12 +10,12 @@ module.exports = async function (callback) {
     // await carbonCredits.submitCarbonReport(report)
     // await carbonCredits.submitCarbonReport(report)
 
-    const events = await carbonCredits.getPastEvents('CarbonReportSubmitted', {
+    const events = await carbonCredits.getPastEvents('ExceedRecord', {
         fromBlock: 0,
         toBlock: 'latest'
     });
     
-    console.log(events[0].returnValues.carbonReport[0]); // 输出查询到的事件
+    console.log(events[0].returnValues); // 输出查询到的事件
 
 
     
