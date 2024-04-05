@@ -2,7 +2,6 @@ import {Web3} from 'web3'
 
 const App = {
     web3: null,
-    web3Provider: null,
     contract: null,
 
     init: async function () {
@@ -10,20 +9,6 @@ const App = {
             App.web3 = new Web3(window.ethereum);
             App.contract = new App.web3.eth.Contract(abi, address)
             App.carbonCoinContract = new App.web3.eth.Contract(carbonCoinABI, carbonCoinAddress)
-        }
-    },
-    authorization: async function () {
-        if (window.ethereum) {
-            window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then((accounts) => {
-                    App.web3.eth.defaultAccount = accounts[0]
-                    return 0
-                })
-                .catch((error) => {
-                    return 1
-                });
-        } else {
-            return 2
         }
     },
     getTransactionHistory: async function() {
@@ -34,19 +19,19 @@ const App = {
             fromBlock: 0,
             toBlock: 'latest'
         })
-        console.log(transaction)
-        transaction.forEach(item => {
+        for (const item of transaction) {
             value = item.returnValues
-            App.web3.eth.getBlock(item.blockHash)
+            await App.web3.eth.getBlock(item.blockHash)
                 .then(block => {
                 date = new Date(Number(block.timestamp)*1000).toISOString()
                 value.date = date})
                 .catch(error => {
-                    value.date = null})
+                    value.date = null
+                })
             value._amount = Number(value._amount)
             value._price = Number(App.web3.utils.fromWei(value._price,"ether"))
             value.unit_price = (value._amount / value._price).toFixed(2)
-        })
+        }
         return transaction.map(item => item.returnValues)
     },
     getCarbonReport: async function() {
@@ -57,10 +42,11 @@ const App = {
         })
     },
     uploadReport: async function(report) {
+        //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
         await App.init()
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(async (accounts) => {
+                .then(async accounts => {
                     await App.contract.methods.submitCarbonReport(report)
                         .send({
                             from: accounts[0],
@@ -69,48 +55,54 @@ const App = {
                         })
                         .on('receipt', receipt => {
                             console.log(receipt)
+                            return 0
+                        })
+                        .on('error', error => {
+                            console.log(error)
+                            return 1
                         })
                 })
-                .catch((error) => {
-                    console.error(error);
+                .catch(error => {
+                    console.log(error)
+                    return 2
                 })
         } else {
-            console.error("MetaMask is not installed or unlocked.");
+            return 3
         }
     },
     carbonTransaction: async function(_to, _amount, _price) {
+        //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
         await App.init()
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_requestAccounts' })
                 .then(async accounts => {
-                    console.log(accounts[0])
                     await App.carbonCoinContract.methods.approve(address, App.web3.utils.toWei(_price, "ether"))
                         .send({
                             from: accounts[0],
                             gas: '1000000',
                             gasPrice: 1000000000
                         })
-                        .on('receipt', receipt => {
-                            console.log(receipt)
+                        .on('error', error => {
+                            console.log(error)
+                            return {code:1}
                         })
-                    await App.contract.methods.carbonTransaction(_to,_amount,_price)
+                    await App.contract.methods.carbonTransaction(_to,_amount,App.web3.utils.toWei(_price))
                         .send({
                             from: accounts[0],
                             gas: '1000000',
                             gasPrice: 1000000000
                         })
-                        .on('receipt', receipt => {
-                            console.log(receipt)
+                        .on('transactionHash', hash => {
+                            return {code:0,hash:hash}
                         })
-                    return 0
+                    return {code:1}
                 })
                 .catch((error) => {
                     console.log(error)
-                    return 1
+                    return {code:2}
                 });
         } else {
-            console.log(33333)
-            return 2
+            return {code:3}
         }
     }
 }

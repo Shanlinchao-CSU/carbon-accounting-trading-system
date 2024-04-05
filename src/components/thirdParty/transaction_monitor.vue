@@ -1,7 +1,4 @@
 <template>
-  <el-button @click="test1">测试1</el-button>
-  <el-button @click="test2">测试2</el-button>
-  <el-button @click="test3">测试3</el-button>
   <el-table
       :data="data_show"
       style="font-size: 1.6vh"
@@ -21,7 +18,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="_to_id" label="买家ID" width="160"/>
-    <el-table-column prop="_to_name" label="买家名称" width="400"/>
+    <el-table-column prop="_to_name" label="买家名称" width="280"/>
     <el-table-column
         label="买家企业类型"
         width="200"
@@ -44,7 +41,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="_from_id" label="卖家ID" width="160"/>
-    <el-table-column prop="_from_name" label="卖家名称" width="400"/>
+    <el-table-column prop="_from_name" label="卖家名称" width="280"/>
     <el-table-column
         label="卖家企业类型"
         width="200"
@@ -66,9 +63,14 @@
         {{scope.row._from_type}}
       </template>
     </el-table-column>
-    <el-table-column prop="_amount" label="交易额度" width="200"/>
-    <el-table-column prop="unit_price" label="交易单价" width="200"/>
-    <el-table-column prop="_amount" label="交易总价" width="200"/>
+    <el-table-column prop="_amount" label="交易额度" width="200" sortable="custom"/>
+    <el-table-column prop="unit_price" label="交易单价" width="200" sortable="custom"/>
+    <el-table-column prop="_price" label="交易总价" width="200" sortable="custom"/>
+    <el-table-column prop="date" label="交易完成时间" width="280" sortable="custom">
+      <template #default="scope">
+        {{scope.row.date === null ? "交易等待上链" : scope.row.date}}
+      </template>
+    </el-table-column>
   </el-table>
   <div class="pagination_box" style="display: flex;justify-content: right">
     <el-pagination
@@ -95,21 +97,8 @@ const all_data = ref([])
 const data_show = ref([])
 const search_input = ref("")
 const onePageNumber = 15
-
 let transaction_monitor = undefined
 
-async function test1() {
-  await App.uploadReport("123")
-}
-async function test2() {
-  let temp = await App.getCarbonReport()
-  console.log(temp)
-}
-async function test3() {
-  const seller = "0x8b751a0226707Ef8Df389078B288D13A415343b7"
-  let temp = await App.carbonTransaction(seller,200,50)
-  console.log(temp)
-}
 async function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
@@ -187,7 +176,13 @@ function sortChange(column) {
   let prop = column.prop
   if (order === "ascending") {
     data.value = data.value.sort((a,b) => {
-      if (prop === "_time") {
+      if (prop === "date") {
+        if (a === null) {
+          return 1
+        }
+        if (b === null) {
+          return -1
+        }
         let time_a = new Date(a[prop])
         let time_b = new Date(b[prop])
         if (time_a.getTime() === time_b.getTime()) {
@@ -201,7 +196,13 @@ function sortChange(column) {
     })
   }else if (order === "descending") {
     data.value = data.value.sort((a,b) => {
-      if (prop === "_time") {
+      if (prop === "date") {
+        if (a === null) {
+          return -1
+        }
+        if (b === null) {
+          return 1
+        }
         let time_a = new Date(a[prop])
         let time_b = new Date(b[prop])
         if (time_a.getTime() === time_b.getTime()) {
@@ -223,8 +224,10 @@ function Searching() {
   }else {
     data.value = []
     all_data.value.forEach(item => {
-      if (item.account_name.includes(search_input.value)
-          || String(item.account_id).includes(search_input.value)){
+      if (item._to_name.includes(search_input.value)
+          || String(item._to_id).includes(search_input.value)
+          || item._from_name.includes(search_input.value)
+          || String(item._from_id).includes(search_input.value)){
         data.value.push(item)
       }
     })
