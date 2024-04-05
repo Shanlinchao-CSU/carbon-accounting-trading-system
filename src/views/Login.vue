@@ -503,7 +503,7 @@ const jump = (type: number) => {
       break
       //第三方
     case 2:
-      path.value = ""
+      path.value = "/thirdParty/transaction_monitor"
       break
       //数据审核员
     case 3:
