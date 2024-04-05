@@ -44,12 +44,17 @@
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
 const mnemonic = "<Your mnemonic>"; //自己的助记词
-//contract address:0xAccb25c8325f6918BCb66E3E3319b19a7A5423C5
+//carbon coin contract address:0xc68d6eA44cB2da6603B5e35668b2448A9E552dE6
+//carbon credits contract address:0x1163628F4d327FbA344A272e8bd7EE6B6E8c5d05
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
-const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3",
-                  "0x8b751a0226707ef8df389078b288d13a415343b7",
-                  "0x2f875a7c2069a7b389c24e6227755cde6494e56d"]
+
+// 管理员： 给新账号发送碳币，每月重置额度（到默认额度)，拥有碳币管理权
+// 数据审核员： 碳报告上链
+// 第三方机构： 查看所有信息
+const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3", // 0 管理员
+                  "0x8b751a0226707ef8df389078b288d13a415343b7", // 1 数据审核员
+                  "0x2f875a7c2069a7b389c24e6227755cde6494e56d"] // 2 第三方机构
 
 module.exports = {
     /**

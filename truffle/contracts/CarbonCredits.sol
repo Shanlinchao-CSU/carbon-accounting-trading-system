@@ -11,7 +11,9 @@ contract CarbonCredits {
     using Address for address;
 
     IERC20 public carbonCoin; // 碳币代币合约地址 
-    address private carbonIssuer; // 碳排放额发行者地址
+    address private admin; // 管理员地址
+    address private auditor; // 审核员地址
+    address private thirdParty; // 第三方监管机构地址
     struct CarbonReport {
         string reportText; // 碳报告内容
     }
@@ -19,32 +21,45 @@ contract CarbonCredits {
     mapping(address => uint256) public carbonAllowance; // 每个账户的碳排放额度
     mapping(address => CarbonReport) public carbonReports; // 每个账户的碳排放报告
 
-    event CarbonAllowanceIssued(address target, uint256 amount);
-    event CarbonAllowanceBurned(address target, uint256 amount);
+    // event CarbonAllowanceIssued(address target, uint256 amount);
+    // event CarbonAllowanceBurned(address target, uint256 amount);
+    event CarbonAllowanceReset(address _target, uint256 _amount);
     event CarbonTransaction(address _from, address _to, uint256 _amount, uint256 _price);
     event CarbonReportSubmitted(address account,CarbonReport carbonReport);
+    event ExceedRecord(address _account, uint256 _amount);
 
-    constructor(IERC20 _carbonCoin, address _carbonIssuer) {
+    constructor(IERC20 _carbonCoin, address _admin, address _auditor, address _thirdParty) {
         carbonCoin = _carbonCoin;
-        carbonIssuer = _carbonIssuer;
+        admin      = _admin;
+        auditor    = _auditor;
+        thirdParty = _thirdParty;
     }
 
     // 发行碳排放额度
-    function issueCarbonAllowance(address target, uint256 amount) public {
-        require(msg.sender == carbonIssuer, "Only carbon issuer can issue allowance");
-        require(carbonAllowance[target] < carbonAllowance[target] + amount, "Overflow!");
-        carbonAllowance[target] = carbonAllowance[target] + amount;
-        emit CarbonAllowanceIssued(target,amount);
-    }
+    // function issueCarbonAllowance(address target, uint256 amount) public {
+    //     require(msg.sender == carbonIssuer, "Only carbon issuer can issue allowance");
+    //     require(carbonAllowance[target] < carbonAllowance[target] + amount, "Overflow!");
+    //     carbonAllowance[target] = carbonAllowance[target] + amount;
+    //     emit CarbonAllowanceIssued(target,amount);
+    // }
 
     // 销毁指定数量的碳排放额度
-    function burnCarbonAllowance(address target, uint256 amount) public {
-        require(msg.sender == carbonIssuer, "Only carbon issuer can burn allowance");
-        carbonAllowance[target] = carbonAllowance[target] - amount;
-        emit CarbonAllowanceBurned(target, amount);
+    // function burnCarbonAllowance(address target, uint256 amount) public {
+    //     require(msg.sender == carbonIssuer, "Only carbon issuer can burn allowance");
+    //     carbonAllowance[target] = carbonAllowance[target] - amount;
+    //     emit CarbonAllowanceBurned(target, amount);
+    // }
+
+
+    // 重置碳排放额度
+    function resetAllowance(address _target, uint256 _amount) public {
+        require(msg.sender == admin);
+        carbonAllowance[_target] = _amount;
+        emit CarbonAllowanceReset(_target,_amount);
     }
 
-    // 碳交易，msg.sender是买家x
+
+    // 碳交易，msg.sender是买家
     function carbonTransaction(address _to, uint256 _amount, uint256 _price) public {
         require(carbonAllowance[_to] >= _amount, "Insufficient carbon allowance"); // 卖家有足够排放额
         require(carbonCoin.balanceOf(msg.sender) >= _price, "Insufficent carbon coin"); // 买家有足够碳币
@@ -54,10 +69,16 @@ contract CarbonCredits {
         emit CarbonTransaction(msg.sender,_to,_amount,_price);
     }
 
-    // 碳报告上链
-    function submitCarbonReport(string memory report) public{
-        carbonReports[msg.sender] = CarbonReport(report);
-        emit CarbonReportSubmitted(msg.sender, CarbonReport(report));
+    // 碳报告上链 -- 调用者为数据审核员
+    function submitCarbonReport(address _target,uint256 _amount, string memory _report) public{
+        require(msg.sender == auditor);
+        carbonReports[_target] = CarbonReport(_report);
+        carbonAllowance[_target] = carbonAllowance[_target] - _amount; // 核算时减少相应的额度
+        emit CarbonReportSubmitted(_target, CarbonReport(_report));
+        
+        if(carbonAllowance[_target] < 0){
+            emit ExceedRecord(_target,_amount); // 超标记录
+        }
     }
 
     // 查询碳排放额度

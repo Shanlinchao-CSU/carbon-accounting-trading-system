@@ -18,18 +18,18 @@ module.exports = async function (callback) {
 
 
     // -- issue allowance
-    await carbonCredits.issueCarbonAllowance(accounts[1],1000)
-    await carbonCredits.issueCarbonAllowance(accounts[2],100)
+    // await carbonCredits.issueCarbonAllowance(accounts[1],1000)
+    // await carbonCredits.issueCarbonAllowance(accounts[2],100)
     allownance1 = await carbonCredits.allowanceOf(accounts[1])
     allownance2 = await carbonCredits.allowanceOf(accounts[2])
-    // console.log(
-    //     "Allowance of account1 is "+
-    //     allownance1.toString()
-    // )
-    // console.log(
-    //     "Allowance of account2 is "+
-    //     allownance2.toString()
-    // )
+    console.log(
+        "Allowance of account1 is "+
+        allownance1.toString()
+    )
+    console.log(
+        "Allowance of account2 is "+
+        allownance2.toString()
+    )
 
 
     // -- transaction
