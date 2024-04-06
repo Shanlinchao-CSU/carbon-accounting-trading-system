@@ -22,21 +22,18 @@
             "
         >
             <div ref="son_0" class="son_subpage">
-                <carbonTransaction_sell :goToCarbonAccounting = "goToCarbonAccounting"></carbonTransaction_sell>
+                <carbonAccountingSubpage_2></carbonAccountingSubpage_2>
             </div>
             <div ref="son_1" class="son_subpage" style="left: 100%">
-                <carbonTransaction_purchase></carbonTransaction_purchase>
-            </div>
-            <div ref="son_2" class="son_subpage" style="left: 100%">
-                <carbonTransactionMine></carbonTransactionMine>
-            </div>
-            <div ref="son_3" class="son_subpage" style="left: 100%">
-                <carbonTransaction_purchase></carbonTransaction_purchase>
+                <carbonAccountingReview></carbonAccountingReview>
             </div>
         </div>
     </div>
 </template>
 <script>
+import carbonAccountingReview from "./subPages/carbonAccountingReview.vue";
+import carbonAccountingSubpage_2 from "./subPages/carbonAccountingSubpage_2.vue";
+import carbonAccountingSubpage_10 from "./subPages/carbonAccountingSubpage_10.vue";
 import textInput from "@/components/inputs/textInput/textInput.vue";
 import dialogAvatarBox from "@/components/dialogBoxes/dialogAvatarBox/dialogAvatarBox.vue";
 import Storage from "@/assets/js/storage/storage.js";
@@ -46,8 +43,6 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import carbonTransaction_sell from "@/views/showerSubpage/components/subPages/carbonTransaction_sell.vue"
 import carbonTransaction_purchase from "@/views/showerSubpage/components/subPages/carbonTransaction_purchase.vue"
-import carbonTransactionMine from "@/views/showerSubpage/components/subPages/carbonTransactionMine.vue"
-
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 // import { Select } from "@element-plus/icons-vue/dist/types";
@@ -55,8 +50,8 @@ export default {
     props: ['goToCarbonAccounting','goToLogin'],
     data() {
         return {
-            son_pages: [true, false,false,false],
-            son_pages_name: ["碳额度出售", "碳额度购买","我的出售","交易记录"],
+            son_pages: [true, false],
+            son_pages_name: ["进行碳核算", "查看碳核算历史"],
             company_type_name: "发电企业",
         };
     },
@@ -65,7 +60,7 @@ export default {
             return this.$refs.container.offsetTop;
         },
         clickNav(index) {
-            this.son_pages = [false, false,false,false];
+            this.son_pages = [false, false];
             this.son_pages[index] = true;
             this.son_pages.forEach((element, i) => {
                 this.$refs["son_" + i.toString()].style.left =
@@ -84,7 +79,9 @@ export default {
         modelSelect,
         carbonTransaction_sell,
         carbonTransaction_purchase,
-        carbonTransactionMine
+        carbonAccountingSubpage_2,
+        carbonAccountingSubpage_10,
+        carbonAccountingReview
     },
 
     created() {},
