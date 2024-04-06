@@ -12,7 +12,11 @@
         <div class="title">您的企业类型是:{{ company_type_name }}</div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form" label-width="300px">
+                <el-form ref="form" style="
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                    ">
                     <el-form-item label="请输入企业退役设备数量">
                         <el-input-number
                             v-model="rec_num"
@@ -53,7 +57,11 @@
         </div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form" label-width="300px">
+                <el-form ref="form"  style="
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                    ">
                     <el-form-item label="请输入企业修理设备数量">
                         <el-input-number
                             v-model="rep_num"
@@ -94,7 +102,11 @@
         </div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form" label-width="300px">
+                <el-form ref="form" style="
+                        display: flex;
+                        align-items: center;
+                        flex-direction: column;
+                    ">
                     <el-form-item label="请输入电厂上网电量">
                         <el-input-number
                             v-model="el_net"
@@ -326,7 +338,6 @@ export default {
 <style scoped>
 .container {
     position: relative;
-    /* border: 1px solid red; */
     float: right;
     width: 98%;
     height: 100%;
@@ -345,8 +356,10 @@ export default {
     line-height: 30px;
 }
 .part {
-    flex-grow: 1;
-    flex-basis: 0;
+    /* flex-grow: 1;
+    flex-basis: 0; */
+    width: 33.3%;
+    height:92%;
     border: solid 1px rgb(141, 53, 159);
     position: relative;
     top: 8%;

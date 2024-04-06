@@ -13,18 +13,18 @@ import XML from "./xmlConnector.js";
  * @returns false:字符串不符合规则
  */
 const send = (msg, api, func_callback, func_wating, func_timeout, time_out) => {
-    // console.log(msg);
-    // let c = MsgProcessing.processing(msg, api);
-    // if (!c) return c;
-    // XML.send(
-    //     c.api_name,
-    //     c.api_para,
-    //     func_callback,
-    //     func_wating,
-    //     func_timeout,
-    //     time_out
-    // );
-    // return true;
+    console.log(msg);
+    let c = MsgProcessing.processing(msg, api);
+    if (!c) return c;
+    XML.send(
+        c.api_name,
+        c.api_para,
+        func_callback,
+        func_wating,
+        func_timeout,
+        time_out
+    );
+    return true;
 };
 const sendByUrl = (
     url,
@@ -54,25 +54,25 @@ const test = (
     success_waiting,
     success_msg
 ) => {
-    // func_wating(true);
-    // if (success) {
-    //     if (success_waiting) {
-    //         setTimeout(() => {
-    //             func_wating(false);
-    //             func_callback(success_msg);
-    //         }, success_waiting);
-    //     } else {
-    //         setTimeout(() => {
-    //             func_wating(false);
-    //             func_callback(success_msg);
-    //         }, 1000);
-    //     }
-    // } else {
-    //     setTimeout(() => {
-    //         func_wating(false);
-    //         func_timeout();
-    //     }, time_out);
-    // }
+    func_wating(true);
+    if (success) {
+        if (success_waiting) {
+            setTimeout(() => {
+                func_wating(false);
+                func_callback(success_msg);
+            }, success_waiting);
+        } else {
+            setTimeout(() => {
+                func_wating(false);
+                func_callback(success_msg);
+            }, 1000);
+        }
+    } else {
+        setTimeout(() => {
+            func_wating(false);
+            func_timeout();
+        }, time_out);
+    }
 };
 export default {
     send,

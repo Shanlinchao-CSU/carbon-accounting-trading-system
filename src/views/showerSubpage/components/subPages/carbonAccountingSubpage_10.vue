@@ -24,6 +24,7 @@
                         v-for="(item, index) in fuelNameArr"
                         :key="index"
                         :label="`请输入${fuelNameArr[index]}的消耗量`"
+                        :ref="`fuelComponent_${index}`"
                     >
                         <el-input-number
                             v-model="fuelValueArr[index]"
@@ -375,7 +376,26 @@ export default {
             }).then((resp) => {});
         },
         clearData() {
-            
+            for(let i=0;i<this.fuelValueArr.length;i++){
+                this.fuelValueArr[i] = 0;
+            }
+            this.bioFuelCount = 0;
+            this.bioFuelNameArr = []; //生物质混合燃料种类名称
+            this.bioFuelValueArr = []; //生物质混合燃料消耗量数组
+            this.bioFuelNCVArr = []; //生物质混合燃料低位发热值数组
+            this.bioFuelBFArr = []; //生物质混合燃料生物质含量数组
+            this.interFuelValue = 0; //国内化石燃料消耗量
+            this.nationalFuelValue = 0; //国际化石燃料消耗量
+            this.interBioFuelValue=  0; //国内生物质混合燃料的消耗量
+            this.interBioFuelNCV= 0; //国内生物质混合燃料低位发热值
+            this.interBioFuelBF= 0; //国内生物质混合燃料的生物质含量
+            this.nationalBioFuelValue= 0; //国际生物质混合燃料的消耗量
+            this.nationalBioFuelNCV= 0; //国际生物质混合燃料的低位发热值
+            this.nationalBioFuelBF= 0; //国际生物质混合燃料的生物质含量
+            this.ADHeat=0;//企业净购入热力
+            this.ADElec=0;//企业净购入电量
+            this.region= 0;//所属区域
+
         },
         submitData() {
             this.$refs.uploadBox.submit();}
@@ -443,7 +463,7 @@ export default {
 <style scoped>
 .container {
     position: relative;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     float: right;
     width: 98%;
     height: 100%;
