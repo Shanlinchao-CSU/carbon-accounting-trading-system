@@ -49,10 +49,10 @@ const mnemonic = "<Your mnemonic>"; //自己的助记词
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 
-// 管理员： 给新账号发送碳币，每月重置额度（到默认额度)，拥有碳币管理权
+// 系统： 给新账号发送碳币，每月重置额度（到默认额度)，拥有碳币管理权
 // 数据审核员： 碳报告上链
 // 第三方机构： 查看所有信息
-const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3", // 0 管理员
+const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3", // 0 系统
                   "0x8b751a0226707ef8df389078b288d13a415343b7", // 1 数据审核员
                   "0x2f875a7c2069a7b389c24e6227755cde6494e56d"] // 2 第三方机构
 
@@ -78,7 +78,7 @@ module.exports = {
             host: "127.0.0.1",     // Localhost (default: none)
             port: 8545,            // Standard Ethereum port (default: none)
             network_id: "*",       // Any network (default: none)
-            from : "0x69E83B035d607000207F58de1F588182F63F44b4"
+            from : "0xdaE9E94287B4Afe7B4E7e28DF9d59161ceA283B0"
         },
         sepolia: {
             provider: function () {
@@ -90,7 +90,7 @@ module.exports = {
             host: "120.78.1.201",
             port: 8545,
             network_id: "726",
-            from: accounts[0],
+            from: accounts[1],
             password: "123456mm"
         }
         //
