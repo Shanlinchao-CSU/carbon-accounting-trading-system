@@ -235,8 +235,8 @@ export default {
       this.goToShower();
     },
     backToHome() {
-      this.$refs.shower_subpage.videoPause();
-      this.$refs.shower_subpage.videoDelete();
+      // this.$refs.shower_subpage.videoPause();
+      // this.$refs.shower_subpage.videoDelete();
       this.bar_change = "bar_change_1";
       this.page.is_main_page = true;
       this.page.is_func_page = false;
@@ -249,16 +249,16 @@ export default {
       this.page.is_forget_password = false;
     },
     goToSubpage(index){
-      this.$refs.shower_subpage.videoPause();
+      // this.$refs.shower_subpage.videoPause();
       // this.$refs.shower_subpage.videoDelete();
       // console.log(index);
       this.$refs.shower_subpage.scrollTo(index);
     },
     goToGuide(){
-      this.$refs.shower_subpage.videoAppear();
+      // this.$refs.shower_subpage.videoAppear();
     },
     goToNoGuide(){
-      this.$refs.shower_subpage.videoDelete();
+      // this.$refs.shower_subpage.videoDelete();
     },
     goToShower() {
       this.bar_change = "bar_change_0";
@@ -267,7 +267,7 @@ export default {
     },
     goToShowerOther() {
       // console.log("shower111");
-      this.$refs.shower_subpage.videoPause();
+      // this.$refs.shower_subpage.videoPause();
       // this.$refs.shower_subpage.videoDelete();
       this.page.is_shower_other = true;
     },
