@@ -86,7 +86,7 @@
                     </h1>
                     <h2>
                         额度单价:
-                        <span style="font-size: large;">{{
+                        <span style="font-size: large">{{
                             dialogData.unit_price
                         }}</span>
                     </h2>
@@ -145,6 +145,7 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -163,7 +164,7 @@ export default {
                 id: 0,
                 quota: 0,
                 unit_price: 0,
-                seller_id:0,
+                seller_id: 0,
             }, // 用于存储传递给对话框的数据
             purchase_quota: 1, //购买的份额
             purchase_price: 0, //购买的价格
@@ -241,7 +242,7 @@ export default {
         },
         getSellMsgSellTimeout() {
             this.prompt_type = "error";
-            this.error = "请求失败";
+            this.error = "请求超时";
         },
         handleSortChange({ column, prop, order }) {
             // 根据点击的列和排序方式更新tableData
@@ -258,14 +259,14 @@ export default {
         handleEdit(row) {
             this.purchase_quota = 1; //初始化
             this.purchase_submit_error = "";
-            this.purchase_submit_prompt_type = "",
-            // 传递当前行的id和额度给对话框
-            this.dialogData = {
-                id: row.id,
-                quota: row.quota,
-                unit_price: row.unit_price,
-                seller_id: row.seller_id,
-            };
+            (this.purchase_submit_prompt_type = ""),
+                // 传递当前行的id和额度给对话框
+                (this.dialogData = {
+                    id: row.id,
+                    quota: row.quota,
+                    unit_price: row.unit_price,
+                    seller_id: row.seller_id,
+                });
             // 打开对话框
             this.dialogVisible = true;
         },
@@ -298,21 +299,21 @@ export default {
             this.purchase_submit_error = "购买失败";
             this.carbon_purchase_button_can_click = true;
         },
-        carbonSellSubmit(){
+        carbonSellSubmit() {
             // 测试用
             connector.test(
-            this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
-            this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
-            this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data:{
-                    code: 0,
+                this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
+                this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
+                this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
+                2000, // 超时等待时间 当且仅当success=false有效
+                true, // 此次测试是按照成功测试还是按照超时测试
+                5000, // 成功等待时间 当且仅当success=true有效
+                {
+                    data: {
+                        code: 0,
+                    },
                 }
-            }
-            )
+            );
             let id = ""; //获取买家ID
             //实际用
             // connector.send(
@@ -323,26 +324,51 @@ export default {
             //                 this.submitPurchaseMsgWaiting,
             //                 60000 //限时
             //             );
-        }
+        },
+        getSellMsg() {
+            // connector.test(
+            //     this.getSellMsgCallback, // 发送消息成功的回调函数
+            //     this.getSellMsgWaiting, // 发送消息等待中调用函数
+            //     this.getSellMsgSellTimeout, // 当发送消息超调用的函数
+            //     2000, // 超时等待时间 当且仅当success=false有效
+            //     true, // 此次测试是按照成功测试还是按照超时测试
+            //     5000, // 成功等待时间 当且仅当success=true有效
+            //     {
+            //         data: {
+            //             code: 0,
+            //             QuotaSale: [],
+            //         },
+            //     }
+            // );
+            // connector.send(
+            //                 [],
+            //                 "getSellMsg", //api名字
+            //                 this.getSellMsgCallback,
+            //                 this.getSellMsgWaiting,
+            //                 this.getSellMsgSellTimeout,
+            //                 10000 //限时
+            //             );
+            axios
+                .get(
+                    "http://localhost:8080/enterprise/transaction/remain"
+                    ////TODO /enterprise/transaction/remain
+                )
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        console.log("撒烦烦烦烦烦烦烦烦烦烦烦烦");
+                    } else {
+                        ElMessage({
+                            message: "失 败 , 请 检 查 网 络 !",
+                            type: "error",
+                            offset: 70,
+                        });
+                    }
+                });
+        },
     },
     mounted() {
         // this.fetchData(); // 组件挂载完成后获取数据
-        connector.test(
-            this.getSellMsgCallback, // 发送消息成功的回调函数
-            this.getSellMsgWaiting, // 发送消息等待中调用函数
-            this.getSellMsgSellTimeout, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data: {
-                    code: 0,
-                    QuotaSale: [
-                        
-                    ],
-                },
-            }
-        );
+        this.getSellMsg();
     },
     components: {
         linePrompt,
