@@ -45,8 +45,10 @@ const App = {
     },
     getCoinAmount: async function(public_key) {
         await App.init()
-        //let coin = App.web3.utils.fromWei(coin,"ether")
-        return await App.contract.methods.allowanceOf(public_key)
+        let coin = await App.carbonCoinContract.methods.balanceOf(public_key).call()
+        coin = App.web3.utils.fromWei(coin,'ether')
+        const amount = await App.contract.methods.allowanceOf(public_key).call()
+        return {coin:coin,remain:amount}
     },
     carbonTransaction: async function(_to, _amount, _price) {
         //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
@@ -71,7 +73,7 @@ const App = {
                             gasPrice: 1000000000
                         })
                         .on('receipt', receipt => {
-                            console.log(receipt.transactionHash)
+                            return {code:0,hash:receipt.transactionHash}
                         })
                     return {code:1}
                 })
@@ -81,6 +83,35 @@ const App = {
                 });
         } else {
             return {code:3}
+        }
+    },
+    //发行额度
+    issueAllowance: async function(public_key,amount){
+        await App.init()
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(async accounts => {
+                    await App.contract.methods.resetAllowance(public_key,amount)
+                        .send({
+                            from: accounts[0],
+                            gas: '1000000',
+                            gasPrice: 1000000000
+                        })
+                        .on('receipt',receipt => {
+                            console.log(receipt)
+                        })
+                        .on('error', error => {
+                            console.log(error)
+                            return 1
+                        })
+                    return 0
+                })
+                .catch((error) => {
+                    console.log(error)
+                    return 2
+                });
+        } else {
+            return 3
         }
     }
 }

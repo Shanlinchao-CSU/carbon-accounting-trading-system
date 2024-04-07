@@ -46,7 +46,7 @@
     <el-table-column prop="phone" label="手机号码" width="220"/>
     <el-table-column label="证明材料" width="200">
       <template #default="scope">
-        <el-button link type="primary" @click="downloadFile(scope.row.id)">下载材料</el-button>
+        <el-button link type="primary" @click="downloadFile(scope.row.register_application_id)">下载材料</el-button>
       </template>
     </el-table-column>
     <el-table-column fixed="right" width="220" align="center">
@@ -59,7 +59,7 @@
       </template>
       <template #default="scope">
         <div style="display: flex;justify-content: space-around">
-          <el-button link type="success" @click="handle_register('POST',scope.row.register_application_id)" style="font-size: 18px">批准</el-button>
+          <el-button link type="success" @click="handle_register('POST',scope.row.register_application_id,scope.row.public_key,scope.row.type)" style="font-size: 18px">批准</el-button>
           <el-button link type="danger" @click="handle_register('DELETE',scope.row.register_application_id)" style="font-size: 18px">驳回</el-button>
         </div>
       </template>
@@ -82,6 +82,7 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import $target from "@/main";
+import App from "@/chainUtil/CarbonCredits"
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -159,11 +160,15 @@ function Searching() {
 }
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/accounting_record/file?id=`+id
+  link.href = `${$target}/administrator/register_application/file?id=`+id
   link.click()
 }
-function handle_register(method,id) {
-  let url = `${$target}/administrator/application?register_application_id=`+id+'&account_id='+account.account_id
+async function handle_register(method, id, public_key, type) {
+  if (type === 1 && method === 'POST') {
+    // 默认所有企业初始额度均为200
+    await App.issueAllowance(public_key, 500)
+  }
+  let url = `${$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
   axios({
     method: method,
     url: url
@@ -176,8 +181,8 @@ function handle_register(method,id) {
           offset: 70
         })
         all_data.value = all_data.value.filter(item => item.register_application_id !== id)
-        getData(true,false)
-      }else {
+        getData(true, false)
+      } else {
         ElMessage({
           message: "失 败 , 正 在 重 新 加 载 !",
           type: 'error',
@@ -185,7 +190,7 @@ function handle_register(method,id) {
         })
         getData()
       }
-    }else {
+    } else {
       ElMessage({
         message: "失 败 , 请 检 查 网 络 !",
         type: 'error',

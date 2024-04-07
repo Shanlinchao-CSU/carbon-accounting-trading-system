@@ -147,6 +147,7 @@ import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import axios from 'axios';
 import App from "@/chainUtil/CarbonCredits"
+import $target from "@/main";
 export default {
     data() {
         return {
@@ -301,13 +302,40 @@ export default {
             this.carbon_purchase_button_can_click = true;
         },
         async carbonSellSubmit() {
+          //TODO seller_publicKey,amount和price需要给出
           let seller_publicKey = "", amount = 10, price = 4
           let result = await App.carbonTransaction(seller_publicKey, amount, price)
-          let code = result.code
-          if (code === 0) {
-            axios
-                .post()
+          if (result !== undefined) {
+            let code = result.code
+            if (code === 0) {
+              let array_update = []
+              //TODO 需要把buyer和seller的public_key和id更换为真正的
+              let buyer_public_key = '',seller_public_key = '',buyer_id = '',seller_id = '',buyer,seller
+              buyer = await App.getCoinAmount(buyer_public_key)
+              buyer.account = buyer_id
+              array_update.push(buyer)
+              seller = await App.getCoinAmount(seller_public_key)
+              seller.account = seller_id
+              array_update.push(seller)
+              //TODO 这里的axios是让后端数据库中account的额度和碳币与区块链上同步
+              axios
+                  .post(`${$target}/general/block/info/update`, JSON.stringify(array_update), {
+                    headers: {
+                      "Content-Type": "application/json;charset=utf-8"
+                    }
+                  })
+                  .then(resp => {
+                    console.log(resp)
+                  })
+            }else if (code ===1){
+              //交易失败
+            }else if (code === 2){
+              //授权失败
+            }else if (code === 3){
+              //MetaMask未正确安装配置
+            }
           }
+
           // 测试用
           // connector.test(
           //     this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
