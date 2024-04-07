@@ -46,11 +46,12 @@ app
             theme.theme === "light" ? "./theme/light.css" : "./theme/dark.css";
         document.getElementsByTagName("head")[0].appendChild(link_suit);
     })(); // 加载css文件
-
-// app.config.globalProperties.$axios = axios;
-// app.config.globalProperties.$target = "http://localhost:8080";
-// app.config.globalProperties.$config = {
-//     headers: {
-//         "Content-Type": "application/json;charset=utf-8",
-//     },
-// };
+let $target = "http://localhost:8080";
+export default $target
+app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$target = "http://localhost:8080";
+app.config.globalProperties.$config = {
+    headers: {
+        "Content-Type": "application/json;charset=utf-8",
+    },
+};

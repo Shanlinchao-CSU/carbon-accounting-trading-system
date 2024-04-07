@@ -81,6 +81,7 @@
 import {onMounted, ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -95,7 +96,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`http://localhost:8080/administrator/application/review`)
+          .get(`${$target}/administrator/application/review`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -158,11 +159,11 @@ function Searching() {
 }
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
+  link.href = `${$target}/administrator/accounting_record/file?id=`+id
   link.click()
 }
 function handle_register(method,id) {
-  let url = 'http://localhost:8080/administrator/application?register_application_id='+id+'&account_id='+account.account_id
+  let url = `${$target}/administrator/application?register_application_id=`+id+'&account_id='+account.account_id
   axios({
     method: method,
     url: url

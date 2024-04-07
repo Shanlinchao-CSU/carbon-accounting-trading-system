@@ -89,6 +89,7 @@ import {onMounted, ref} from "vue";
 import App from "@/chainUtil/CarbonCredits";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -112,7 +113,7 @@ async function getData(reload=true,real=true) {
       })
 
       axios
-          .post(`http://localhost:8080/enterprise/info/address`,JSON.stringify(public_keys),{
+          .post(`${$target}/enterprise/info/address`,JSON.stringify(public_keys),{
             headers: {
               "Content-Type":"application/json;charset=utf-8"
             }

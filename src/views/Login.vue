@@ -163,6 +163,7 @@ import { ElMessage } from "element-plus";
 import axios from 'axios';
 import { useRouter } from "vue-router";
 import bg from "@/components/bg/defaultBg.vue"; // 引入home组件
+import $target from "@/main";
 
 // vue router初始化
 const router = useRouter()
@@ -277,7 +278,7 @@ const submitForm = (formEl: FormInstance) => {
       let url = undefined
       if (login_method.value === 0) {
         if (vCode.value!["code"].toUpperCase() == ruleForm.verification_code.toUpperCase()){
-          url="http://localhost:8080/general/id?id="+ruleForm.username+"&password="+ruleForm.password
+          url=`${$target}/general/id?id=`+ruleForm.username+"&password="+ruleForm.password
           console.log(url)
           axios
               .get(url)
@@ -321,7 +322,7 @@ const submitForm = (formEl: FormInstance) => {
         }
       }else if (login_method.value === 2) {
         axios
-            .get("http://localhost:8080/general/phone?phone="+ruleForm.phone+"&code="+ruleForm.phone_code)
+            .get(`${$target}/general/phone?phone=`+ruleForm.phone+"&code="+ruleForm.phone_code)
             .then(resp=>{
               if (resp.status === 200) {
                 if (resp.data.code === 0) {
@@ -352,7 +353,7 @@ const submitForm = (formEl: FormInstance) => {
             })
       }else {
         axios
-            .get("http://localhost:8080/general/email?email="+ruleForm.email+"&code="+ruleForm.email_code)
+            .get(`${$target}/general/email?email=`+ruleForm.email+"&code="+ruleForm.email_code)
             .then(resp=>{
               if (resp.status === 200) {
                 if (resp.data.code === 0) {
@@ -425,10 +426,11 @@ const sendMessage = (formEl: FormInstance) => {
     if (valid) {
       let url = undefined
       if (login_method.value === 1) {
-        url = "http://localhost:8080/general/code/email?email="+ruleForm.email
+        url = `${$target}/general/code/email?email=`+ruleForm.email
       }else {
-        url = "http://localhost:8080/general/code/phone?phone="+ruleForm.phone
+        url = `${$target}/general/code/phone?phone=`+ruleForm.phone
       }
+      console.log(url)
       axios
           .get(url)
           .then(resp => {
@@ -495,6 +497,11 @@ const openLogin = () => {
   })
   window.open(url.href,"_blank")
 }
+
+onMounted(()=>{
+  localStorage.removeItem("token")
+  localStorage.removeItem("account")
+})
 const jump = (type: number) => {
   switch (type) {
       //用户

@@ -95,6 +95,7 @@
 import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -114,7 +115,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`http://localhost:8080/administrator/accounting_record/review`)
+          .get(`${$target}/administrator/accounting_record/review`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -158,7 +159,7 @@ function getData(reload=true,real=true) {
 
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = 'http://localhost:8080/administrator/accounting_record/file?id='+id
+  link.href = `${$target}/administrator/accounting_record/file?id=`+id
   link.click()
 }
 function get_data_for_show(page) {
@@ -181,7 +182,7 @@ function handle_record(state,row) {
     )
         .then(() => {
           axios
-              .post("http://localhost:8080/dataAuditors/carbon_accounting?id="+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+              .post(`${$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
               .then(async res => {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
@@ -218,7 +219,7 @@ function handle_record(state,row) {
         })
   }else {
     axios
-        .post("http://localhost:8080/dataAuditors/carbon_accounting?id="+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+        .post(`${$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
         .then(res => {
           if (res.status === 200) {
             if (res.data.code === 0) {

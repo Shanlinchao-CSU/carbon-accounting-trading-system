@@ -92,6 +92,7 @@
 import {onMounted, ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -110,7 +111,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`http://localhost:8080/administrator/enterprise/accounts`)
+          .get(`${$target}/administrator/enterprise/accounts`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -183,7 +184,7 @@ function changeLimit(row) {
     chosen_id.value = ""
   }else {
     axios
-        .patch("http://localhost:8080/administrator/enterprise/t_limit?account_id="+row.account_id+"&t_limit="+chosen_limit.value)
+        .patch(`${$target}/administrator/enterprise/t_limit?account_id=`+row.account_id+"&t_limit="+chosen_limit.value)
         .then(resp=>{
           if (resp.status === 200) {
             if (resp.data.code === 0) {
