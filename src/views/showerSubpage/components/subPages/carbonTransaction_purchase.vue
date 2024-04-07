@@ -146,6 +146,7 @@ import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import axios from 'axios';
+import App from "@/chainUtil/CarbonCredits"
 export default {
     data() {
         return {
@@ -299,31 +300,38 @@ export default {
             this.purchase_submit_error = "购买失败";
             this.carbon_purchase_button_can_click = true;
         },
-        carbonSellSubmit() {
-            // 测试用
-            connector.test(
-                this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
-                this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
-                this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
-                2000, // 超时等待时间 当且仅当success=false有效
-                true, // 此次测试是按照成功测试还是按照超时测试
-                5000, // 成功等待时间 当且仅当success=true有效
-                {
-                    data: {
-                        code: 0,
-                    },
-                }
-            );
-            let id = ""; //获取买家ID
-            //实际用
-            // connector.send(
-            //                 [id, this.dialogData.seller_id, this.purchase_quota],//额度购买api的传参依次是买家ID，额度发布信息ID，要买的额度
-            //                 "", //api名字
-            //                 this.submitPurchaseMsgCallback,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 60000 //限时
-            //             );
+        async carbonSellSubmit() {
+          let seller_publicKey = "", amount = 10, price = 4
+          let result = await App.carbonTransaction(seller_publicKey, amount, price)
+          let code = result.code
+          if (code === 0) {
+            axios
+                .post()
+          }
+          // 测试用
+          // connector.test(
+          //     this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
+          //     this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
+          //     this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
+          //     2000, // 超时等待时间 当且仅当success=false有效
+          //     true, // 此次测试是按照成功测试还是按照超时测试
+          //     5000, // 成功等待时间 当且仅当success=true有效
+          //     {
+          //         data: {
+          //             code: 0,
+          //         },
+          //     }
+          // );
+          // let id = ""; //获取买家ID
+          //实际用
+          // connector.send(
+          //                 [id, this.dialogData.seller_id, this.purchase_quota],//额度购买api的传参依次是买家ID，额度发布信息ID，要买的额度
+          //                 "", //api名字
+          //                 this.submitPurchaseMsgCallback,
+          //                 this.submitPurchaseMsgWaiting,
+          //                 this.submitPurchaseMsgWaiting,
+          //                 60000 //限时
+          //             );
         },
         getSellMsg() {
             // connector.test(

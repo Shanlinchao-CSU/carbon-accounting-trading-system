@@ -164,6 +164,7 @@ import axios from 'axios';
 import { useRouter } from "vue-router";
 import bg from "@/components/bg/defaultBg.vue"; // 引入home组件
 import $target from "@/main";
+import App from "@/chainUtil/CarbonCredits"
 
 // vue router初始化
 const router = useRouter()
@@ -498,9 +499,11 @@ const openLogin = () => {
   window.open(url.href,"_blank")
 }
 
-onMounted(()=>{
+onMounted(async () => {
   localStorage.removeItem("token")
   localStorage.removeItem("account")
+  //await App.carbonTransaction("0x8b751a0226707Ef8Df389078B288D13A415343b7", 1, '1')
+  console.log(await App.getCoinAmount("0xC387a9155B36850CdED153182e37f86dbF6064E3"))
 })
 const jump = (type: number) => {
   switch (type) {
