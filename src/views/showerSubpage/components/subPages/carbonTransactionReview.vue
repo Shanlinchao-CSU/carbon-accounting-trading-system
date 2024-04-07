@@ -115,10 +115,10 @@ export default {
                 // 请求数据成功
                 this.prompt_type = "success";
                 this.error = "请求信息成功";
-                console.log(
-                    "msg.data.AccountingRecordDto",
-                    msg.data.AccountingRecordDto
-                );
+                // console.log(
+                //     "msg.data.AccountingRecordDto",
+                //     msg.data.AccountingRecordDto
+                // );
                 this.tableData = msg.data.AccountingRecordDto;
                 this.total = msg.data.AccountingRecordDto.length;
                 // this.reminder_exist = false;

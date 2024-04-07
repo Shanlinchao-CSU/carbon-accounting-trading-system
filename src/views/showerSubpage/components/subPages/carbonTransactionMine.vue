@@ -288,7 +288,7 @@ export default {
                 // 请求数据成功
                 this.prompt_type = "success";
                 this.error = "请求信息成功";
-                console.log("msg.data.QuotaSale", msg.data.QuotaSale);
+                // console.log("msg.data.QuotaSale", msg.data.QuotaSale);
                 this.tableData = msg.data.QuotaSale;
                 this.total = msg.data.QuotaSale.length;
                 // this.reminder_exist = false;

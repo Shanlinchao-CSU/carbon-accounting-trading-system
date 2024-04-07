@@ -292,6 +292,7 @@ const submitForm = (formEl: FormInstance) => {
                     })
                     let account = resp.data.data.Account
                     let token = resp.data.data.token
+                    localStorage.setItem("isLogin",true)
                     localStorage.setItem("account",JSON.stringify(account))
                     localStorage.setItem("token",token)
                     jump(account.type)
@@ -332,6 +333,7 @@ const submitForm = (formEl: FormInstance) => {
                   })
                   let account = resp.data.data.Account
                   let token = resp.data.data.token
+                  localStorage.setItem("isLogin",true)
                   localStorage.setItem("account",account)
                   localStorage.setItem("token",token)
                   jump(account.type)
@@ -363,6 +365,7 @@ const submitForm = (formEl: FormInstance) => {
                   })
                   let account = resp.data.data.Account
                   let token = resp.data.data.token
+                  localStorage.setItem("isLogin",true)
                   localStorage.setItem("account",account)
                   localStorage.setItem("token",token)
                   jump(account.type)

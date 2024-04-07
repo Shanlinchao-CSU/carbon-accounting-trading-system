@@ -89,7 +89,7 @@ export default {
             }
         },
         carbonSellWaiting(is_waiting) {
-            console.log("carbonSellWaiting运行了");
+            // console.log("carbonSellWaiting运行了");
             if (is_waiting) {
                 this.carbon_sell_button_can_click = false;
                 this.prompt_type = "waiting";
@@ -144,7 +144,7 @@ export default {
                         //     60000 //限时
                         // );
                         //测试
-                        console.log("进入测试");
+                        // console.log("进入测试");
                         connector.test(
                             this.carbonSellCallback, // 发送消息成功的回调函数
                             this.carbonSellWaiting, // 发送消息等待中调用函数

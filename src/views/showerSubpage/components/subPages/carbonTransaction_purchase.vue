@@ -121,7 +121,7 @@
                             !carbon_purchase_button_can_click || !isLogin
                         "
                     >
-                        发送
+                        购买
                     </el-button>
                     <linePrompt
                         :opacity="purchase_submit_error"
@@ -145,7 +145,7 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
-import axios from 'axios';
+import axios from "axios";
 export default {
     data() {
         return {
@@ -300,54 +300,9 @@ export default {
             this.carbon_purchase_button_can_click = true;
         },
         carbonSellSubmit() {
-            // 测试用
-            connector.test(
-                this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
-                this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
-                this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
-                2000, // 超时等待时间 当且仅当success=false有效
-                true, // 此次测试是按照成功测试还是按照超时测试
-                5000, // 成功等待时间 当且仅当success=true有效
-                {
-                    data: {
-                        code: 0,
-                    },
-                }
-            );
-            let id = ""; //获取买家ID
-            //实际用
-            // connector.send(
-            //                 [id, this.dialogData.seller_id, this.purchase_quota],//额度购买api的传参依次是买家ID，额度发布信息ID，要买的额度
-            //                 "", //api名字
-            //                 this.submitPurchaseMsgCallback,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 60000 //限时
-            //             );
-        },
-        getSellMsg() {
-            // connector.test(
-            //     this.getSellMsgCallback, // 发送消息成功的回调函数
-            //     this.getSellMsgWaiting, // 发送消息等待中调用函数
-            //     this.getSellMsgSellTimeout, // 当发送消息超调用的函数
-            //     2000, // 超时等待时间 当且仅当success=false有效
-            //     true, // 此次测试是按照成功测试还是按照超时测试
-            //     5000, // 成功等待时间 当且仅当success=true有效
-            //     {
-            //         data: {
-            //             code: 0,
-            //             QuotaSale: [],
-            //         },
-            //     }
-            // );
-            // connector.send(
-            //                 [],
-            //                 "getSellMsg", //api名字
-            //                 this.getSellMsgCallback,
-            //                 this.getSellMsgWaiting,
-            //                 this.getSellMsgSellTimeout,
-            //                 10000 //限时
-            //             );
+            let id = JSON.parse(localStorage.getItem('account')).account_id; //获取买家ID
+            let purchase_quota = this.purchase_quota; //获取购买份额
+            let seller_id = this.dialogData.seller_id; //获取卖家ID
             axios
                 .get(
                     "http://localhost:8080/enterprise/transaction/remain"
@@ -355,19 +310,82 @@ export default {
                 )
                 .then((resp) => {
                     if (resp.status === 200) {
-                        console.log("撒烦烦烦烦烦烦烦烦烦烦烦烦");
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.purchase_submit_prompt_type = "success";
+                            this.purchase_submit_error = "请求信息成功";
+                            console.log(
+                                "resp.data.QuotaSale",
+                                resp.data.QuotaSale
+                            );
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.purchase_submit_error = "请求信息失败";
+                            this.purchase_submit_prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
                     } else {
-                        ElMessage({
-                            message: "失 败 , 请 检 查 网 络 !",
-                            type: "error",
-                            offset: 70,
-                        });
+                        this.purchase_submit_error = "请求信息失败";
+                        this.purchase_submit_prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0; 
                     }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
                 });
+                this.prompt_type = "waiting";
+                this.error = "请求信息中";
+        },
+        getSellMsg() {
+            axios
+                .get(
+                    "http://localhost:8080/enterprise/transaction/remain"
+                    ////TODO /enterprise/transaction/remain
+                )
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.prompt_type = "success";
+                            this.error = "请求信息成功";
+                            console.log(
+                                "resp.data.QuotaSale",
+                                resp.data.QuotaSale
+                            );
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.error = "请求信息失败";
+                            this.prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    } else {
+                        this.error = "请求信息失败";
+                        this.prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0; 
+                    }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
+                });
+                this.prompt_type = "waiting";
+                this.error = "请求信息中";
         },
     },
     mounted() {
         // this.fetchData(); // 组件挂载完成后获取数据
+        this.isLogin = localStorage.getItem('isLogin');; // 获取登录状态
         this.getSellMsg();
     },
     components: {
