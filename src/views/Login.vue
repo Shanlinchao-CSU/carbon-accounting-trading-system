@@ -1,12 +1,9 @@
 <template>
   <div class="background_box">
+    <bg/>
     <div class="left_box">
       <div class="login_image_box">
-        <el-text class="title">CNTS碳核算交易系统</el-text>
-        <el-image
-            class="login_image"
-            :src="require('@/assets/images/login/login_pic.png')"
-            :fit="'cover'"></el-image>
+        <el-text class="title">碳核算交易系统</el-text>
         <el-text class="slogan">区块链赋能绿色转型</el-text>
       </div>
     </div>
@@ -165,6 +162,7 @@ import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
 import axios from 'axios';
 import { useRouter } from "vue-router";
+import bg from "@/components/bg/defaultBg.vue"; // 引入home组件
 
 // vue router初始化
 const router = useRouter()
@@ -278,11 +276,13 @@ const submitForm = (formEl: FormInstance) => {
     if (valid) {
       let url = undefined
       if (login_method.value === 0) {
-        if (vCode.value!["code"] == ruleForm.verification_code){
+        if (vCode.value!["code"].toUpperCase() == ruleForm.verification_code.toUpperCase()){
           url="http://localhost:8080/general/id?id="+ruleForm.username+"&password="+ruleForm.password
+          console.log(url)
           axios
               .get(url)
               .then(resp => {
+                console.log(resp)
                 if (resp.status === 200) {
                   if (resp.data.code === 0) {
                     ElMessage({
@@ -499,7 +499,7 @@ const jump = (type: number) => {
   switch (type) {
       //用户
     case 1:
-      path.value = ""
+      path.value = "/home"
       break
       //第三方
     case 2:

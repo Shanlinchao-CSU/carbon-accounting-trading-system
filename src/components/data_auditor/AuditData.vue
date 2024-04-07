@@ -95,7 +95,6 @@
 import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
-import App from "@/chainUtil/CarbonCredits";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -119,6 +118,7 @@ function getData(reload=true,real=true) {
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
+                console.log(resp.data.data)
                 all_accounting_record.value = resp.data.data
                 accounting_record.value = all_accounting_record.value
                 pageTotal.value = accounting_record.value.length
@@ -185,20 +185,28 @@ function handle_record(state,row) {
               .then(async res => {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
-                    //TODO public_key
-                    console.log(await App.uploadReport(generateCarbonReport(row), parseInt(row.result), "0x2F875A7c2069a7b389C24e6227755cDE6494e56D"))
-                    ElMessage({
-                      type: 'success',
-                      message: '审核通过!',
-                    })
+                    axios
+                        .post("http://127.0.0.1:8888/api/submitCarbonReport?report="+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key)
+                        .then(resp=>{
+                          console.log(resp)
+                          if (resp.status === 200) {
+                            ElMessage({
+                              type: 'success',
+                              message: '审核通过,已生成报告并上链!',
+                            })
+                            all_accounting_record.value = all_accounting_record.value.filter(item => item.id !== row.id)
+                            getData(true, false)
+                          }
+                        })
+                    //console.log(await App.uploadReport(generateCarbonReport(row), parseInt(row.result), "0x2F875A7c2069a7b389C24e6227755cDE6494e56D"))
                   } else {
                     ElMessage({
                       type: 'error',
                       message: '该申请已被处理!',
                     })
+                    all_accounting_record.value = all_accounting_record.value.filter(item => item.id !== row.id)
+                    getData(true, false)
                   }
-                  all_accounting_record.value = all_accounting_record.value.filter(item => item.id !== row.id)
-                  getData(true, false)
                 } else {
                   ElMessage({
                     message: "失 败 , 请 检 查 网 络 !",
@@ -238,13 +246,13 @@ function handle_record(state,row) {
 }
 function generateCarbonReport(row) {
   let report = {}
-  report.account_id = row.conductor_id
+  report.account_id = row.enterprise_id
   report.account_name = row.account_name
   report.enterprise_type = row.enterprise_type
   report.conductor_id = row.conductor_id
   report.month = row.month
   report.result = row.result
-  report.variable_json = row.variable_json
+  report.variable_json = JSON.parse(row.variable_json)
   return JSON.stringify(report)
 }
 function showDialog(json) {

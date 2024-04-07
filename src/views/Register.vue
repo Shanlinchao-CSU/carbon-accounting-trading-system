@@ -1,5 +1,6 @@
 <template>
   <div class="background_box">
+    <bg/>
     <el-dialog
         v-model="dialogVisible"
         title="提交成功!"
@@ -40,21 +41,12 @@
               class="input"></el-input>
         </el-form-item>
         <el-form-item
-            prop="private_key"
-            class="form_item">
-          <el-input
-              v-model="register_company_user.public_key"
-              placeholder="请输入以太坊账号公钥"
-              maxlength="50"
-              class="input"></el-input>
-        </el-form-item>
-        <el-form-item
             prop="phone"
             class="form_item">
           <el-input
               v-model="register_company_user.phone"
-              placeholder="请输入公司电话"
-              maxlength="11"
+              placeholder="请输入公司邮箱"
+              maxlength="26"
               class="input"></el-input>
         </el-form-item>
         <el-form-item
@@ -140,8 +132,8 @@
             class="form_item">
           <el-input
               v-model="monitor_institution.phone"
-              placeholder="请输入机构电话"
-              maxlength="11"
+              placeholder="请输入机构邮箱"
+              maxlength="26"
               class="input"></el-input>
         </el-form-item>
         <el-form-item
@@ -206,6 +198,7 @@
 import { ref,reactive } from 'vue'
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import bg from "@/components/bg/defaultBg.vue"; // 引入home组件
 
 const company_user = ref()
 const monitor_institution = ref()
@@ -379,9 +372,8 @@ const rules = {
   name: [{validator: validateName, trigger: "blur"}],
   password: [{validator: validatePass, trigger: "blur"}],
   confirm_password: [{validator: validateConfirmPass, trigger: "blur"}],
-  phone: [{validator: validatePhone, trigger: "blur"}],
-  enterprise_type: [{validator: validateType, trigger: "change"}],
-  public_key: [{validator: validateKey, trigger: "blur"}]
+  email: [{validator: validateEmail, trigger: "blur"}],
+  enterprise_type: [{validator: validateType, trigger: "change"}]
 }
 
 function change_register_type(type) {
@@ -395,9 +387,9 @@ function sendMessage(formEl) {
     if (valid) {
       let url = undefined
       if (register_type.value === 0) {
-        url = "http://localhost:8080/general/verify/phone?phone="+register_company_user.phone+"&token="+localStorage.getItem("token")
+        url = "http://localhost:8080/general/verify/email?email="+register_company_user.phone+"&token="+localStorage.getItem("token")
       }else {
-        url = "http://localhost:8080/general/verify/phone?phone="+register_monitor_institution.phone+"&token="+localStorage.getItem("token")
+        url = "http://localhost:8080/general/verify/email?email="+register_monitor_institution.phone+"&token="+localStorage.getItem("token")
       }
       axios
           .get(url)
@@ -438,7 +430,7 @@ function sendMessage(formEl) {
                 }
               }else if (resp.data.code === 1) {
                 ElMessage({
-                  message: `该 手 机 号 已 被 注 册 !`,
+                  message: `该 邮 箱 已 被 注 册 !`,
                   type: 'error',
                   offset: 70
                 })
@@ -469,35 +461,74 @@ async function upload(fileObject) {
   let params = new FormData()
   let url
   if (register_type.value === 0) {
-    const message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions"
-    const account = register_company_user.public_key
-    let signature,address
-    try {
-      signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [message, account]
-      });
-      address = await window.ethereum.request({method: 'eth_accounts'})
-    }catch (error) {
-      ElMessage({
-        message: "签名出现错误,请正确安装MetaMask并登录输入公钥对应的以太坊账户",
-        type: 'error',
-        offset: 70
-      })
-      return 1
-    }
-    params.append("file",fileObject.file)
-    params.append("name",register_company_user.name)
-    params.append("password",register_company_user.password)
-    params.append("phone",register_company_user.phone)
-    params.append("enterprise_type",register_company_user.enterprise_type)
-    params.append("type",register_type.value)
-    params.append("code",register_company_user.v_code)
-    params.append("signature",signature)
-    params.append("message",message)
-    params.append("address",address)
-    params.append("public_key",account)
-    url = "http://localhost:8080/enterprise/info?"
+    window.ethereum.request({ method: 'eth_requestAccounts' })
+        .then(async accounts => {
+          let message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions"
+          register_company_user.public_key = accounts[0]
+          let signature,address
+          try {
+            signature = await window.ethereum.request({
+              method: 'personal_sign',
+              params: [message, register_company_user.public_key]
+            });
+            address = await window.ethereum.request({method: 'eth_accounts'})
+            params.append("file",fileObject.file)
+            params.append("name",register_company_user.name)
+            params.append("password",register_company_user.password)
+            params.append("phone",register_company_user.phone)
+            params.append("enterprise_type",register_company_user.enterprise_type)
+            params.append("type",register_type.value)
+            params.append("code",register_company_user.v_code)
+            params.append("signature",signature)
+            params.append("message",message)
+            params.append("address",address)
+            params.append("public_key",register_company_user.public_key)
+            url = "http://localhost:8080/enterprise/info"
+            axios({
+              url:url,
+              method:"POST",
+              data:params,
+              headers:{"Content-Type": "multipart/form-data"}
+            }).then(resp => {
+              if (resp.status === 200) {
+                if (resp.data.code === 0) {
+                  dialogVisible.value = true
+                }else if (resp.data.code === 1) {
+                  ElMessage({
+                    message: "验 证 码 错 误 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }else if (resp.data.code === 2) {
+                  ElMessage({
+                    message: "文 件 已 被 使 用 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }else if (resp.data.code === 3) {
+                  ElMessage({
+                    message: "签 名 验 证 不 通 过 !",
+                    type: 'error',
+                    offset: 70
+                  })
+                }
+              }else {
+                ElMessage({
+                  message: "失 败 , 请 检 查 网 络 !",
+                  type: 'error',
+                  offset: 70
+                })
+              }
+            })
+          }catch (error) {
+            ElMessage({
+              message: "签名出现错误,请正确安装MetaMask并登录输入公钥对应的以太坊账户",
+              type: 'error',
+              offset: 70
+            })
+            return 1
+          }
+        })
   }else {
     params.append("file",fileObject.file)
     params.append("name",register_monitor_institution.name)
@@ -506,43 +537,43 @@ async function upload(fileObject) {
     params.append("type",register_type.value)
     params.append("code",register_monitor_institution.v_code)
     url = "http://localhost:8080/thirdParty/info"
-  }
-  axios({
-    url:url,
-    method:"POST",
-    data:params,
-    headers:{"Content-Type": "multipart/form-data"}
-  }).then(resp => {
-    if (resp.status === 200) {
-      if (resp.data.code === 0) {
-        dialogVisible.value = true
-      }else if (resp.data.code === 1) {
+    axios({
+      url:url,
+      method:"POST",
+      data:params,
+      headers:{"Content-Type": "multipart/form-data"}
+    }).then(resp => {
+      if (resp.status === 200) {
+        if (resp.data.code === 0) {
+          dialogVisible.value = true
+        }else if (resp.data.code === 1) {
+          ElMessage({
+            message: "验 证 码 错 误 !",
+            type: 'error',
+            offset: 70
+          })
+        }else if (resp.data.code === 2) {
+          ElMessage({
+            message: "文 件 已 被 使 用 !",
+            type: 'error',
+            offset: 70
+          })
+        }else if (resp.data.code === 3) {
+          ElMessage({
+            message: "签 名 验 证 不 通 过 !",
+            type: 'error',
+            offset: 70
+          })
+        }
+      }else {
         ElMessage({
-          message: "验 证 码 错 误 !",
-          type: 'error',
-          offset: 70
-        })
-      }else if (resp.data.code === 2) {
-        ElMessage({
-          message: "文 件 已 被 使 用 !",
-          type: 'error',
-          offset: 70
-        })
-      }else if (resp.data.code === 3) {
-        ElMessage({
-          message: "签 名 验 证 不 通 过 !",
+          message: "失 败 , 请 检 查 网 络 !",
           type: 'error',
           offset: 70
         })
       }
-    }else {
-      ElMessage({
-        message: "失 败 , 请 检 查 网 络 !",
-        type: 'error',
-        offset: 70
-      })
-    }
-  })
+    })
+  }
 }
 
 function handle_upload_success() {

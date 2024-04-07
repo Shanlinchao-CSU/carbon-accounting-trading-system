@@ -5,6 +5,7 @@ import Register from '@/views/Register.vue'
 import DataAuditor from "@/views/DataAuditor.vue";
 import Admin from "@/views/Admin.vue";
 import thirdParty from "@/views/thirdParty.vue";
+import TestView from "@/views/TestView.vue";
 import Auditing from "@/components/data_auditor/AuditData.vue";
 import AuditingHistory from "@/components/data_auditor/AuditHistory.vue";
 import HandleRegister from "@/components/admin/HandleRegister.vue";
@@ -20,9 +21,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Login
   },
   {
-    path: '/aaa',
-    name: 'login1',
-    component: Login
+    path: '/home',
+    name: 'home',
+    component: HomeView
   },
   {
     path: '/data_auditor',

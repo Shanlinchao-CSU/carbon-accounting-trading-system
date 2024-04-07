@@ -36,10 +36,12 @@ const App = {
     },
     getCarbonReport: async function() {
         await App.init()
-        return await App.contract.getPastEvents("CarbonReportSubmitted", {
+        let resu = await App.contract.getPastEvents("CarbonReportSubmitted", {
             fromBlock: 0,
             toBlock: 'latest'
         })
+        resu = resu.map(item => JSON.parse(item.returnValues.carbonReport[0]))
+        return resu
     },
     getCoinAmount: async function(public_key) {
         await App.init()
@@ -49,36 +51,6 @@ const App = {
         // coin = App.web3.utils.fromWei(coin,"ether")
         // let amount = await App.contract.methods.allowanceOf(public_key)
         // return {coin:coin,amount:amount}
-    },
-    uploadReport: async function(report,amount,public_key) {
-        //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
-        await App.init()
-        if (window.ethereum) {
-            window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(async accounts => {
-                    await App.contract.methods.submitCarbonReport(public_key,amount,report)
-                        .send({
-                            from: accounts[0],
-                            gas: '1000000',
-                            gasPrice: 1000000000
-                        })
-                        .on('receipt', async receipt => {
-                            // let result = await App.getCoinAmount(public_key)
-                            // // result.code = 0
-                            // return result
-                        })
-                        .on('error', error => {
-                            console.log(error)
-                            return {code:1}
-                        })
-                })
-                .catch(error => {
-                    console.log(error)
-                    return {code:2}
-                })
-        } else {
-            return {code:3}
-        }
     },
     carbonTransaction: async function(_to, _amount, _price) {
         //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
@@ -116,7 +88,7 @@ const App = {
         }
     }
 }
-const address = "0x1163628F4d327FbA344A272e8bd7EE6B6E8c5d05"
+const address = "0x46226E90D5fCffebDa2387c5aA7c228B535EF94F"
 const abi = [
     {
         "inputs": [
@@ -155,9 +127,9 @@ const abi = [
             },
             {
                 "indexed": false,
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             }
         ],
         "name": "CarbonAllowanceReset",
@@ -206,9 +178,9 @@ const abi = [
             },
             {
                 "indexed": false,
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             },
             {
                 "indexed": false,
@@ -231,9 +203,9 @@ const abi = [
             },
             {
                 "indexed": false,
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             }
         ],
         "name": "ExceedRecord",
@@ -250,9 +222,9 @@ const abi = [
         "name": "carbonAllowance",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "",
-                "type": "uint256"
+                "type": "int256"
             }
         ],
         "stateMutability": "view",
@@ -301,9 +273,9 @@ const abi = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             }
         ],
         "name": "resetAllowance",
@@ -319,9 +291,9 @@ const abi = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             },
             {
                 "internalType": "uint256",
@@ -342,9 +314,9 @@ const abi = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "_amount",
-                "type": "uint256"
+                "type": "int256"
             },
             {
                 "internalType": "string",
@@ -368,9 +340,9 @@ const abi = [
         "name": "allowanceOf",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "int256",
                 "name": "",
-                "type": "uint256"
+                "type": "int256"
             }
         ],
         "stateMutability": "view",
@@ -399,7 +371,7 @@ const abi = [
     }
 ]
 
-const carbonCoinAddress = "0xc68d6eA44cB2da6603B5e35668b2448A9E552dE6"
+const carbonCoinAddress = "0x6D78638F149c584E44f5E58E7f76c74772aF6AE7"
 const carbonCoinABI = [
     {
         "inputs": [],

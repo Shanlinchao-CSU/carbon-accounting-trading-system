@@ -118,7 +118,6 @@ async function getData(reload=true,real=true) {
             }
           })
           .then(resp=>{
-            console.log(resp)
             if (resp.status === 200) {
               if (resp.data.code === 0) {
                 let res_data = resp.data.data
