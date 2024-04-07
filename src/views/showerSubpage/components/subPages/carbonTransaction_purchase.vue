@@ -302,15 +302,15 @@ export default {
             this.carbon_purchase_button_can_click = true;
         },
         async carbonSellSubmit() {
-          //TODO seller_publicKey,amount和price需要给出
-          let seller_publicKey = "", amount = 10, price = 4
+          //TODO seller_publicKey,amount和price需要给出,amount是购买的额度,price是总价
+          let seller_public_key = "", amount = 10, price = 4
           let result = await App.carbonTransaction(seller_publicKey, amount, price)
           if (result !== undefined) {
             let code = result.code
             if (code === 0) {
               let array_update = []
               //TODO 需要把buyer和seller的public_key和id更换为真正的
-              let buyer_public_key = '',seller_public_key = '',buyer_id = '',seller_id = '',buyer,seller
+              let buyer_public_key = '',buyer_id = '',seller_id = '',buyer,seller
               buyer = await App.getCoinAmount(buyer_public_key)
               buyer.account = buyer_id
               array_update.push(buyer)
