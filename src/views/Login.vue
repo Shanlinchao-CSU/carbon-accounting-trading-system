@@ -163,6 +163,8 @@ import { ElMessage } from "element-plus";
 import axios from 'axios';
 import { useRouter } from "vue-router";
 import bg from "@/components/bg/defaultBg.vue"; // 引入home组件
+import $target from "@/main";
+import App from "@/chainUtil/CarbonCredits";
 
 // vue router初始化
 const router = useRouter()
@@ -277,7 +279,7 @@ const submitForm = (formEl: FormInstance) => {
       let url = undefined
       if (login_method.value === 0) {
         if (vCode.value!["code"].toUpperCase() == ruleForm.verification_code.toUpperCase()){
-          url="http://localhost:8080/general/id?id="+ruleForm.username+"&password="+ruleForm.password
+          url=`${$target}/general/id?id=`+ruleForm.username+"&password="+ruleForm.password
           console.log(url)
           axios
               .get(url)
@@ -322,7 +324,7 @@ const submitForm = (formEl: FormInstance) => {
         }
       }else if (login_method.value === 2) {
         axios
-            .get("http://localhost:8080/general/phone?phone="+ruleForm.phone+"&code="+ruleForm.phone_code)
+            .get(`${$target}/general/phone?phone=`+ruleForm.phone+"&code="+ruleForm.phone_code)
             .then(resp=>{
               if (resp.status === 200) {
                 if (resp.data.code === 0) {
@@ -354,7 +356,7 @@ const submitForm = (formEl: FormInstance) => {
             })
       }else {
         axios
-            .get("http://localhost:8080/general/email?email="+ruleForm.email+"&code="+ruleForm.email_code)
+            .get(`${$target}/general/email?email=`+ruleForm.email+"&code="+ruleForm.email_code)
             .then(resp=>{
               if (resp.status === 200) {
                 if (resp.data.code === 0) {
@@ -428,10 +430,11 @@ const sendMessage = (formEl: FormInstance) => {
     if (valid) {
       let url = undefined
       if (login_method.value === 1) {
-        url = "http://localhost:8080/general/code/email?email="+ruleForm.email
+        url = `${$target}/general/code/email?email=`+ruleForm.email
       }else {
-        url = "http://localhost:8080/general/code/phone?phone="+ruleForm.phone
+        url = `${$target}/general/code/phone?phone=`+ruleForm.phone
       }
+      console.log(url)
       axios
           .get(url)
           .then(resp => {
@@ -498,6 +501,17 @@ const openLogin = () => {
   })
   window.open(url.href,"_blank")
 }
+
+onMounted(async () => {
+  localStorage.removeItem("token")
+  localStorage.removeItem("account")
+  //await App.carbonTransaction("0x8b751a0226707Ef8Df389078B288D13A415343b7", 1, '1')
+  //console.log(await App.getCoinAmount("0xC387a9155B36850CdED153182e37f86dbF6064E3"))
+  //await App.issueAllowance("0xC387a9155B36850CdED153182e37f86dbF6064E3",200)
+  // await App.issueAllowance("0x8b751a0226707ef8df389078b288d13a415343b7",200)
+  // await App.issueAllowance("0x2f875a7c2069a7b389c24e6227755cde6494e56d",200)
+  console.log(await App.getCoinAmount("0xC387a9155B36850CdED153182e37f86dbF6064E3"))
+})
 const jump = (type: number) => {
   switch (type) {
       //用户

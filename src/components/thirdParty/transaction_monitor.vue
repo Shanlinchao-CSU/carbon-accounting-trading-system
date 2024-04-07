@@ -89,6 +89,7 @@ import {onMounted, ref} from "vue";
 import App from "@/chainUtil/CarbonCredits";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -108,49 +109,50 @@ async function getData(reload=true,real=true) {
       transaction_monitor.forEach(value => {
         console.log(value)
         all_data.value.push(value)
-        public_keys.push(value._to,value._from) //卖家公钥,买家公钥
+        public_keys.push(value._to, value._from) //卖家公钥,买家公钥
       })
-
-      axios
-          .post(`http://localhost:8080/enterprise/info/address`,JSON.stringify(public_keys),{
-            headers: {
-              "Content-Type":"application/json;charset=utf-8"
-            }
-          })
-          .then(resp=>{
-            if (resp.status === 200) {
-              if (resp.data.code === 0) {
-                let res_data = resp.data.data
-                for (let i=0;i<all_data.value.length;i++) {
-                  all_data.value[i]._to_id = res_data[i*2].account_id
-                  all_data.value[i]._to_name = res_data[i*2].account_name
-                  all_data.value[i]._to_type = res_data[i*2].enterprise_type
-                  all_data.value[i]._from_id = res_data[i*2+1].account_id
-                  all_data.value[i]._from_name = res_data[i*2+1].account_name
-                  all_data.value[i]._from_type = res_data[i*2+1].enterprise_type
+      if (public_keys.length === 0) {
+        axios
+            .post(`${$target}/enterprise/info/address`, JSON.stringify(public_keys), {
+              headers: {
+                "Content-Type": "application/json;charset=utf-8"
+              }
+            })
+            .then(resp => {
+              if (resp.status === 200) {
+                if (resp.data.code === 0) {
+                  let res_data = resp.data.data
+                  for (let i = 0; i < all_data.value.length; i++) {
+                    all_data.value[i]._to_id = res_data[i * 2].account_id
+                    all_data.value[i]._to_name = res_data[i * 2].account_name
+                    all_data.value[i]._to_type = res_data[i * 2].enterprise_type
+                    all_data.value[i]._from_id = res_data[i * 2 + 1].account_id
+                    all_data.value[i]._from_name = res_data[i * 2 + 1].account_name
+                    all_data.value[i]._from_type = res_data[i * 2 + 1].enterprise_type
+                  }
+                  console.log(all_data.value)
+                  data.value = all_data.value
+                  pageTotal.value = data.value.length
+                  if (pageTotal.value <= currentPage.value * onePageNumber - onePageNumber) {
+                    currentPage.value = pageTotal.value / onePageNumber + 1
+                  }
+                  data_show.value = get_data_for_show(currentPage.value)
+                } else {
+                  ElMessage({
+                    message: "获 取 数 据 异 常 !",
+                    type: 'error',
+                    offset: 70
+                  })
                 }
-                console.log(all_data.value)
-                data.value = all_data.value
-                pageTotal.value = data.value.length
-                if (pageTotal.value <= currentPage.value*onePageNumber-onePageNumber) {
-                  currentPage.value = pageTotal.value / onePageNumber + 1
-                }
-                data_show.value = get_data_for_show(currentPage.value)
-              }else {
+              } else {
                 ElMessage({
-                  message: "获 取 数 据 异 常 !",
+                  message: "失 败 , 请 检 查 网 络 !",
                   type: 'error',
                   offset: 70
                 })
               }
-            }else {
-              ElMessage({
-                message: "失 败 , 请 检 查 网 络 !",
-                type: 'error',
-                offset: 70
-              })
-            }
-          })
+            })
+      }
     }else {
       data.value = all_data.value
       pageTotal.value = data.value.length

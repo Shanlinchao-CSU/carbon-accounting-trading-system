@@ -90,6 +90,7 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import App from "@/chainUtil/CarbonCredits"
+import $target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -202,12 +203,12 @@ function sortChange(column) {
 
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = 'http://localhost:8080/administrator/accounting_record/file?id=' + id
+  link.href = `${$target}/administrator/accounting_record/file?id=` + id
   link.click()
 }
 
 function handle_register(method, id) {
-  let url = 'http://localhost:8080/administrator/application?register_application_id=' + id + '&account_id=' + account.account_id
+  let url = `${$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
   axios({
     method: method,
     url: url

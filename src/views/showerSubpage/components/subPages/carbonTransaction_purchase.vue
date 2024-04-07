@@ -145,7 +145,13 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+<<<<<<< HEAD
 import axios from "axios";
+=======
+import axios from 'axios';
+import App from "@/chainUtil/CarbonCredits"
+import $target from "@/main";
+>>>>>>> 7a499e074db50b747d502cc88951e787cbe97a2c
 export default {
     data() {
         return {
@@ -299,10 +305,89 @@ export default {
             this.purchase_submit_error = "购买失败";
             this.carbon_purchase_button_can_click = true;
         },
-        carbonSellSubmit() {
-            let id = JSON.parse(localStorage.getItem('account')).account_id; //获取买家ID
-            let purchase_quota = this.purchase_quota; //获取购买份额
-            let seller_id = this.dialogData.seller_id; //获取卖家ID
+        async carbonSellSubmit() {
+          //TODO seller_publicKey,amount和price需要给出
+          let seller_publicKey = "", amount = 10, price = 4
+          let result = await App.carbonTransaction(seller_publicKey, amount, price)
+          if (result !== undefined) {
+            let code = result.code
+            if (code === 0) {
+              let array_update = []
+              //TODO 需要把buyer和seller的public_key和id更换为真正的
+              let buyer_public_key = '',seller_public_key = '',buyer_id = '',seller_id = '',buyer,seller
+              buyer = await App.getCoinAmount(buyer_public_key)
+              buyer.account = buyer_id
+              array_update.push(buyer)
+              seller = await App.getCoinAmount(seller_public_key)
+              seller.account = seller_id
+              array_update.push(seller)
+              //TODO 这里的axios是让后端数据库中account的额度和碳币与区块链上同步
+              axios
+                  .post(`${$target}/general/block/info/update`, JSON.stringify(array_update), {
+                    headers: {
+                      "Content-Type": "application/json;charset=utf-8"
+                    }
+                  })
+                  .then(resp => {
+                    console.log(resp)
+                  })
+            }else if (code ===1){
+              //交易失败
+            }else if (code === 2){
+              //授权失败
+            }else if (code === 3){
+              //MetaMask未正确安装配置
+            }
+          }
+
+          // 测试用
+          // connector.test(
+          //     this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
+          //     this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
+          //     this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
+          //     2000, // 超时等待时间 当且仅当success=false有效
+          //     true, // 此次测试是按照成功测试还是按照超时测试
+          //     5000, // 成功等待时间 当且仅当success=true有效
+          //     {
+          //         data: {
+          //             code: 0,
+          //         },
+          //     }
+          // );
+          // let id = ""; //获取买家ID
+          //实际用
+          // connector.send(
+          //                 [id, this.dialogData.seller_id, this.purchase_quota],//额度购买api的传参依次是买家ID，额度发布信息ID，要买的额度
+          //                 "", //api名字
+          //                 this.submitPurchaseMsgCallback,
+          //                 this.submitPurchaseMsgWaiting,
+          //                 this.submitPurchaseMsgWaiting,
+          //                 60000 //限时
+          //             );
+        },
+        getSellMsg() {
+            // connector.test(
+            //     this.getSellMsgCallback, // 发送消息成功的回调函数
+            //     this.getSellMsgWaiting, // 发送消息等待中调用函数
+            //     this.getSellMsgSellTimeout, // 当发送消息超调用的函数
+            //     2000, // 超时等待时间 当且仅当success=false有效
+            //     true, // 此次测试是按照成功测试还是按照超时测试
+            //     5000, // 成功等待时间 当且仅当success=true有效
+            //     {
+            //         data: {
+            //             code: 0,
+            //             QuotaSale: [],
+            //         },
+            //     }
+            // );
+            // connector.send(
+            //                 [],
+            //                 "getSellMsg", //api名字
+            //                 this.getSellMsgCallback,
+            //                 this.getSellMsgWaiting,
+            //                 this.getSellMsgSellTimeout,
+            //                 10000 //限时
+            //             );
             axios
                 .get(
                     "http://localhost:8080/enterprise/transaction/remain"
