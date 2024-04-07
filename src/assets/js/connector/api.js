@@ -23,7 +23,8 @@ const API = {
         setEncyContent:"setEncyContent/",
         setMapContent:"setMapContent/",
         getStocklistAnswer:"getStocklistAnswer/",
-        stockPredict:"stockPredict/"
+        stockPredict:"stockPredict/",
+        getSellMsg:"enterprise/transaction/remain"
     },
 };
 const API_PARA = {
@@ -92,7 +93,8 @@ const API_PARA = {
         ["mapcontent", ""]
     ],
     getStocklistAnswer:[["model", ""]],
-    stockPredict:[["stock_code", ""]]
+    stockPredict:[["stock_code", ""]],
+    getSellMsg:[],
 };
 const API_CHECKER = {
     register: [
@@ -196,7 +198,8 @@ const API_CHECKER = {
         ["no-null"]
     ],
     getStocklistAnswer:[["ignore"]],
-    stockPredict:[["ignore"]]
+    stockPredict:[["ignore"]],
+    getSellMsg:[],
 };
 export default {
     API,
