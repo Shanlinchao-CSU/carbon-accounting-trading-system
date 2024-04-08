@@ -22,7 +22,7 @@
                 @sort-change="handleSortChange"
             >
                 <el-table-column
-                    prop="date"
+                    prop="month"
                     label="日期"
                     fit="true"
                 ></el-table-column>
@@ -110,68 +110,49 @@ export default {
             this.currentPage = newPage;
             // this.fetchData();
         },
-        getSellMsgCallback(msg) {
-            if (msg.data.code === 0) {
-                // 请求数据成功
-                this.prompt_type = "success";
-                this.error = "请求信息成功";
-                console.log(
-                    "msg.data.AccountingRecordDto",
-                    msg.data.AccountingRecordDto
-                );
-                this.tableData = msg.data.AccountingRecordDto;
-                this.total = msg.data.AccountingRecordDto.length;
-                // this.reminder_exist = false;
-                // console.log(this.tableData);
-            } else {
-                this.prompt_type = "error";
-                this.error = "请求信息失败";
-                this.tableData = [];
-                this.total = 0;
-            }
-        },
-        getSellMsgWaiting(is_waiting) {
-            if (is_waiting) {
-                // this.reminder_exist = true;
-                this.prompt_type = "waiting";
-                this.error = "请求信息中";
-            } else {
-                // this.reminder_exist = true;
-                this.prompt_type = "default";
-                this.error = "";
-            }
-        },
-        getSellMsgSellTimeout() {
-            this.prompt_type = "error";
-            this.error = "请求失败";
+        getSellMsg(enterpriseId) {
+            let url = "http://localhost:8080/enterprise/accounting_record/" + enterpriseId;
+            axios
+                .get(
+                    url
+                    //TODO /enterprise/accounting_record/{enterprise_id}
+                )
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.prompt_type = "success";
+                            this.error = "请求信息成功";
+                            // console.log("resp.data.data", resp.data.data);
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.error = "请求信息失败";
+                            this.prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    } else {
+                        this.error = "请求信息失败";
+                        this.prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0;
+                    }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
+                });
+            this.prompt_type = "waiting";
+            this.error = "请求信息中";
         },
     },
     mounted() {
         // 测试用
-        connector.test(
-            this.getSellMsgCallback, // 发送消息成功的回调函数
-            this.getSellMsgWaiting, // 发送消息等待中调用函数
-            this.getSellMsgSellTimeout, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data: {
-                    code: 0,
-                    AccountingRecordDto:[
-                        {
-                            date:1,
-                            id:1,
-                            state:1,
-                            conductor_id:1,
-                            account_name:1,
-                            enterprise_type:1,
-
-                        }
-                    ]
-                },
-            }
-        );
+        let enterpriseId = JSON.parse(localStorage.getItem("account")).account_id;
+        this.getSellMsg(enterpriseId);
     },
     components: {
         textInput,
@@ -251,7 +232,7 @@ export default {
 .table_container {
     width: 100%;
     height: 98%;
-    border: solid 1px red;
     overflow: scroll;
+    border: 1px solid rgb(141,53,159);
 }
 </style>

@@ -121,7 +121,7 @@
                             !carbon_purchase_button_can_click || !isLogin
                         "
                     >
-                        发送
+                        购买
                     </el-button>
                     <linePrompt
                         :opacity="purchase_submit_error"
@@ -145,8 +145,8 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
-import axios from 'axios';
-import App from "@/chainUtil/CarbonCredits"
+import axios from "axios";
+import App from "@/chainUtil/CarbonCredits";
 import $target from "@/main";
 export default {
     data() {
@@ -167,6 +167,7 @@ export default {
                 quota: 0,
                 unit_price: 0,
                 seller_id: 0,
+                seller_public_key: "",
             }, // 用于存储传递给对话框的数据
             purchase_quota: 1, //购买的份额
             purchase_price: 0, //购买的价格
@@ -176,6 +177,7 @@ export default {
             },
             purchase_submit_error: "",
             purchase_submit_prompt_type: "",
+            seller_publicKey: "",
         };
     },
     computed: {
@@ -214,38 +216,6 @@ export default {
             }
             return data;
         },
-        getSellMsgCallback(msg) {
-            if (msg.data.code === 0) {
-                // 请求数据成功
-                this.prompt_type = "success";
-                this.error = "请求信息成功";
-                console.log("msg.data.QuotaSale", msg.data.QuotaSale);
-                this.tableData = msg.data.QuotaSale;
-                this.total = msg.data.QuotaSale.length;
-                // this.reminder_exist = false;
-                // console.log(this.tableData);
-            } else {
-                this.prompt_type = "error";
-                this.error = "请求信息失败";
-                this.tableData = [];
-                this.total = 0;
-            }
-        },
-        getSellMsgWaiting(is_waiting) {
-            if (is_waiting) {
-                // this.reminder_exist = true;
-                this.prompt_type = "waiting";
-                this.error = "请求信息中";
-            } else {
-                // this.reminder_exist = true;
-                this.prompt_type = "default";
-                this.error = "";
-            }
-        },
-        getSellMsgSellTimeout() {
-            this.prompt_type = "error";
-            this.error = "请求超时";
-        },
         handleSortChange({ column, prop, order }) {
             // 根据点击的列和排序方式更新tableData
             this.sort.prop = prop;
@@ -268,6 +238,7 @@ export default {
                     quota: row.quota,
                     unit_price: row.unit_price,
                     seller_id: row.seller_id,
+                    seller_public_key: row.public_key,
                 });
             // 打开对话框
             this.dialogVisible = true;
@@ -302,88 +273,117 @@ export default {
             this.carbon_purchase_button_can_click = true;
         },
         async carbonSellSubmit() {
-          //TODO seller_publicKey,amount和price需要给出,amount是购买的额度,price是总价
-          let seller_public_key = "", amount = 10, price = 4
-          let result = await App.carbonTransaction(seller_publicKey, amount, price)
-          if (result !== undefined) {
-            let code = result.code
-            if (code === 0) {
-              let array_update = []
-              //TODO 需要把buyer和seller的public_key和id更换为真正的
-              let buyer_public_key = '',buyer_id = '',seller_id = '',buyer,seller
-              buyer = await App.getCoinAmount(buyer_public_key)
-              buyer.account = buyer_id
-              array_update.push(buyer)
-              seller = await App.getCoinAmount(seller_public_key)
-              seller.account = seller_id
-              array_update.push(seller)
-              //TODO 这里的axios是让后端数据库中account的额度和碳币与区块链上同步
-              axios
-                  .post(`${$target}/general/block/info/update`, JSON.stringify(array_update), {
-                    headers: {
-                      "Content-Type": "application/json;charset=utf-8"
-                    }
-                  })
-                  .then(resp => {
-                    console.log(resp)
-                  })
-            }else if (code ===1){
-              //交易失败
-            }else if (code === 2){
-              //授权失败
-            }else if (code === 3){
-              //MetaMask未正确安装配置
+            //TODO seller_publicKey,amount和price需要给出
+            let seller_publicKey = this.dialogData.seller_public_key;
+            let amount = this.purchase_quota;
+            let price = this.dialogData.unit_price;
+            console.log(seller_publicKey, amount, price);
+            let result = await App.carbonTransaction(
+                seller_publicKey,
+                amount,
+                price
+            );
+            if (result !== undefined) {
+                let code = result.code;
+                if (code === 0) {
+                    let array_update = [];
+                    //TODO 需要把buyer和seller的public_key和id更换为真正的
+                    let buyer_public_key = JSON.parse(
+                        localStorage.getItem("account")
+                    ).public_key;
+                    let seller_public_key = this.dialogData.seller_public_key;
+                    let buyer_id = JSON.parse(
+                        localStorage.getItem("account")
+                    ).account_id;
+                    let seller_id = this.dialogData.seller_id;
+                    buyer = await App.getCoinAmount(buyer_public_key);
+                    buyer.account = buyer_id;
+                    array_update.push(buyer);
+                    seller = await App.getCoinAmount(seller_public_key);
+                    seller.account = seller_id;
+                    array_update.push(seller);
+                    //TODO 这里的axios是让后端数据库中account的额度和碳币与区块链上同步
+                    axios
+                        .post(
+                            `${$target}/general/block/info/update`,
+                            JSON.stringify(array_update),
+                            {
+                                headers: {
+                                    "Content-Type":
+                                        "application/json;charset=utf-8",
+                                },
+                            }
+                        )
+                        .then((resp) => {
+                            if (resp.status === 200) {
+                                if (resp.data.code === 0) {
+                                    // 请求数据成功
+                                    this.purchase_submit_prompt_type =
+                                        "success";
+                                    this.purchase_submit_error = "购买成功";
+                                } else {
+                                    this.purchase_submit_error = "购买失败";
+                                    this.purchase_submit_prompt_type = "error";
+                                }
+                            } else {
+                                this.purchase_submit_error = "购买失败";
+                                this.purchase_submit_prompt_type = "error";
+                            }
+                        });
+                } else if (code === 1) {
+                    //交易失败
+                    this.purchase_submit_error = "交易失败";
+                    this.purchase_submit_prompt_type = "error";
+                } else if (code === 2) {
+                    //授权失败
+                    this.purchase_submit_error = "授权失败";
+                    this.purchase_submit_prompt_type = "error";
+                } else if (code === 3) {
+                    //MetaMask未正确安装配置
+                    this.purchase_submit_error = "MetaMask未正确安装配置";
+                    this.purchase_submit_prompt_type = "error";
+                }
             }
-          }
-
-          // 测试用
-          // connector.test(
-          //     this.submitPurchaseMsgCallback, // 发送消息成功的回调函数
-          //     this.submitPurchaseMsgWaiting, // 发送消息等待中调用函数
-          //     this.submitPurchaseMsgWaiting, // 当发送消息超调用的函数
-          //     2000, // 超时等待时间 当且仅当success=false有效
-          //     true, // 此次测试是按照成功测试还是按照超时测试
-          //     5000, // 成功等待时间 当且仅当success=true有效
-          //     {
-          //         data: {
-          //             code: 0,
-          //         },
-          //     }
-          // );
-          // let id = ""; //获取买家ID
-          //实际用
-          // connector.send(
-          //                 [id, this.dialogData.seller_id, this.purchase_quota],//额度购买api的传参依次是买家ID，额度发布信息ID，要买的额度
-          //                 "", //api名字
-          //                 this.submitPurchaseMsgCallback,
-          //                 this.submitPurchaseMsgWaiting,
-          //                 this.submitPurchaseMsgWaiting,
-          //                 60000 //限时
-          //             );
         },
         getSellMsg() {
-            // connector.test(
-            //     this.getSellMsgCallback, // 发送消息成功的回调函数
-            //     this.getSellMsgWaiting, // 发送消息等待中调用函数
-            //     this.getSellMsgSellTimeout, // 当发送消息超调用的函数
-            //     2000, // 超时等待时间 当且仅当success=false有效
-            //     true, // 此次测试是按照成功测试还是按照超时测试
-            //     5000, // 成功等待时间 当且仅当success=true有效
-            //     {
-            //         data: {
-            //             code: 0,
-            //             QuotaSale: [],
-            //         },
-            //     }
-            // );
-            // connector.send(
-            //                 [],
-            //                 "getSellMsg", //api名字
-            //                 this.getSellMsgCallback,
-            //                 this.getSellMsgWaiting,
-            //                 this.getSellMsgSellTimeout,
-            //                 10000 //限时
-            //             );
+            axios
+                .get(
+                    "http://localhost:8080/enterprise/transaction/remain"
+                    ////TODO /enterprise/transaction/remain
+                )
+                .then((resp) => {
+                    console.log("resp.data.data", resp.data.data);
+                    if (resp.status === 200) {
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.prompt_type = "success";
+                            this.error = "请求信息成功";
+                            // console.log("resp.data.data", resp.data.data);
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.error = "请求信息失败";
+                            this.prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    } else {
+                        this.error = "请求信息失败";
+                        this.prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0;
+                    }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
+                });
+            this.prompt_type = "waiting";
+            this.error = "请求信息中";
+        },
+        getSellMsg() {
             axios
                 .get(
                     "http://localhost:8080/enterprise/transaction/remain"
@@ -391,19 +391,38 @@ export default {
                 )
                 .then((resp) => {
                     if (resp.status === 200) {
-                        console.log("撒烦烦烦烦烦烦烦烦烦烦烦烦");
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.prompt_type = "success";
+                            this.error = "请求信息成功";
+                            // console.log("resp.data.data", resp.data.data);
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.error = "请求信息失败";
+                            this.prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
                     } else {
-                        ElMessage({
-                            message: "失 败 , 请 检 查 网 络 !",
-                            type: "error",
-                            offset: 70,
-                        });
+                        this.error = "请求信息失败";
+                        this.prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0;
                     }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
                 });
+            this.prompt_type = "waiting";
+            this.error = "请求信息中";
         },
     },
     mounted() {
-        // this.fetchData(); // 组件挂载完成后获取数据
+        this.isLogin = localStorage.getItem("isLogin"); // 获取登录状态
         this.getSellMsg();
     },
     components: {
@@ -427,7 +446,7 @@ export default {
 .table_container {
     width: 100%;
     height: 98%;
-    border: solid 1px red;
+    border: 1px solid rgb(141,53,159);
     overflow: scroll;
 }
 .line_reminder {
@@ -490,4 +509,5 @@ export default {
 .login_button:hover {
     background-color: rgb(141, 53, 159);
 }
+
 </style>

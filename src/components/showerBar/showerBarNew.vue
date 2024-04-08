@@ -57,7 +57,6 @@ export default {
             this.$emit("goToSubpage", index);
         },
         goToGuide(){
-            console.log("边");
             this.$emit("goToGuide");
         },
         goToNoGuide(){

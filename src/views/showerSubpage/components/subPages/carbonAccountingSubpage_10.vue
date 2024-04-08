@@ -9,7 +9,7 @@
                 </div>
             </template>
         </el-dialog>
-        <div class="title">您的企业类型是:{{ companyTypeName }}</div>
+        <div class="main_title">碳核算：{{ companyTypeName }}</div>
         <div class="part">
             <el-scrollbar>
                 <el-form
@@ -187,6 +187,9 @@
                             @change=""
                         />
                     </el-form-item>
+                    <el-form-item label="请输入您的碳核算结果">
+                        <el-input-number v-model="user_result" :precision="2" />
+                    </el-form-item>
                     <el-form-item label="请选择企业生产地址所属电网区域">
                         <el-select
                             v-model="region"
@@ -197,7 +200,7 @@
                                 v-for="item in region_options"
                                 :key="item.value"
                                 :label="item.label"
-                                :value="item.value"
+                                :value="item.label"
                             />
                         </el-select>
                     </el-form-item>
@@ -277,7 +280,8 @@ export default {
             nationalBioFuelBF: 0, //国际生物质混合燃料的生物质含量
             ADHeat:0,//企业净购入热力
             ADElec:0,//企业净购入电量
-            region: 0,//所属区域
+            region: "",//所属区域
+            user_result:0,//用户输入的核算结果
             region_options:[
                 {
                     value: 0,
@@ -346,34 +350,59 @@ export default {
         },
         upload(fileObject) {
             let params = new FormData();
-            let url;
-            let enterprisetype = Storage.get("enterprisetype");
-            params.append("file", fileObject.file);
-            params.append("enterprisetype",enterprisetype);
-            params.append("fuelValueArr",this.fuelValueArr);
-            params.append("bioFuelCount",this.bioFuelCount);
-            params.append("bioFuelNameArr",this.bioFuelNameArr);
-            params.append("bioFuelValueArr",this.bioFuelValueArr);
-            params.append("bioFuelNCVArr",this.bioFuelNCVArr);
-            params.append("bioFuelBFArr",this.bioFuelBFArr);
-            params.append("interFuelValue",this.interFuelValue);
-            params.append("nationalFuelValue",this.nationalFuelValue);
-            params.append("interBioFuelValue",this.interBioFuelValue);
-            params.append("interBioFuelNCV",this.interBioFuelNCV);
-            params.append("interBioFuelBF",this.interBioFuelBF);
-            params.append("nationalBioFuelValue",this.nationalBioFuelValue);
-            params.append("nationalBioFuelNCV",this.nationalBioFuelNCV);
-            params.append("nationalBioFuelBF",this.nationalBioFuelBF);
-            params.append("ADHeat",this.ADHeat);
-            params.append("ADElec",this.ADElec);
-            params.append("region",this.region);
-            url = "http://localhost:8080/enterprise/info";
+            let url = "http://localhost:8080/enterprise/accounting_record";
+            let enterprise_id = JSON.parse(
+                localStorage.getItem("account")
+            ).account_id;
+            let variable_json = {
+                fuelValueArr: this.fuelValueArr,
+                bioFuelCount:this.bioFuelCount,
+                bioFuelNameArr:this.bioFuelNameArr, //生物质混合燃料种类名称
+            bioFuelValueArr:this.bioFuelValueArr,//生物质混合燃料消耗量数组
+            bioFuelNCVArr:this.bioFuelNCVArr,//生物质混合燃料低位发热值数组
+            bioFuelBFArr:this.bioFuelBFArr,//生物质混合燃料生物质含量数组
+            interFuelValue:this.interFuelValue,
+            nationalFuelValue:this.nationalFuelValue,
+            interBioFuelValue:this.interBioFuelValue,
+            interBioFuelNCV:this.interBioFuelNCV,
+            interBioFuelBF:this.interBioFuelBF,
+            nationalBioFuelValue:this.nationalBioFuelValue,
+            nationalBioFuelNCV:this.nationalBioFuelNCV,
+            nationalBioFuelBF:this.nationalBioFuelBF,
+            ADHeat:this.ADHeat,
+            ADElec:this.ADElec,
+            region:this.region,
+            };
+            let result = this.user_result;
+            let file = fileObject.file;
+            params.append("enterprise_id", enterprise_id);
+            params.append("variable_json", JSON.stringify(variable_json));
+            params.append("result", result);
+            params.append("file", file);
             axios({
                 url: url,
                 method: "POST",
                 data: params,
                 headers: { "Content-Type": "multipart/form-data" },
-            }).then((resp) => {});
+                //TODO /enterprise/accounting_record
+            }).then((resp) => {
+                if (resp.status === 200) {
+                    if (resp.data.code === 0) {
+                        // 提交成功
+                        // console.log("提交核算申请成功 !");
+                        ElMessage({
+                            message: resp.data.message,
+                            type: "success",
+                        });
+                    } else {
+                        // console.log("提交核算申请失败，请检查网络!");
+                        ElMessage({
+                            message: resp.data.message,
+                            type: "error",
+                        });
+                    }
+                }
+            });
         },
         clearData() {
             for(let i=0;i<this.fuelValueArr.length;i++){
@@ -395,7 +424,7 @@ export default {
             this.ADHeat=0;//企业净购入热力
             this.ADElec=0;//企业净购入电量
             this.region= 0;//所属区域
-
+            this.user_result=0;//用户输入的核算结果
         },
         submitData() {
             this.$refs.uploadBox.submit();}
@@ -489,5 +518,14 @@ export default {
     border: solid 1px rgb(141, 53, 159);
     position: relative;
     top: 8%;
+}
+.main_title {
+    position: absolute;
+    width: 100%;
+    /* height: 60px; */
+    color: black;
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 60px;
 }
 </style>

@@ -4,7 +4,12 @@
         在进行出售操作前，您必须<button class="login_button">登录账号</button>
     </div>
     <div class="edit_power_reminder_1" v-if="!hasAccounted">
-        在进行出售操作前，您必须<button class="login_button" @click="goToCarbonAccounting">进行碳核算</button>
+        在进行出售操作前，您必须<button
+            class="login_button"
+            @click="goToCarbonAccounting"
+        >
+            进行碳核算
+        </button>
     </div>
     <div class="main_title">您当前的剩余额度为:{{ carbonCount }}</div>
     <div class="input_container">
@@ -31,7 +36,9 @@
                 @click="carbonSellSubmit"
                 type="primary"
                 color="rgb(216, 187, 222)"
-                :disabled="!carbon_sell_button_can_click || !isLogin || !hasAccounted"
+                :disabled="
+                    !carbon_sell_button_can_click || !isLogin || !hasAccounted
+                "
             >
                 发送
             </el-button>
@@ -54,12 +61,13 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+import axios from "axios";
 // import { Select } from "@element-plus/icons-vue/dist/types";
 export default {
-    props: ['goToCarbonAccounting','goToLogin'],
+    props: ["goToCarbonAccounting", "goToLogin"],
     data() {
         return {
-            isLogin: true,//是否已经登录
+            isLogin: true, //是否已经登录
             hasAccounted: true, //是否已经进行过核算
             carbonCount: 100, //剩余碳额度,从后端得到
             carbonValue: 0, //用户输入的欲出售的碳额度
@@ -89,7 +97,7 @@ export default {
             }
         },
         carbonSellWaiting(is_waiting) {
-            console.log("carbonSellWaiting运行了");
+            // console.log("carbonSellWaiting运行了");
             if (is_waiting) {
                 this.carbon_sell_button_can_click = false;
                 this.prompt_type = "waiting";
@@ -109,63 +117,79 @@ export default {
             });
         },
         carbonSellSubmit() {
+            let account_id = JSON.parse(
+                localStorage.getItem("account")
+            ).account_id;
             let carbonValue = this.carbonValue;
             let carbonPrice = this.carbonPrice;
+            let url =
+                "http://localhost:8080/enterprise/transaction/publish?account_id=" +
+                account_id +
+                "&quota=" +
+                carbonValue +
+                "&unit_price=" +
+                carbonPrice;
+            const postData = {
+                account_id: account_id,
+                quota: carbonValue,
+                unit_price: carbonPrice,
+            };
+
+            // 发送 POST 请求
             ElMessageBox.confirm("确定要发布此条碳出售信息吗？", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "info",
-            })
-                .then(() => {
-                    if (carbonValue == 0) {
-                        ElMessage({
-                            type: "warning",
-                            message: "出售碳额度必须大于0",
+            }).then(() => {
+                if (carbonValue == 0) {
+                    ElMessage({
+                        type: "warning",
+                        message: "出售碳额度必须大于0",
+                    });
+                    return;
+                } else if (carbonPrice == 0) {
+                    ElMessage({
+                        type: "warning",
+                        message: "出售碳额度单价必须大于0",
+                    });
+                    return;
+                } else {
+                    //通过了格式检查，可以进行出售
+                    // input-number设置了最大值最小值，只需要检查是否为0
+                    axios
+                        .post(url, null, {
+                            params: postData,
+                        })
+                        .then((resp) => {
+                            if (resp.status === 200) {
+                                if (resp.data.code === 0) {
+                                    // 提交成功
+                                    ElMessage({
+                                        message: "发布出售信息成功 !",
+                                        type: "success",
+                                    });
+                                } else {
+                                    ElMessage({
+                                        message: resp.data.message,
+                                        type: "error",
+                                    });
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            ElMessage({
+                                message: "发布出售信息失败，请检查网络",
+                                type: "error",
+                            });
                         });
-                        return;
-                    } else if (carbonPrice == 0) {
-                        ElMessage({
-                            type: "warning",
-                            message: "出售碳额度单价必须大于0",
-                        });
-                        return;
-                    } else {
-                        //通过了格式检查，可以进行出售
-                        // input-number设置了最大值最小值，只需要检查是否为0
-
-                        let id = ""; //api如何调用未知，感觉应该需要id,但不知道怎么获得id
-                        //一个调用示例
-                        // connector.send(
-                        //     [id, carbonValue, carbonPrice],
-                        //     "", //api名字
-                        //     this.carbonSellCallback,
-                        //     this.carbonSellWaiting,
-                        //     this.carbonSellTimeout,
-                        //     60000 //限时
-                        // );
-                        //测试
-                        console.log("进入测试");
-                        connector.test(
-                            this.carbonSellCallback, // 发送消息成功的回调函数
-                            this.carbonSellWaiting, // 发送消息等待中调用函数
-                            this.carbonSellTimeout, // 当发送消息超调用的函数
-                            2000, // 超时等待时间 当且仅当success=false有效
-                            true, // 此次测试是按照成功测试还是按照超时测试
-                            5000, // 成功等待时间 当且仅当success=true有效
-                            {
-                                "success":true
-                            } // 成功传入的参数 当且仅当success=true有效
-                        );
-                    }
-                })
-                .catch(() => {});
+                }
+            });
         },
     },
     mounted() {
-        if(Storage.get("carbonCount")!="undefined"){
-            this.carbonCount = Storage.get("carbonCount");//示例，具体按照存数据规则
+        if (Storage.get("carbonCount") != "undefined") {
+            this.carbonCount = Storage.get("carbonCount"); //示例，具体按照存数据规则
         }
-        
     },
     components: {
         textInput,

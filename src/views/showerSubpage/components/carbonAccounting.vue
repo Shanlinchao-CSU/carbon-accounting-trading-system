@@ -22,7 +22,8 @@
             "
         >
             <div ref="son_0" class="son_subpage">
-                <carbonAccountingSubpage_2></carbonAccountingSubpage_2>
+                <carbonAccountingSubpage_2 v-if="choose_page == 2"></carbonAccountingSubpage_2>
+                <carbonAccountingSubpage_10 v-if="choose_page == 10"></carbonAccountingSubpage_10>
             </div>
             <div ref="son_1" class="son_subpage" style="left: 100%">
                 <carbonAccountingReview></carbonAccountingReview>
@@ -53,6 +54,7 @@ export default {
             son_pages: [true, false],
             son_pages_name: ["进行碳核算", "查看碳核算历史"],
             company_type_name: "发电企业",
+            choose_page: 2,
         };
     },
     methods: {
@@ -70,7 +72,66 @@ export default {
         
     },
     mounted() {
-        let enterprisetype = Storage.get("enterprisetype");
+        let company_type_name = JSON.parse(
+            localStorage.getItem("account")
+        ).enterprise_type;
+        switch (company_type_name) {
+            case "发电企业": {
+                this.choose_page =
+                    1;
+                break;
+            }
+            case "电网企业": {
+                this.choose_page =
+                    2;
+                break;
+            }
+            case "钢铁生产企业": {
+                this.choose_page =
+                    3;
+                break;
+            }
+            case "化工生产企业": {
+                this.choose_page =
+                    4;
+                break;
+            }
+            case "电解铝生产企业": {
+                this.choose_page =
+                    5;
+                break;
+            }
+            case "镁冶炼企业": {
+                this.choose_page =
+                    6;
+                break;
+            }
+            case "平板玻璃生产企业": {
+                this.choose_page =
+                    7;
+                break;
+            }
+            case "水泥生产企业": {
+                this.choose_page =
+                   8;
+                break;
+            }
+            case "陶瓷生产企业": {
+                this.choose_page =
+                    9;
+                break;
+            }
+            case "民航企业": {
+                this.choose_page =
+                    10;
+                break;
+            }
+            default: {
+                this.choose_page =
+                    0;
+                break;
+            }
+        }
     },
     components: {
         textInput,
