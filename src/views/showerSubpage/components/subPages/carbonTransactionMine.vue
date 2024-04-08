@@ -55,7 +55,7 @@
                         />
                     </template> -->
                     <template #default="scope">
-                        <el-button size="small" @click="handlePurchase(scope.row)"
+                        <el-button size="small" @click="handleChange(scope.row)"
                             >修改单价</el-button
                         >
                         <el-button size="small" @click="handleCancle(scope.row)"
@@ -101,9 +101,9 @@
                     >
                         <el-form-item label="请输入您欲修改的单价">
                             <el-input-number
-                                v-model="changed_price"
+                                v-model="dialogData.changed_price"
                                 :min="0.01"
-                                :step="0.01"
+                                :step="1"
                                 :precision="2"
                             />
                         </el-form-item>
@@ -113,9 +113,7 @@
                         @click="carbonChangeSubmit"
                         type="primary"
                         color="rgb(216, 187, 222)"
-                        :disabled="
-                            !carbon_button_can_click || !isLogin
-                        "
+                        :disabled="!carbon_button_can_click || !isLogin"
                     >
                         确定
                     </el-button>
@@ -149,9 +147,7 @@
                         @click="carbonCancelSubmit"
                         type="primary"
                         color="rgb(216, 187, 222)"
-                        :disabled="
-                            !carbon_button_can_click || !isLogin
-                        "
+                        :disabled="!carbon_button_can_click || !isLogin"
                     >
                         确定
                     </el-button>
@@ -177,6 +173,7 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
+import axios from "axios";
 export default {
     data() {
         return {
@@ -196,17 +193,16 @@ export default {
                 id: 0,
                 quota: 0,
                 unit_price: 0,
-                seller_id:0,
+                seller_id: 0,
+                changed_price: 0,
             }, // 用于存储传递给对话框的数据
-            purchase_quota: 1, //购买的份额
-            purchase_price: 0, //购买的价格
             sort: {
                 prop: "price",
                 order: "ascending", // 'ascending' 或 'descending'
             },
             purchase_submit_error: "",
             purchase_submit_prompt_type: "",
-            changed_price:0.01
+            changed_price: 0.01,
         };
     },
     computed: {
@@ -214,9 +210,6 @@ export default {
             const start = (this.currentPage - 1) * this.pageSize;
             const end = start + this.pageSize;
             return this.tableData.slice(start, end);
-        },
-        purchase_price() {
-            return this.purchase_quota * this.dialogData.unit_price;
         },
     },
     methods: {
@@ -228,48 +221,6 @@ export default {
         handleCurrentChange(newPage) {
             this.currentPage = newPage;
             // this.fetchData();
-        },
-        fetchData() {
-            connector.test(
-            this.getSellMsgCallback, // 发送消息成功的回调函数
-            this.getSellMsgWaiting, // 发送消息等待中调用函数
-            this.getSellMsgSellTimeout, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data: {
-                    code: 0,
-                    QuotaSale: [
-                        {
-                            id:1,
-                            quota:1,
-                            seller_id:1,
-                            unit_price:1,
-                            month:1,
-                        },
-                        {
-                            id:1,
-                            quota:1,
-                            seller_id:1,
-                            unit_price:1,
-                            month:1,
-                        },
-                        
-                    ],
-                },
-            }
-        );
-        // 实际用
-        // let id = ""; // 获得用户ID
-        // connector.send(
-        //                     [id],//获得上月额度api的传参依次是用户ID
-        //                     "", //api名字
-        //                     this.submitPurchaseMsgCallback,
-        //                     this.submitPurchaseMsgWaiting,
-        //                     this.submitPurchaseMsgWaiting,
-        //                     60000 //限时
-        //                 );
         },
         generateData(pageSize, offset) {
             const data = [];
@@ -327,149 +278,200 @@ export default {
                 }
             });
         },
-        handlePurchase(row) {
+        handleChange(row) {
             //初始化购买提交提示
             this.purchase_submit_error = "";
-            this.purchase_submit_prompt_type = "",
-            // 传递当前行的id和额度给对话框
-            this.dialogData = {
-                id: row.id,
-                quota: row.quota,
-                unit_price: row.unit_price,
-                seller_id: row.seller_id,
-            };
+            (this.purchase_submit_prompt_type = ""),
+                // 传递当前行的id和额度给对话框
+                (this.dialogData = {
+                    id: row.id,
+                    quota: row.quota,
+                    unit_price: row.unit_price,
+                    seller_id: row.seller_id,
+                    changed_price: row.unit_price,
+                });
             // 打开对话框
             this.changeDialogVisible = true;
         },
         handleCancle(row) {
             //初始化购买提交提示
             this.purchase_submit_error = "";
-            this.purchase_submit_prompt_type = "",
-            // 传递当前行的id和额度给对话框
-            this.dialogData = {
-                id: row.id,
-                quota: row.quota,
-                unit_price: row.unit_price,
-                seller_id: row.seller_id,
-            };
+            (this.purchase_submit_prompt_type = ""),
+                // 传递当前行的id和额度给对话框
+                (this.dialogData = {
+                    id: row.id,
+                    quota: row.quota,
+                    unit_price: row.unit_price,
+                    seller_id: row.seller_id,
+                });
             // 打开对话框
             this.cancleDialogVisible = true;
         },
-        submitChangeMsgCallback(msg) {
-            if (msg.data.code === 0) {
-                // 发送购买请求数据成功
-                this.purchase_submit_prompt_type = "success";
-                this.purchase_submit_error = "修改成功";
-                this.carbon_button_can_click = true;
-            } else {
-                this.purchase_submit_prompt_type = "error";
-                this.purchase_submit_error = "修改失败";
-                this.carbon_button_can_click = true;
-            }
-        },
-        submitChangeMsgWaiting(is_waiting) {
-            if (is_waiting) {
-                this.carbon_button_can_click = false;
-                this.purchase_submit_prompt_type = "waiting";
-                this.purchase_submit_error = "发送修改请求中";
-            } else {
-                // this.reminder_exist = true;
-                this.purchase_submit_prompt_type = "default";
-                this.purchase_submit_error = "";
-                this.carbon_button_can_click = true;
-            }
-        },
-        submitChangeMsgTimeout() {
-            this.purchase_submit_prompt_type = "error";
-            this.purchase_submit_error = "修改失败";
-            this.carbon_button_can_click = true;
-        },
-        submitCancelMsgCallback(msg) {
-            if (msg.data.code === 0) {
-                // 发送购买请求数据成功
-                this.purchase_submit_prompt_type = "success";
-                this.purchase_submit_error = "取消出售成功";
-                this.carbon_button_can_click = true;
-            } else {
-                this.purchase_submit_prompt_type = "error";
-                this.purchase_submit_error = "取消出售失败";
-                this.carbon_button_can_click = true;
-            }
-        },
-        submitCancelMsgWaiting(is_waiting) {
-            if (is_waiting) {
-                this.carbon_button_can_click = false;
-                this.purchase_submit_prompt_type = "waiting";
-                this.purchase_submit_error = "发送取消出售请求中";
-            } else {
-                // this.reminder_exist = true;
-                this.purchase_submit_prompt_type = "default";
-                this.purchase_submit_error = "";
-                this.carbon_button_can_click = true;
-            }
+        getSellMsg(enterpriseId) {
+            let url =
+                "http://localhost:8080/enterprise/transaction/remain/" +
+                enterpriseId;
+            axios
+                .get(
+                    url
+                    //TODO /enterprise/transaction/remain/{account_id}
+                )
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        // console.log("resp.data111", resp.data);
+                        if (resp.data.code === 0) {
+                            // 请求数据成功
+                            this.prompt_type = "success";
+                            this.error = resp.data.message;
+                            this.tableData = resp.data.data;
+                            this.total = resp.data.data.length;
+                        } else {
+                            this.error = resp.data.message;
+                            this.prompt_type = "error";
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    } else {
+                        this.error = resp.data.message;
+                        this.prompt_type = "error";
+                        this.tableData = [];
+                        this.total = 0;
+                    }
+                })
+                .catch((error) => {
+                    this.error = "请求信息失败";
+                    this.prompt_type = "error";
+                    this.tableData = [];
+                    this.total = 0;
+                });
+            this.prompt_type = "waiting";
+            this.error = "请求信息中";
         },
         submitCancelMsgTimeout() {
             this.purchase_submit_prompt_type = "error";
             this.purchase_submit_error = "取消出售失败";
             this.carbon_button_can_click = true;
         },
-        carbonChangeSubmit(){
+        carbonChangeSubmit() {
             // 修改单价提交事件
-            // 测试用
-            connector.test(
-            this.submitChangeMsgCallback, // 发送消息成功的回调函数
-            this.submitChangeMsgWaiting, // 发送消息等待中调用函数
-            this.submitChangeMsgWaiting, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data:{
-                    code: 0,
+            let id = this.dialogData.id;
+            let unit_price = this.dialogData.changed_price;
+            let url =
+                "http://localhost:8080/enterprise/transaction/price?id=" +
+                id +
+                "&unit_price=" +
+                unit_price;
+            const patchData = {
+                id: id,
+                unit_price: unit_price,
+            };
+            ElMessageBox.confirm("确定要修改你的碳额度出售单价吗？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "info",
+            }).then(() => {
+                if (unit_price == this.dialogData.unit_price) {
+                    ElMessage({
+                        type: "warning",
+                        message: "修改后的单价不能等于原价",
+                    });
+                    return;
+                } else {
+                    //通过了格式检查，可以进行出售
+                    axios
+                        .patch(url, null, {
+                            params: patchData,
+                        })
+                        .then((resp) => {
+                            if (resp.status === 200) {
+                                if (resp.data.code === 0) {
+                                    // 提交成功
+                                    ElMessage({
+                                        message: "修改碳额度单价成功 !",
+                                        type: "success",
+                                    });
+                                } else {
+                                    ElMessage({
+                                        message: resp.data.message,
+                                        type: "error",
+                                    });
+                                }
+                            }
+                            this.changeDialogVisible = false;
+                            let enterpriseId = JSON.parse(
+                                localStorage.getItem("account")
+                            ).account_id;
+                            this.getSellMsg(enterpriseId);
+                        })
+                        .catch(() => {
+                            ElMessage({
+                                message: "修改额度单价失败，请检查网络",
+                                type: "error",
+                            });
+                            this.changeDialogVisible = false;
+                            let enterpriseId = JSON.parse(
+                                localStorage.getItem("account")
+                            ).account_id;
+                            this.getSellMsg(enterpriseId);
+                        });
                 }
-            }
-            )
-            let id = ""; //获取买家ID，具体方法待定
-            //实际用
-            // connector.send(
-            //                 [this.dialogData.id, this.changed_price],//单价修改api的传参依次是交易信息ID，修改后的单价
-            //                 "", //api名字
-            //                 this.submitPurchaseMsgCallback,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 60000 //限时
-            //             );
+            });
         },
-        carbonCancelSubmit(){
+        carbonCancelSubmit() {
             // 取消出售提交事件
-            // 测试用
-            connector.test(
-            this.submitCancelMsgCallback, // 发送消息成功的回调函数
-            this.submitCancelMsgWaiting, // 发送消息等待中调用函数
-            this.submitCancelMsgTimeout, // 当发送消息超调用的函数
-            2000, // 超时等待时间 当且仅当success=false有效
-            true, // 此次测试是按照成功测试还是按照超时测试
-            5000, // 成功等待时间 当且仅当success=true有效
-            {
-                data:{
-                    code: 0,
-                }
-            }
-            )
-            let id = ""; //获取买家ID，具体方法待定
-            //实际用
-            // connector.send(
-            //                 [this.dialogData.id],//删除出售信息购买api的传参依次是交易信息ID
-            //                 "", //api名字
-            //                 this.submitPurchaseMsgCallback,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 this.submitPurchaseMsgWaiting,
-            //                 60000 //限时
-            //             );
-        }
+            let id = this.dialogData.id;
+            console.log("id", id);
+            let url = "http://localhost:8080/enterprise/transaction/" + id;
+            console.log("url", url);
+            ElMessageBox.confirm("确定要取消这条额度出售吗？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "info",
+            }).then(() => {
+                //通过了格式检查，可以进行出售
+                axios
+                    .delete(url)
+                    .then((resp) => {
+                        if (resp.status === 200) {
+                            if (resp.data.code === 0) {
+                                // 提交成功
+                                ElMessage({
+                                    message: "取消出售成功 !",
+                                    type: "success",
+                                });
+                            } else {
+                                ElMessage({
+                                    message: resp.data.message,
+                                    type: "error",
+                                });
+                            }
+                        }
+                        this.cancleDialogVisible = false;
+                        let enterpriseId = JSON.parse(
+                            localStorage.getItem("account")
+                        ).account_id;
+                        this.getSellMsg(enterpriseId);
+                    })
+                    .catch(() => {
+                        ElMessage({
+                            message: "取消出售失败，请检查网络",
+                            type: "error",
+                        });
+                        this.cancleDialogVisible = false;
+                        let enterpriseId = JSON.parse(
+                            localStorage.getItem("account")
+                        ).account_id;
+                        this.getSellMsg(enterpriseId);
+                    });
+            });
+        },
     },
     mounted() {
-        this.fetchData(); // 组件挂载完成后获取数据
+        // this.fetchData(); // 组件挂载完成后获取数据
+        let enterpriseId = JSON.parse(
+            localStorage.getItem("account")
+        ).account_id;
+        this.getSellMsg(enterpriseId);
     },
     components: {
         linePrompt,
@@ -492,7 +494,7 @@ export default {
 .table_container {
     width: 100%;
     height: 98%;
-    border: solid 1px red;
+    border: 1px solid rgb(141,53,159);
     overflow: scroll;
 }
 .line_reminder {

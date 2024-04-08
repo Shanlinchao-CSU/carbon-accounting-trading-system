@@ -10,7 +10,7 @@
     </div>
 </template>
 
-<script>
+<script> 
 import carbonAccounting from "./components/carbonAccounting.vue";
 import carbonAccountingSubpage_2 from "./components/subPages/carbonAccountingSubpage_2.vue";
 import carbonAccountingSubpage_10 from "./components/subPages/carbonAccountingSubpage_10.vue";

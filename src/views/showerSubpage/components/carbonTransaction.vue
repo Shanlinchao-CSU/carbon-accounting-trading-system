@@ -31,7 +31,7 @@
                 <carbonTransactionMine></carbonTransactionMine>
             </div>
             <div ref="son_3" class="son_subpage" style="left: 100%">
-                <carbonTransaction_purchase></carbonTransaction_purchase>
+                <carbonTransactionReview></carbonTransactionReview>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@ import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import carbonTransaction_sell from "@/views/showerSubpage/components/subPages/carbonTransaction_sell.vue"
 import carbonTransaction_purchase from "@/views/showerSubpage/components/subPages/carbonTransaction_purchase.vue"
 import carbonTransactionMine from "@/views/showerSubpage/components/subPages/carbonTransactionMine.vue"
-
+import carbonTransactionReview from "@/views/showerSubpage/components/subPages/carbonTransactionReview.vue"
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 // import { Select } from "@element-plus/icons-vue/dist/types";
@@ -75,7 +75,7 @@ export default {
         
     },
     mounted() {
-        let enterprisetype = Storage.get("enterprisetype");
+        // let enterprisetype = Storage.get("enterprisetype");
     },
     components: {
         textInput,
@@ -84,7 +84,8 @@ export default {
         modelSelect,
         carbonTransaction_sell,
         carbonTransaction_purchase,
-        carbonTransactionMine
+        carbonTransactionMine,
+        carbonTransactionReview
     },
 
     created() {},
