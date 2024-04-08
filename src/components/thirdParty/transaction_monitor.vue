@@ -242,6 +242,18 @@ function filterHandler(value,row) {
 
 onMounted(async () => {
   await getData()
+  let array_update = []
+  array_update.push({account:10,coin:144,remain:200})
+  array_update.push({account:20,coin:288,remain:100})
+  axios
+      .post(`${$target}/general/block/info/update`, JSON.stringify(array_update), {
+        headers: {
+          "Content-Type": "application/json;charset=utf-8"
+        }
+      })
+      .then(resp => {
+        console.log(resp)
+      })
 })
 </script>
 
