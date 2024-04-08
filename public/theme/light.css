@@ -61,7 +61,7 @@
 }
 /* 主页背景 */
 :root{
-    --bg-img-src:url("./img/bg/bg_light.png");
+    --bg-img-src:url("../img/bg/bg_light.png");
 }
 /* 主页文字 */
 :root{
@@ -71,13 +71,13 @@
 }
 /* shutter */
 :root{
-    --shutter-top-img-src:url("./img/shutter/top_light.png");
-    --shutter-bottom-img-src:url("./img/shutter/bottom_light.png");
+    --shutter-top-img-src:url("../img/shutter/top_light.png");
+    --shutter-bottom-img-src:url("../img/shutter/bottom_light.png");
 }
 /* navbar */
 :root{
-    --navbar-bg-bg-img:url("./img/bar/nav/bg_light_new.png");
-    --navbar-bar-bg-img:url("./img/bar/nav/nav_bar_light.png");
+    --navbar-bg-bg-img:url("../img/bar/nav/bg_light_new.png");
+    --navbar-bar-bg-img:url("../img/bar/nav/nav_bar_light.png");
     --navbar-font-color:rgb(0, 0, 0);
     --nav-user-name-color:rgb(0, 0, 0);
 }

@@ -51,12 +51,12 @@ input {
 }
 :root {
     /* 吉祥物相关 */
-    --harvest-probe-default-src: url("./img/mascots/harvest/probe_default.png"); /* harvest 探头默认图片 */
-    --harvest-probe-password-src: url("./img/mascots/harvest/probe_default_password.png"); /* harvest 探头输入密码时图片 */
-    --harvest-probe-hand-src: url("./img/mascots/harvest/probe_default_hand.png"); /* harvest 手图片 */
+    --harvest-probe-default-src: url("../img/mascots/harvest/probe_default.png"); /* harvest 探头默认图片 */
+    --harvest-probe-password-src: url("../img/mascots/harvest/probe_default_password.png"); /* harvest 探头输入密码时图片 */
+    --harvest-probe-hand-src: url("../img/mascots/harvest/probe_default_hand.png"); /* harvest 手图片 */
 
-    --snow-probe-default-src: url("./img/mascots/snow/probe_default.png"); /* snow 探头默认图片 */
-    --snow-probe-password-src: "./img/mascots/snow/probe_base.png"; /* snow 探头输入密码时图片 */
+    --snow-probe-default-src: url("../img/mascots/snow/probe_default.png"); /* snow 探头默认图片 */
+    --snow-probe-password-src: "../img/mascots/snow/probe_base.png"; /* snow 探头输入密码时图片 */
 }
 :root{
     /* element plus */
@@ -268,7 +268,7 @@ input {
     position:absolute;
     z-index: 1000;
     border: 0.1px solid rgba(128, 128, 128, 0.056);
-    box-shadow: 0px 0px 1px gray;
+    box-shadow: 0px 0px 1px grey;
     font-size: 16px;
     font-weight: 500;
     font-family: Heiti;

@@ -10,7 +10,7 @@
     --upload-button-hover-background-color:rgb(154, 154, 154);
     --upload-button-font-color:rgb(167, 167, 167);
     --upload-button-hover-font-color:black;
-    --box-header-bottom-border-color:gray;
+    --box-header-bottom-border-color:grey;
 }
 /* :defaultDialogBox */
 :root{
@@ -19,7 +19,7 @@
 }
 /* confirmButton */
 :root{
-    --confirm-button-color:gray;
+    --confirm-button-color:grey;
 }
 /* personalMsgSettingSubpage */
 :root{
@@ -62,7 +62,7 @@
 }
 /* 主页背景 */
 :root{
-    --bg-img-src:url("./img/bg/bg_dark.png");
+    --bg-img-src:url("../img/bg/bg_dark.png");
 }
 /* 主页文字 */
 :root{
@@ -72,13 +72,13 @@
 }
 /* shutter */
 :root{
-    --shutter-top-img-src:url("./img/shutter/top_dark.png");
-    --shutter-bottom-img-src:url("./img/shutter/bottom_dark.png");
+    --shutter-top-img-src:url("../img/shutter/top_dark.png");
+    --shutter-bottom-img-src:url("../img/shutter/bottom_dark.png");
 }
 /* navbar */
 :root{
-    --navbar-bg-bg-img:url("./img/bar/nav/bg_dark_new.png");
-    --navbar-bar-bg-img:url("./img/bar/nav/nav_bar_dark.png");
+    --navbar-bg-bg-img:url("../img/bar/nav/bg_dark_new.png");
+    --navbar-bar-bg-img:url("../img/bar/nav/nav_bar_dark.png");
     --navbar-font-color:#822296;
     --nav-user-name-color:#822296;
 }
@@ -112,5 +112,5 @@
 }
 /* showerBar */
 :root{
-    --shower-bar-color:gray;
+    --shower-bar-color:grey;
 }
