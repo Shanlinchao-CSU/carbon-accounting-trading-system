@@ -9,14 +9,17 @@
                 </div>
             </template>
         </el-dialog>
-        <div class="title">您的企业类型是:{{ company_type_name }}</div>
+        <div class="main_title">碳核算：{{ company_type_name }}</div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form" style="
+                <el-form
+                    ref="form"
+                    style="
                         display: flex;
                         align-items: center;
                         flex-direction: column;
-                    ">
+                    "
+                >
                     <el-form-item label="请输入企业退役设备数量">
                         <el-input-number
                             v-model="rec_num"
@@ -57,11 +60,14 @@
         </div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form"  style="
+                <el-form
+                    ref="form"
+                    style="
                         display: flex;
                         align-items: center;
                         flex-direction: column;
-                    ">
+                    "
+                >
                     <el-form-item label="请输入企业修理设备数量">
                         <el-input-number
                             v-model="rep_num"
@@ -102,11 +108,14 @@
         </div>
         <div class="part">
             <el-scrollbar>
-                <el-form ref="form" style="
+                <el-form
+                    ref="form"
+                    style="
                         display: flex;
                         align-items: center;
                         flex-direction: column;
-                    ">
+                    "
+                >
                     <el-form-item label="请输入电厂上网电量">
                         <el-input-number
                             v-model="el_net"
@@ -135,6 +144,12 @@
                             :precision="2"
                         />
                     </el-form-item>
+                    <el-form-item label="请输入区域电网年平均供电排放因子">
+                        <el-input-number v-model="ef" :min="0" :precision="2" />
+                    </el-form-item>
+                    <el-form-item label="请输入您的碳核算结果">
+                        <el-input-number v-model="user_result" :precision="2" />
+                    </el-form-item>
                 </el-form>
                 <el-upload
                     action="#"
@@ -161,6 +176,7 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import axios from "axios";
+import {ElMessage} from "element-plus";
 // import { Select } from "@element-plus/icons-vue/dist/types";
 export default {
     data() {
@@ -177,6 +193,8 @@ export default {
             el_input: 0, //自外省输入电量
             el_output: 0, //自外省输出电量
             el_sell: 0, // 售电量
+            ef: 0, //区域电网年平均供电排放因子
+            user_result: 0, //用户自己核算的结果
         };
     },
     methods: {
@@ -232,27 +250,50 @@ export default {
         },
         upload(fileObject) {
             let params = new FormData();
-            let url;
-            let enterprisetype = Storage.get("enterprisetype");
-            params.append("file", fileObject.file);
-            params.append("enterprise_type", enterprisetype);
-            params.append("rec_cap_arr", this.rec_cap_arr);
-            params.append("rec_pra_arr", this.rec_pra_arr);
-            params.append("rep_cap_arr", this.rep_cap_arr);
-            params.append("rep_pra_arr", this.rep_pra_arr);
-            params.append("rec_num", this.rec_num);
-            params.append("rep_num", this.rep_num);
-            params.append("el_net", this.el_net);
-            params.append("el_input", this.el_input);
-            params.append("el_output", this.el_output);
-            params.append("el_sell", this.el_sell);
-            url = "http://localhost:8080/enterprise/info";
+            let url = "http://localhost:8080/enterprise/accounting_record";
+            let enterprise_id = JSON.parse(
+                localStorage.getItem("account")
+            ).account_id;
+            let variable_json = {
+                rec_cap_arr: this.rec_cap_arr,
+                rec_pra_arr: this.rec_pra_arr,
+                rep_cap_arr: this.rep_cap_arr,
+                rep_pra_arr: this.rep_pra_arr,
+                rec_num: this.rec_num,
+                rep_num: this.rep_num,
+                el_net: this.el_net,
+                el_input: this.el_input,
+                el_output: this.el_output,
+                el_sell: this.el_sell,
+                ef: this.ef,
+            };
+            let result = this.user_result;
+            let file = fileObject.file;
+            params.append("enterprise_id", enterprise_id);
+            params.append("variable_json", JSON.stringify(variable_json));
+            params.append("result", result);
+            params.append("file", file);
             axios({
                 url: url,
                 method: "POST",
                 data: params,
                 headers: { "Content-Type": "multipart/form-data" },
-            }).then((resp) => {});
+            }).then((resp) => {
+                if (resp.status === 200) {
+                    if (resp.data.code === 0) {
+                        // 提交成功
+                        ElMessage({
+                            message: resp.data.message,
+                            type: "success",
+                        });
+                    } else {
+                        ElMessage({
+                            message: resp.data.message,
+                            type: "error",
+                        });
+                    }
+                }
+            });
         },
         clearData() {
             this.rec_num = 1;
@@ -261,18 +302,56 @@ export default {
             this.el_input = 0;
             this.el_output = 0;
             this.el_sell = 0;
+            this.ef = 0;
+            this.user_result = 0;
             this.rec_cap_arr = [0];
             this.rep_cap_arr = [0];
             this.rec_pra_arr = [0];
             this.rep_pra_arr = [0];
             this.$refs.uploadBox.clearFiles();
-            // console.log("rec_cap_arr:",this.rec_cap_arr);
-            // console.log("rec_pra_arr:",this.rec_pra_arr);
-            // console.log("rep_cap_arr:",this.rep_cap_arr);
-            // console.log("rep_pra_arr:",this.rep_pra_arr);
         },
         submitData() {
             this.$refs.uploadBox.submit();
+        },
+        async sendData(fileObject) {
+            try {
+                // 定义要发送的四个参数
+                const enterprise_id = JSON.parse(
+                    localStorage.getItem("account")
+                ).account_id;
+                const variable_json = {
+                    rec_cap_arr: this.rec_cap_arr,
+                    rec_pra_arr: this.rec_pra_arr,
+                    rep_cap_arr: this.rep_cap_arr,
+                    rep_pra_arr: this.rep_pra_arr,
+                    rec_num: this.rec_num,
+                    rep_num: this.rep_num,
+                    el_net: this.el_net,
+                    el_input: this.el_input,
+                    el_output: this.el_output,
+                    el_sell: this.el_sell,
+                    ef: this.ef,
+                };
+                const result = this.user_result;
+                const file = fileObject.file;
+
+                // 使用axios发送POST请求
+                const response = await axios.post(
+                    "http://localhost:8080/enterprise/transaction/remain",
+                    {
+                        enterprise_id,
+                        variable_json,
+                        result,
+                        file,
+                    }
+                );
+
+                // 处理请求成功的响应
+                console.log("Response:", response.data);
+            } catch (error) {
+                // 处理请求失败的情况
+                console.error("Error:", error);
+            }
         },
     },
     mounted() {
@@ -359,9 +438,18 @@ export default {
     /* flex-grow: 1;
     flex-basis: 0; */
     width: 33.3%;
-    height:92%;
+    height: 92%;
     border: solid 1px rgb(141, 53, 159);
     position: relative;
     top: 8%;
+}
+.main_title {
+    position: absolute;
+    width: 100%;
+    /* height: 60px; */
+    color: black;
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 60px;
 }
 </style>

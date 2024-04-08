@@ -1,5 +1,5 @@
 const API = {
-    host: "http://127.0.0.1",
+    host: "http://localhost",
     port: ":8000/",
     api: {
         register: "sendEmailVerification/",

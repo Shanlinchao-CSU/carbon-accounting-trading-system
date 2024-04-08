@@ -1,7 +1,7 @@
 <template>
     <div style="width: 100%;height: 100%;flex-direction: row;display: flex;align-items: center;">
-        <defaultAvatar class="nav_avatar">登录</defaultAvatar>
-        <div class="nav_avatar_name">{{ user_name }}</div>
+        <!-- <defaultAvatar class="nav_avatar">登录</defaultAvatar> -->
+        <!-- <div class="nav_avatar_name">{{ user_name }}</div> -->
     </div>
 </template>
 <script>
