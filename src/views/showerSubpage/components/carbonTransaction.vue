@@ -62,7 +62,7 @@ export default {
             return this.$refs.container.offsetTop;
         },
         clickNav(index) {
-            this.son_pages = [false, false,false,false];
+            this.son_pages = [false, false,false];
             this.son_pages[index] = true;
             this.son_pages.forEach((element, i) => {
                 this.$refs["son_" + i.toString()].style.left =
