@@ -62,6 +62,7 @@ import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import axios from "axios";
+import $target from "@/main";
 // import { Select } from "@element-plus/icons-vue/dist/types";
 export default {
     props: ["goToCarbonAccounting", "goToLogin"],
@@ -123,7 +124,7 @@ export default {
             let carbonValue = this.carbonValue;
             let carbonPrice = this.carbonPrice;
             let url =
-                "http://localhost:8080/enterprise/transaction/publish?account_id=" +
+                `${$target}/enterprise/transaction/publish?account_id=` +
                 account_id +
                 "&quota=" +
                 carbonValue +
