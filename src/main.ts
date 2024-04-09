@@ -46,7 +46,7 @@ app
             theme.theme === "light" ? "./theme/light.css" : "./theme/dark.css";
         document.getElementsByTagName("head")[0].appendChild(link_suit);
     })(); // 加载css文件
-let $target = "http://localhost:8080";
+let $target = "http://localhost:8080/api";
 let $node_target = "http://localhost:8888";
 export default $target
 app.config.globalProperties.$axios = axios;

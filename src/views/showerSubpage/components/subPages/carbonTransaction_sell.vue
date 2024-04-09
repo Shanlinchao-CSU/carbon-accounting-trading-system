@@ -12,6 +12,9 @@
         </button>
     </div>
     <div class="main_title">您当前的剩余额度为:{{ carbonCount }}</div>
+    <div class="warning_reminder" style="color: red" v-if="warningVisible">
+        您的剩余额度不足，请尽快购买额度！
+    </div>
     <div class="input_container">
         <el-form style="display: flex; flex-direction: column">
             <el-form-item :label="`请输入您欲出售的额度`">
@@ -70,12 +73,13 @@ export default {
         return {
             isLogin: true, //是否已经登录
             hasAccounted: true, //是否已经进行过核算
-            carbonCount: 100, //剩余碳额度,从后端得到
+            carbonCount: 0, //剩余碳额度,从后端得到
             carbonValue: 0, //用户输入的欲出售的碳额度
             carbonPrice: 0, //用户输入的碳额度出售价格
             carbon_sell_button_can_click: true,
             prompt_type: "",
             error: "",
+            warningVisible: false,
         };
     },
     methods: {
@@ -108,6 +112,51 @@ export default {
                 this.prompt_type = "default";
                 this.error = "";
             }
+        },
+        getCarbonCount() {
+            let account_id = JSON.parse(
+                localStorage.getItem("account")
+            ).account_id;
+            let url = `${$target}/enterprise/transaction/remain/${account_id}/last`;
+            axios
+                .get(url)
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        if (resp.data.code === 0) {
+                            // 获取成功
+                            // console.log("获取成功");
+                            // console.log(typeof resp.data.data);
+                            this.carbonCount = resp.data.data;
+                            if (carbonCount <= 0) {
+                                this.warningVisible = true;
+                            }
+                            console.log(this.carbonCount, "this.carbonCount");
+                        } else {
+                            ElMessage({
+                                message: resp.data.message,
+                                type: "error",
+                            });
+                        }
+                    }
+                })
+                .catch(() => {
+                    console.error("请求出错:", error);
+                    if (error.response) {
+                        // 请求已经发出，但服务器响应返回了状态码超出了 2xx 范围
+                        console.error("状态码:", error.response.status);
+                        console.error("响应数据:", error.response.data);
+                    } else if (error.request) {
+                        // 请求已经发出，但没有收到响应
+                        console.error("请求未收到响应:", error.request);
+                    } else {
+                        // 其他错误
+                        console.error("错误信息:", error.message);
+                    }
+                    ElMessage({
+                        message: "查询剩余碳额度失败，请检查网络",
+                        type: "error",
+                    });
+                });
         },
         carbonSellTimeout() {
             this.prompt_type = "error";
@@ -188,9 +237,7 @@ export default {
         },
     },
     mounted() {
-        if (Storage.get("carbonCount") != "undefined") {
-            this.carbonCount = Storage.get("carbonCount"); //示例，具体按照存数据规则
-        }
+        this.getCarbonCount();
     },
     components: {
         textInput,
