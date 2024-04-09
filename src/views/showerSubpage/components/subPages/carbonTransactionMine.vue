@@ -174,6 +174,7 @@ import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 import axios from "axios";
+import $target from "@/main";
 export default {
     data() {
         return {
@@ -309,7 +310,7 @@ export default {
         },
         getSellMsg(enterpriseId) {
             let url =
-                "http://localhost:8080/enterprise/transaction/remain/" +
+                `${$target}/enterprise/transaction/remain/` +
                 enterpriseId;
             axios
                 .get(
@@ -357,7 +358,7 @@ export default {
             let id = this.dialogData.id;
             let unit_price = this.dialogData.changed_price;
             let url =
-                "http://localhost:8080/enterprise/transaction/price?id=" +
+                `${$target}/enterprise/transaction/price?id=` +
                 id +
                 "&unit_price=" +
                 unit_price;
@@ -421,7 +422,7 @@ export default {
             // 取消出售提交事件
             let id = this.dialogData.id;
             console.log("id", id);
-            let url = "http://localhost:8080/enterprise/transaction/" + id;
+            let url = `${$target}/enterprise/transaction/` + id;
             console.log("url", url);
             ElMessageBox.confirm("确定要取消这条额度出售吗？", "提示", {
                 confirmButtonText: "确定",

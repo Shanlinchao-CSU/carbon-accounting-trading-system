@@ -342,48 +342,50 @@ export default {
                 }
             }
         },
+        // getSellMsg() {
+        //     let url =  `${$target}/enterprise/transaction/remain`
+        //     axios
+        //         .get(
+        //             url
+        //             ////TODO /enterprise/transaction/remain
+        //         )
+        //         .then((resp) => {
+        //             console.log("resp.data.data", resp.data.data);
+        //             if (resp.status === 200) {
+        //                 if (resp.data.code === 0) {
+        //                     // 请求数据成功
+        //                     this.prompt_type = "success";
+        //                     this.error = "请求信息成功";
+        //                     // console.log("resp.data.data", resp.data.data);
+        //                     this.tableData = resp.data.data;
+        //                     this.total = resp.data.data.length;
+        //                 } else {
+        //                     this.error = "请求信息失败";
+        //                     this.prompt_type = "error";
+        //                     this.tableData = [];
+        //                     this.total = 0;
+        //                 }
+        //             } else {
+        //                 this.error = "请求信息失败";
+        //                 this.prompt_type = "error";
+        //                 this.tableData = [];
+        //                 this.total = 0;
+        //             }
+        //         })
+        //         .catch((error) => {
+        //             this.error = "请求信息失败";
+        //             this.prompt_type = "error";
+        //             this.tableData = [];
+        //             this.total = 0;
+        //         });
+        //     this.prompt_type = "waiting";
+        //     this.error = "请求信息中";
+        // },
         getSellMsg() {
+            let url =  `${$target}/enterprise/transaction/remain`
             axios
                 .get(
-                    "http://localhost:8080/enterprise/transaction/remain"
-                    ////TODO /enterprise/transaction/remain
-                )
-                .then((resp) => {
-                    console.log("resp.data.data", resp.data.data);
-                    if (resp.status === 200) {
-                        if (resp.data.code === 0) {
-                            // 请求数据成功
-                            this.prompt_type = "success";
-                            this.error = "请求信息成功";
-                            // console.log("resp.data.data", resp.data.data);
-                            this.tableData = resp.data.data;
-                            this.total = resp.data.data.length;
-                        } else {
-                            this.error = "请求信息失败";
-                            this.prompt_type = "error";
-                            this.tableData = [];
-                            this.total = 0;
-                        }
-                    } else {
-                        this.error = "请求信息失败";
-                        this.prompt_type = "error";
-                        this.tableData = [];
-                        this.total = 0;
-                    }
-                })
-                .catch((error) => {
-                    this.error = "请求信息失败";
-                    this.prompt_type = "error";
-                    this.tableData = [];
-                    this.total = 0;
-                });
-            this.prompt_type = "waiting";
-            this.error = "请求信息中";
-        },
-        getSellMsg() {
-            axios
-                .get(
-                    "http://localhost:8080/enterprise/transaction/remain"
+                    url
                     ////TODO /enterprise/transaction/remain
                 )
                 .then((resp) => {

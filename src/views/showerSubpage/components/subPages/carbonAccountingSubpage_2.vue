@@ -335,10 +335,10 @@ export default {
                 };
                 const result = this.user_result;
                 const file = fileObject.file;
-
+                let url = `${$target}/enterprise/transaction/remain`
                 // 使用axios发送POST请求
                 const response = await axios.post(
-                    "http://localhost:8080/enterprise/transaction/remain",
+                    url,
                     {
                         enterprise_id,
                         variable_json,
