@@ -40,7 +40,11 @@
                     prop="conductor_id"
                     label="处理人ID"
                     fit="true"
-                ></el-table-column>
+                >
+                  <template #default="scope">
+                    {{scope.row.conductor_id === 0 ? "待处理" : scope.row.conductor_id}}
+                  </template>
+                </el-table-column>
                 <el-table-column
                     prop="account_name"
                     label="用户名"
@@ -116,7 +120,6 @@ export default {
             axios
                 .get(
                     url
-                    //TODO /enterprise/accounting_record/{enterprise_id}
                 )
                 .then((resp) => {
                     if (resp.status === 200) {

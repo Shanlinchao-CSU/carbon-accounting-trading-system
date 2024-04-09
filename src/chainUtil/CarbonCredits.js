@@ -54,33 +54,30 @@ const App = {
         //code为0则成功,1为交易失败,2为授权失败,3为MetaMask未成功安装
         await App.init()
         if (window.ethereum) {
-            window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(async accounts => {
-                    await App.carbonCoinContract.methods.approve(address, App.web3.utils.toWei(_price, 'ether'))
-                        .send({
-                            from: accounts[0],
-                            gas: '1000000',
-                            gasPrice: 1000000000
-                        })
-                        .on('error', error => {
-                            console.log(error)
-                            return {code:1}
-                        })
-                    await App.contract.methods.carbonTransaction(_to,_amount,App.web3.utils.toWei(_price, 'ether'))
-                        .send({
-                            from: accounts[0],
-                            gas: '1000000',
-                            gasPrice: 1000000000
-                        })
-                        .on('receipt', receipt => {
-                            return {code:0,hash:receipt.transactionHash}
-                        })
+            let error,accounts = await window.ethereum.request({method:'eth_requestAccounts'})
+            if (error) {
+                return {code:2}
+            }
+            await App.carbonCoinContract.methods.approve(address, App.web3.utils.toWei(_price,'ether'))
+                .send({
+                    from: accounts[0],
+                    gas: '1000000',
+                    gasPrice: 1000000000
+                })
+                .on('error', error => {
+                    console.log(error)
                     return {code:1}
                 })
-                .catch((error) => {
-                    console.log(error)
-                    return {code:2}
-                });
+            await App.contract.methods.carbonTransaction(_to,_amount,App.web3.utils.toWei(_price, 'ether'))
+                .send({
+                    from: accounts[0],
+                    gas: '1000000',
+                    gasPrice: 1000000000
+                })
+                .on('receipt', receipt => {
+                    return {code:0,hash:receipt.transactionHash}
+                })
+            return {code:1}
         } else {
             return {code:3}
         }
@@ -89,27 +86,24 @@ const App = {
     issueAllowance: async function(public_key,amount){
         await App.init()
         if (window.ethereum) {
-            window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(async accounts => {
-                    await App.contract.methods.resetAllowance(public_key,amount)
-                        .send({
-                            from: accounts[0],
-                            gas: '1000000',
-                            gasPrice: 1000000000
-                        })
-                        .on('receipt',receipt => {
-                            console.log(receipt)
-                        })
-                        .on('error', error => {
-                            console.log(error)
-                            return 1
-                        })
+            let error,accounts = await window.ethereum.request({method:'eth_requestAccounts'})
+            if (error) {
+                return {code:2}
+            }
+            await App.contract.methods.resetAllowance(public_key,amount)
+                .send({
+                    from: accounts[0],
+                    gas: '1000000',
+                    gasPrice: 1000000000
+                })
+                .on('receipt',receipt => {
+                    console.log(receipt)
                     return 0
                 })
-                .catch((error) => {
+                .on('error', error => {
                     console.log(error)
-                    return 2
-                });
+                    return 1
+                })
         } else {
             return 3
         }

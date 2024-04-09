@@ -30,9 +30,6 @@
             <div ref="son_2" class="son_subpage" style="left: 100%">
                 <carbonTransactionMine></carbonTransactionMine>
             </div>
-            <div ref="son_3" class="son_subpage" style="left: 100%">
-                <carbonTransactionReview></carbonTransactionReview>
-            </div>
         </div>
     </div>
 </template>
@@ -55,8 +52,8 @@ export default {
     props: ['goToCarbonAccounting','goToLogin'],
     data() {
         return {
-            son_pages: [true, false,false,false],
-            son_pages_name: ["碳额度出售", "碳额度购买","我的出售","交易记录"],
+            son_pages: [true, false,false],
+            son_pages_name: ["碳额度出售", "碳额度购买","我的出售"],
             company_type_name: "发电企业",
         };
     },

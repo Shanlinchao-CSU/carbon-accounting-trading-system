@@ -53,6 +53,7 @@
       </template>
       <template #default="scope">
         <div style="display: flex;justify-content: space-around">
+          <el-button link @click="verify(scope.row.id)" style="font-size: 18px">验证</el-button>
           <el-button link type="success" @click="handle_record(true,scope.row)" style="font-size: 18px">批准</el-button>
           <el-button link type="danger" @click="handle_record(false,scope.row)" style="font-size: 18px">驳回</el-button>
         </div>
@@ -96,6 +97,7 @@ import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
 import $target from "@/main";
+import $node_target from "@/main"
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -169,6 +171,34 @@ function changePage(page) {
   record_show.value = get_data_for_show(page)
   currentPage.value = page
 }
+function verify(id) {
+  axios
+      .get(`${$target}/dataAuditors/verify_result?id=`+id)
+      .then(res => {
+        console.log(res.data)
+        if (res.status === 200) {
+          if (res.data.code === 0) {
+            ElMessage({
+              type: 'success',
+              message: '通过验证,核算结果正确!',
+            })
+          }else {
+            alert(res.data.data)
+            ElMessage({
+              message: "审核未通过,计算结果为"+res.data.data,
+              type: 'error',
+              offset: 70
+            })
+          }
+        }else {
+          ElMessage({
+            message: "失 败 , 请 检 查 网 络 !",
+            type: 'error',
+            offset: 70
+          })
+        }
+      })
+}
 function handle_record(state,row) {
   if (state) {
     ElMessageBox.confirm(
@@ -187,7 +217,7 @@ function handle_record(state,row) {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
                     axios
-                        .post("http://127.0.0.1:8888/api/submitCarbonReport?report="+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
+                        .post(`${$node_target}/api/submitCarbonReport?report=`+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
                         .then(resp=>{
                           if (resp.status === 200) {
                             ElMessage({
