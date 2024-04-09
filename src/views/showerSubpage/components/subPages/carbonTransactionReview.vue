@@ -76,6 +76,7 @@ import Checker from "@/assets/js/checker/checker.js";
 import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import axios from "axios";
+import $target from "@/main";
 // import { Select } from "@element-plus/icons-vue/dist/types";
 export default {
     data() {
@@ -112,7 +113,7 @@ export default {
         },
         getSellMsg(enterpriseId) {
             let url =
-                "http://localhost:8080/enterprise/transaction/finished/" +
+                `${$target}/enterprise/transaction/finished/` +
                 enterpriseId;
             axios
                 .get(
