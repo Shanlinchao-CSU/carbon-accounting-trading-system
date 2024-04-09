@@ -273,7 +273,6 @@ export default {
             this.carbon_purchase_button_can_click = true;
         },
         async carbonSellSubmit() {
-            //TODO seller_publicKey,amount和price需要给出
             let seller_publicKey = this.dialogData.seller_public_key;
             let amount = this.purchase_quota;
             let price = this.dialogData.unit_price;
@@ -287,7 +286,6 @@ export default {
                 let code = result.code;
                 if (code === 0) {
                     let array_update = [];
-                    //TODO 需要把buyer和seller的public_key和id更换为真正的
                     let buyer_public_key = JSON.parse(
                         localStorage.getItem("account")
                     ).public_key;
@@ -302,7 +300,6 @@ export default {
                     seller = await App.getCoinAmount(seller_public_key);
                     seller.account = seller_id;
                     array_update.push(seller);
-                    //TODO 这里的axios是让后端数据库中account的额度和碳币与区块链上同步
                     axios
                         .post(
                             `${$target}/general/block/info/update`,

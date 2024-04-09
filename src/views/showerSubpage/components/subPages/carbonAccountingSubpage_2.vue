@@ -177,6 +177,7 @@ import modelSelect from "@/components/selects/borderSelect/modelSelect.vue";
 import store from "@/store/index.js";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import $target from "@/main";
 // import { Select } from "@element-plus/icons-vue/dist/types";
 export default {
     data() {
@@ -250,7 +251,7 @@ export default {
         },
         upload(fileObject) {
             let params = new FormData();
-            let url = "http://localhost:8080/enterprise/accounting_record";
+            let url = `${$target}/enterprise/accounting_record`;
             let enterprise_id = JSON.parse(
                 localStorage.getItem("account")
             ).account_id;

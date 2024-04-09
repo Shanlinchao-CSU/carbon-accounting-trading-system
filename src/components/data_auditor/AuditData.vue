@@ -187,9 +187,8 @@ function handle_record(state,row) {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
                     axios
-                        .post("http://127.0.0.1:8888/api/submitCarbonReport?report="+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key)
+                        .post("http://127.0.0.1:8888/api/submitCarbonReport?report="+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
                         .then(resp=>{
-                          console.log(resp)
                           if (resp.status === 200) {
                             ElMessage({
                               type: 'success',
@@ -199,7 +198,6 @@ function handle_record(state,row) {
                             getData(true, false)
                           }
                         })
-                    //console.log(await App.uploadReport(generateCarbonReport(row), parseInt(row.result), "0x2F875A7c2069a7b389C24e6227755cDE6494e56D"))
                   } else {
                     ElMessage({
                       type: 'error',
