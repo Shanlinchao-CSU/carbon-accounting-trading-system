@@ -47,7 +47,11 @@
       </template>
     </el-table-column>
     <el-table-column prop="t_coin" label="炭币余额" width="140" sortable="custom"/>
-    <el-table-column prop="phone" label="手机号码" width="220"/>
+    <el-table-column prop="phone" label="手机号码" width="220">
+      <template #default="scope">
+        {{scope.row.phone === "" || scope.row.phone === null ? "无" : scope.row.phone}}
+      </template>
+    </el-table-column>
     <el-table-column prop="email" label="电子邮箱" width="300"/>
     <el-table-column fixed="right" width="220" align="center">
       <template #header>

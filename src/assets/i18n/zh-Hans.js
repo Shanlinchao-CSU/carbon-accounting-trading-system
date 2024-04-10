@@ -39,7 +39,7 @@ export default {
                 other: "其他",
             },
             main_word: {
-                from: "中南大学计算机学院&南开大学软件学院",
+                from: "",
             },
         },
         shower_page: {

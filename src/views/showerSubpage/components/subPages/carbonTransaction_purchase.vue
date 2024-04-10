@@ -76,9 +76,34 @@
         <el-dialog
             v-model="dialogVisible"
             title="碳交易: 额度购买"
-            width="800px"
+            width="320"
         >
-            <div class="dialog_container">
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 3%">
+            <el-text style="margin-right: 10%">额度单价:</el-text>
+            <el-text>{{dialogData.unit_price}}</el-text>
+          </div>
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 6%">
+            <el-text style="margin-right: 10%">额度总价:</el-text>
+            <el-text>{{purchase_price}}</el-text>
+          </div>
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 6%;margin-bottom: 3%">
+            <el-text style="margin-right: 5%">购买量:</el-text>
+            <el-input-number
+                v-model="purchase_quota"
+                :min="1"
+                :max="dialogData.quota"
+                :precision="0"
+            />
+          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button type="primary" @click="carbonSellSubmit" :disabled="!carbon_purchase_button_can_click || !isLogin">
+                确认
+              </el-button>
+              <el-button @click="dialogVisible = false">取消</el-button>
+            </div>
+          </template>
+          <!--
                 <el-scrollbar>
                     <h1>
                         您正在购买的额度ID为:
@@ -130,7 +155,7 @@
                         class="line_reminder"
                     ></linePrompt>
                 </el-scrollbar>
-            </div>
+          -->
         </el-dialog>
     </div>
 </template>
@@ -276,7 +301,6 @@ export default {
             let seller_publicKey = this.dialogData.seller_public_key;
             let amount = this.purchase_quota;
             let price = this.dialogData.unit_price;
-            console.log(seller_publicKey, amount, price);
             let result = await App.carbonTransaction(
                 seller_publicKey,
                 amount,
@@ -285,7 +309,8 @@ export default {
             if (result !== undefined) {
                 let code = result.code;
                 if (code === 0) {
-                    let array_update = [];
+                    let form = {}
+                    let chain_data = ""
                     let buyer_public_key = JSON.parse(
                         localStorage.getItem("account")
                     ).public_key;
@@ -295,15 +320,17 @@ export default {
                     ).account_id;
                     let seller_id = this.dialogData.seller_id;
                     buyer = await App.getCoinAmount(buyer_public_key);
-                    buyer.account = buyer_id;
-                    array_update.push(buyer);
+                    chain_data = chain_data + buyer_id + "," + buyer.remain + "," + buyer.coin + ";"
                     seller = await App.getCoinAmount(seller_public_key);
-                    seller.account = seller_id;
-                    array_update.push(seller);
+                    chain_data = chain_data + seller_id + "," + seller.remain + "," + seller.coin
+                    form.block_data = chain_data
+                    form.account_id =JSON.parse(localStorage.getItem("account")).account_id
+                  form.quotaSale_id = this.dialogData.id
+                  form.amount = this.purchase_quota
                     axios
                         .post(
-                            `${$target}/general/block/info/update`,
-                            JSON.stringify(array_update),
+                            `${$target}/enterprise/transaction/amount`,
+                            JSON.stringify(form),
                             {
                                 headers: {
                                     "Content-Type":
@@ -342,47 +369,9 @@ export default {
                 }
             }
         },
-        // getSellMsg() {
-        //     let url =  `${$target}/enterprise/transaction/remain`
-        //     axios
-        //         .get(
-        //             url
-        //             ////TODO /enterprise/transaction/remain
-        //         )
-        //         .then((resp) => {
-        //             console.log("resp.data.data", resp.data.data);
-        //             if (resp.status === 200) {
-        //                 if (resp.data.code === 0) {
-        //                     // 请求数据成功
-        //                     this.prompt_type = "success";
-        //                     this.error = "请求信息成功";
-        //                     // console.log("resp.data.data", resp.data.data);
-        //                     this.tableData = resp.data.data;
-        //                     this.total = resp.data.data.length;
-        //                 } else {
-        //                     this.error = "请求信息失败";
-        //                     this.prompt_type = "error";
-        //                     this.tableData = [];
-        //                     this.total = 0;
-        //                 }
-        //             } else {
-        //                 this.error = "请求信息失败";
-        //                 this.prompt_type = "error";
-        //                 this.tableData = [];
-        //                 this.total = 0;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             this.error = "请求信息失败";
-        //             this.prompt_type = "error";
-        //             this.tableData = [];
-        //             this.total = 0;
-        //         });
-        //     this.prompt_type = "waiting";
-        //     this.error = "请求信息中";
-        // },
         getSellMsg() {
-            let url =  `${$target}/enterprise/transaction/remain`
+            let url =  `${$target}/enterprise/transaction/remain?account_id=`+JSON.parse(localStorage.getItem("account")).account_id
+          console.log(url)
             axios
                 .get(
                     url

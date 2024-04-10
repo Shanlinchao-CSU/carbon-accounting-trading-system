@@ -1,7 +1,7 @@
 <template>
     <div class="background_word">
-        <div class="background_word2 word_border" data-text="农业知识图谱">碳中和交易平台</div>
-        <div class="background_word3 word_border" data-text="Agriculture Knowledgegraph">Listed Companies Knowledgegraph</div>
+        <div class="background_word2 word_border">碳核算交易系统</div>
+        <div class="background_word3 word_border">Carbon Accounting Trading System</div>
         <div class="background_word1 word_border" :data-text="$t('views.main_page.main_word.from')">{{ $t("views.main_page.main_word.from") }}</div>
         <img src="./img/arrow.png" class="arrow" />
     </div>

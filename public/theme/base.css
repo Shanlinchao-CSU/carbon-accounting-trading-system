@@ -58,17 +58,8 @@ input {
     --snow-probe-default-src: url("../img/mascots/snow/probe_default.png"); /* snow 探头默认图片 */
     --snow-probe-password-src: "../img/mascots/snow/probe_base.png"; /* snow 探头输入密码时图片 */
 }
-:root{
-    /* element plus */
-    --el-color-primary: #822269;
-}
 @font-face {
-    font-family: "FZZJ-WHJZTJW";
-    src: url("../fonts/FZZJ-WHJZTJW.TTF");
-}
-@font-face {
-    font-family: "ZKKLT";
-    src: url("../fonts/ZKKLT.TTF");
+
 }
 .app_subpage-enter-active,
 .app_subpage-leave-active {
