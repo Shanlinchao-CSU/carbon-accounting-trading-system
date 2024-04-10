@@ -49,7 +49,10 @@ app
 
 let $target = "http://localhost:8080/api";
 let $node_target = "http://localhost:8888";
-export default $target
+
+// let $target = "http://119.23.143.76/api";
+// let $node_target = "http://120.78.1.201:8888";
+export default { $target, $node_target };
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$target = "http://localhost:8080";
 app.config.globalProperties.$config = {
