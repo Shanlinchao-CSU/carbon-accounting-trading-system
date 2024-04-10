@@ -297,6 +297,47 @@ export default {
             this.purchase_submit_error = "购买失败";
             this.carbon_purchase_button_can_click = true;
         },
+        getCarbonCount() {
+            let account_id = JSON.parse(
+                localStorage.getItem("account")
+            ).account_id;
+            let url = `${$target.$target}/enterprise/transaction/remain/${account_id}/last`;
+            axios
+                .get(url)
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        if (resp.data.code === 0) {
+                            // 获取成功
+                            console.log("获取成功");
+                            store.state.carbonCount = resp.data.data;
+                            // this.carbonCount = resp.data.data;
+                        } else {
+                            ElMessage({
+                                message: resp.data.message,
+                                type: "error",
+                            });
+                        }
+                    }
+                })
+                .catch(() => {
+                    console.error("请求出错:", error);
+                    if (error.response) {
+                        // 请求已经发出，但服务器响应返回了状态码超出了 2xx 范围
+                        console.error("状态码:", error.response.status);
+                        console.error("响应数据:", error.response.data);
+                    } else if (error.request) {
+                        // 请求已经发出，但没有收到响应
+                        console.error("请求未收到响应:", error.request);
+                    } else {
+                        // 其他错误
+                        console.error("错误信息:", error.message);
+                    }
+                    ElMessage({
+                        message: "查询剩余碳额度失败，请检查网络",
+                        type: "error",
+                    });
+                });
+        },
         async carbonSellSubmit() {
             let seller_publicKey = this.dialogData.seller_public_key;
             let amount = this.purchase_quota;
@@ -329,7 +370,7 @@ export default {
                   form.amount = this.purchase_quota
                     axios
                         .patch(
-                            `${$target}/enterprise/transaction/amount`,
+                            `${$target.$target}/enterprise/transaction/amount`,
                             JSON.stringify(form),
                             {
                                 headers: {
@@ -345,6 +386,7 @@ export default {
                                     this.purchase_submit_prompt_type =
                                         "success";
                                     this.purchase_submit_error = "购买成功";
+                                    this.getCarbonCount();//更新额度
                                 } else {
                                     this.purchase_submit_error = "购买失败";
                                     this.purchase_submit_prompt_type = "error";
@@ -370,7 +412,7 @@ export default {
             }
         },
         getSellMsg() {
-            let url =  `${$target}/enterprise/transaction/remain?account_id=`+JSON.parse(localStorage.getItem("account")).account_id
+            let url =  `${$target.$target}/enterprise/transaction/remain?account_id=`+JSON.parse(localStorage.getItem("account")).account_id
           console.log(url)
             axios
                 .get(

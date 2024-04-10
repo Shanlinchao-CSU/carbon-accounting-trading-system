@@ -116,7 +116,7 @@ export default {
             // this.fetchData();
         },
         getSellMsg(enterpriseId) {
-            let url = `${$target}/enterprise/accounting_record/` + enterpriseId;
+            let url = `${$target.$target}/enterprise/accounting_record/` + enterpriseId;
             axios
                 .get(
                     url
