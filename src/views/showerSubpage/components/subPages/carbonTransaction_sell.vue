@@ -117,20 +117,20 @@ export default {
             let account_id = JSON.parse(
                 localStorage.getItem("account")
             ).account_id;
-            let url = `${$target}/enterprise/transaction/remain/${account_id}/last`;
+            let url = `${$target.$target}/enterprise/transaction/remain/${account_id}/last`;
             axios
                 .get(url)
                 .then((resp) => {
                     if (resp.status === 200) {
                         if (resp.data.code === 0) {
                             // 获取成功
-                            // console.log("获取成功");
-                            // console.log(typeof resp.data.data);
+                            console.log("获取成功");
+                            store.state.carbonCount = resp.data.data;
                             this.carbonCount = resp.data.data;
-                            if (carbonCount <= 0) {
+                            if (this.carbonCount <= 0) {
+                                console.log(this.carbonCount);
                                 this.warningVisible = true;
                             }
-                            console.log(this.carbonCount, "this.carbonCount");
                         } else {
                             ElMessage({
                                 message: resp.data.message,
@@ -173,7 +173,7 @@ export default {
             let carbonValue = this.carbonValue;
             let carbonPrice = this.carbonPrice;
             let url =
-                `${$target}/enterprise/transaction/publish?account_id=` +
+                `${$target.$target}/enterprise/transaction/publish?account_id=` +
                 account_id +
                 "&quota=" +
                 carbonValue +
@@ -214,6 +214,7 @@ export default {
                             if (resp.status === 200) {
                                 if (resp.data.code === 0) {
                                     // 提交成功
+                                    this.getCarbonCount();
                                     ElMessage({
                                         message: "发布出售信息成功 !",
                                         type: "success",
@@ -236,6 +237,13 @@ export default {
             });
         },
     },
+    computed: {
+        carbonCount(){
+            return store.state.carbonCount;
+        }
+    }
+
+    ,
     mounted() {
         this.getCarbonCount();
     },
