@@ -5,6 +5,7 @@ export default createStore({
         can_click_button:true,
         is_login:false,
         avatar:"",
+        carbonCount:0,
     },
     getters: {},
     mutations: {},

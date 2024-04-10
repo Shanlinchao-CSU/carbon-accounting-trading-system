@@ -351,7 +351,7 @@ export default {
         },
         upload(fileObject) {
             let params = new FormData();
-            let url = `${$target}/enterprise/accounting_record`;
+            let url = `${$target.$target}/enterprise/accounting_record`;
             let enterprise_id = JSON.parse(
                 localStorage.getItem("account")
             ).account_id;
