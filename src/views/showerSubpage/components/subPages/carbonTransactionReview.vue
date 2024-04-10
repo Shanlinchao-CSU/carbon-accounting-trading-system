@@ -113,7 +113,7 @@ export default {
         },
         getSellMsg(enterpriseId) {
             let url =
-                `${$target}/enterprise/transaction/finished/` +
+                `${$target.$target}/enterprise/transaction/finished/` +
                 enterpriseId;
             axios
                 .get(

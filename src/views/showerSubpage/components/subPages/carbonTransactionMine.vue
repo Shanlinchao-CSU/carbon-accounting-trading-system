@@ -310,7 +310,7 @@ export default {
         },
         getSellMsg(enterpriseId) {
             let url =
-                `${$target}/enterprise/transaction/remain/` +
+                `${$target.$target}/enterprise/transaction/remain/` +
                 enterpriseId;
             axios
                 .get(
@@ -358,7 +358,7 @@ export default {
             let id = this.dialogData.id;
             let unit_price = this.dialogData.changed_price;
             let url =
-                `${$target}/enterprise/transaction/price?id=` +
+                `${$target.$target}/enterprise/transaction/price?id=` +
                 id +
                 "&unit_price=" +
                 unit_price;
@@ -422,7 +422,7 @@ export default {
             // 取消出售提交事件
             let id = this.dialogData.id;
             console.log("id", id);
-            let url = `${$target}/enterprise/transaction/` + id;
+            let url = `${$target.$target}/enterprise/transaction/` + id;
             console.log("url", url);
             ElMessageBox.confirm("确定要取消这条额度出售吗？", "提示", {
                 confirmButtonText: "确定",
