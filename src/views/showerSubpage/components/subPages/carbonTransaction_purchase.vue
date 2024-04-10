@@ -328,7 +328,7 @@ export default {
                   form.quotaSale_id = this.dialogData.id
                   form.amount = this.purchase_quota
                     axios
-                        .post(
+                        .patch(
                             `${$target}/enterprise/transaction/amount`,
                             JSON.stringify(form),
                             {
