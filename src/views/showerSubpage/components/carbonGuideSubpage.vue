@@ -25,7 +25,7 @@
                 <h1 class="c_guide_subpage_title" title="指导视频">指导视频</h1>
                 <div class="video-container">
                     <video controls ref="videoPlayer">
-                        <source src="./resource/test.mp4" type="video/mp4" />
+                        <source :src=this.guide_video_config.videoUrl type="video/mp4" />
                     </video>
                 </div>
             </div>
@@ -59,7 +59,7 @@ export default {
             son_pages: [true, false],
             son_pages_name: ["碳核算指导视频", "碳核算指导材料"],
             guide_video_config: {
-                videoUrl: "./resource/test.mp4",
+                videoUrl: require("@/views/showerSubpage/components/resource/2.mp4"),
                 posterUrl: "https://www.w3school.com.cn/i/movie.jpg",
                 volume: 0.5,
                 autoplay: true,
@@ -115,6 +115,7 @@ export default {
             case "电网企业": {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1430";
+                this.guide_video_config.videoUrl = require("@/views/showerSubpage/components/resource/2.mp4")
                 return;
             }
             case "钢铁生产企业": {
@@ -155,6 +156,7 @@ export default {
             case "民航企业": {
                 this.guide_url =
                     "https://zfxxgk.ndrc.gov.cn/web/fileread.jsp?id=1437";
+              this.guide_video_config.videoUrl = require("@/views/showerSubpage/components/resource/10.mp4")
                 return;
             }
             default: {
