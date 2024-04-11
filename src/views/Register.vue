@@ -233,43 +233,43 @@ let register_monitor_institution = reactive({
 const all_enterprise_type = [
   {
     value: 0,
-    label: "电网企业"
+    label: "发电企业"
   },
   {
     value: 1,
-    label: "化工生产企业"
+    label: "电网企业"
   },
   {
     value: 2,
-    label: "电解铝生产企业"
-  },
-  {
-    value: 3,
-    label: "镁冶炼企业"
-  },
-  {
-    value: 4,
-    label: "平板玻璃生产企业"
-  },
-  {
-    value: 5,
-    label: "水泥生产企业"
-  },
-  {
-    value: 6,
-    label: "陶瓷生产企业"
-  },
-  {
-    value: 7,
-    label: "民航企业"
-  },
-  {
-    value: 8,
     label: "钢铁生产企业"
   },
   {
+    value: 3,
+    label: "化工生产企业"
+  },
+  {
+    value: 4,
+    label: "电解铝生产企业"
+  },
+  {
+    value: 5,
+    label: "镁冶炼企业"
+  },
+  {
+    value: 6,
+    label: "平板玻璃生产企业"
+  },
+  {
+    value: 7,
+    label: "水泥生产企业"
+  },
+  {
+    value: 8,
+    label: "陶瓷生产企业"
+  },
+  {
     value: 9,
-    label: "发电企业"
+    label: "民航企业"
   },
   {
     value: 10,
@@ -388,9 +388,9 @@ function sendMessage(formEl) {
     if (valid) {
       let url = undefined
       if (register_type.value === 0) {
-        url = `${$target}/general/verify/email?email=`+register_company_user.phone+"&token="+localStorage.getItem("token")
+        url = `${$target.$target}/general/verify/email?email=`+register_company_user.phone+"&token="+localStorage.getItem("token")
       }else {
-        url = `${$target}/general/verify/email?email=`+register_monitor_institution.phone+"&token="+localStorage.getItem("token")
+        url = `${$target.$target}/general/verify/email?email=`+register_monitor_institution.phone+"&token="+localStorage.getItem("token")
       }
       axios
           .get(url)
@@ -466,25 +466,25 @@ async function upload(fileObject) {
         .then(async accounts => {
           let message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions"
           register_company_user.public_key = accounts[0]
-          let signature,address
+          let signature
           try {
             signature = await window.ethereum.request({
               method: 'personal_sign',
               params: [message, register_company_user.public_key]
             });
-            address = await window.ethereum.request({method: 'eth_accounts'})
+            console.log(register_company_user.public_key)
             params.append("file",fileObject.file)
             params.append("name",register_company_user.name)
             params.append("password",register_company_user.password)
             params.append("phone",register_company_user.phone)
             params.append("enterprise_type",register_company_user.enterprise_type)
-            params.append("type",register_type.value)
+            params.append("type","1")
             params.append("code",register_company_user.v_code)
             params.append("signature",signature)
             params.append("message",message)
-            params.append("address",address)
+            params.append("address",register_company_user.public_key)
             params.append("public_key",register_company_user.public_key)
-            url = `${$target}/enterprise/info`
+            url = `${$target.$target}/enterprise/info`
             axios({
               url:url,
               method:"POST",
@@ -535,9 +535,9 @@ async function upload(fileObject) {
     params.append("name",register_monitor_institution.name)
     params.append("password",register_monitor_institution.password)
     params.append("phone",register_monitor_institution.phone)
-    params.append("type",register_type.value)
+    params.append("type","2")
     params.append("code",register_monitor_institution.v_code)
-    url = `${$target}/thirdParty/info`
+    url = `${$target.$target}/thirdParty/info`
     axios({
       url:url,
       method:"POST",
@@ -605,7 +605,7 @@ async function signature() {
       params: [message, account]
     });
     const address = await window.ethereum.request({method: 'eth_accounts'});
-    const response = await fetch(`${$target}/general/signature`, {
+    const response = await fetch(`${$target.$target}/general/signature`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json;charset=utf-8"

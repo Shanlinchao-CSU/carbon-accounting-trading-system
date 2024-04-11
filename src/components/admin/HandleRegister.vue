@@ -100,6 +100,7 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import $target from "@/main";
+import $node_target from "@/main"
 import App from "@/chainUtil/CarbonCredits"
 
 const currentPage = ref(1)
@@ -120,7 +121,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`${$target}/administrator/application/review`)
+          .get(`${$target.$target}/administrator/application/review`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -183,11 +184,11 @@ function Searching() {
 }
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/application/file?id=`+id
+  link.href = `${$target.$target}/administrator/application/file?id=`+id
   link.click()
 }
 async function handle_register(method, id, public_key, type, account_name) {
-  let url = `${$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
+  let url = `${$target.$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
   if (type === 1 && method === 'POST') {
     //企业用户
     default_amount.value = 100
@@ -229,19 +230,26 @@ async function handle_register(method, id, public_key, type, account_name) {
 }
 function handle_enterprise_register() {
   if (default_amount.value > 0) {
-    let url = `${$target}/administrator/application?register_application_id=` + dialog_id + '&account_id=' + account.account_id + '&amount=' + default_amount.value
+    let url = `${$target.$target}/administrator/application?register_application_id=` + dialog_id + '&account_id=' + account.account_id + '&amount=' + default_amount.value
     axios({
       method: "POST",
       url: url
     }).then(async resp => {
+      console.log("123123")
       if (resp.status === 200) {
         if (resp.data.code === 0) {
-          await App.issueAllowance(dialog_publicKey, default_amount.value)
-          ElMessage({
-            message: "操 作 成 功 !",
-            type: 'success',
-            offset: 70
-          })
+          //await App.issueAllowance(dialog_publicKey, default_amount.value)
+          axios
+              .post(`${$node_target.$node_target}/api/register?publicKey=${dialog_publicKey}&coin=50&amount=${default_amount.value}`)
+              .then(resp => {
+                if (resp.status === 200) {
+                  ElMessage({
+                    message: "操 作 成 功 !",
+                    type: 'success',
+                    offset: 70
+                  })
+                }
+              })
           all_data.value = all_data.value.filter(item => item.register_application_id !== dialog_id)
           getData(true, false)
         } else {

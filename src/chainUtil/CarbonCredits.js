@@ -74,10 +74,11 @@ const App = {
                     gas: '1000000',
                     gasPrice: 1000000000
                 })
-                .on('receipt', receipt => {
-                    return {code:0,hash:receipt.transactionHash}
+                .on('error', error => {
+                    console.log(error)
+                    return {code:1}
                 })
-            return {code:1}
+            return {code:0}
         } else {
             return {code:3}
         }

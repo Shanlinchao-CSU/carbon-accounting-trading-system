@@ -105,15 +105,13 @@ async function getData(reload=true,real=true) {
     if (real) {
       let public_keys = []
       transaction_monitor = await App.getTransactionHistory()
-      console.log(transaction_monitor)
       transaction_monitor.forEach(value => {
-        console.log(value)
         all_data.value.push(value)
         public_keys.push(value._to, value._from) //卖家公钥,买家公钥
       })
-      if (public_keys.length === 0) {
+      if (public_keys.length !== 0) {
         axios
-            .post(`${$target}/enterprise/info/address`, JSON.stringify(public_keys), {
+            .post(`${$target.$target}/enterprise/info/address`, JSON.stringify(public_keys), {
               headers: {
                 "Content-Type": "application/json;charset=utf-8"
               }

@@ -28,7 +28,7 @@
                 <carbonTransaction_purchase></carbonTransaction_purchase>
             </div>
             <div ref="son_2" class="son_subpage" style="left: 100%">
-                <carbonTransactionMine></carbonTransactionMine>
+                <carbonTransactionMine ref="transaction_mine"></carbonTransactionMine>
             </div>
         </div>
     </div>
@@ -62,6 +62,12 @@ export default {
             return this.$refs.container.offsetTop;
         },
         clickNav(index) {
+          let enterpriseId = JSON.parse(
+              localStorage.getItem("account")
+          ).account_id;
+          if (index === 2) {
+            this.$refs.transaction_mine.getSellMsg(enterpriseId)
+          }
             this.son_pages = [false, false,false];
             this.son_pages[index] = true;
             this.son_pages.forEach((element, i) => {

@@ -117,7 +117,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`${$target}/administrator/accounting_record/review`)
+          .get(`${$target.$target}/administrator/accounting_record/review`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -161,7 +161,7 @@ function getData(reload=true,real=true) {
 
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/accounting_record/file?id=`+id
+  link.href = `${$target.$target}/administrator/accounting_record/file?id=`+id
   link.click()
 }
 function get_data_for_show(page) {
@@ -173,7 +173,7 @@ function changePage(page) {
 }
 function verify(id) {
   axios
-      .get(`${$target}/dataAuditors/verify_result?id=`+id)
+      .get(`${$target.$target}/dataAuditors/verify_result?id=`+id)
       .then(res => {
         console.log(res.data)
         if (res.status === 200) {
@@ -183,7 +183,6 @@ function verify(id) {
               message: '通过验证,核算结果正确!',
             })
           }else {
-            alert(res.data.data)
             ElMessage({
               message: "审核未通过,计算结果为"+res.data.data,
               type: 'error',
@@ -212,12 +211,12 @@ function handle_record(state,row) {
     )
         .then(() => {
           axios
-              .post(`${$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+              .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
               .then(async res => {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
                     axios
-                        .post(`${$node_target}/api/submitCarbonReport?report=`+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
+                        .post(`${$node_target.$node_target}/api/submitCarbonReport?report=`+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
                         .then(resp=>{
                           if (resp.status === 200) {
                             ElMessage({
@@ -247,7 +246,7 @@ function handle_record(state,row) {
         })
   }else {
     axios
-        .post(`${$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+        .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
         .then(res => {
           if (res.status === 200) {
             if (res.data.code === 0) {

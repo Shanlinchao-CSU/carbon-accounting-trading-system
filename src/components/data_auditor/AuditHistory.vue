@@ -106,7 +106,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`${$target}/administrator/accounting_record`)
+          .get(`${$target.$target}/administrator/accounting_record`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -166,7 +166,7 @@ function showDialog(json) {
 }
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/accounting_record/file?id=`+id
+  link.href = `${$target.$target}/administrator/accounting_record/file?id=`+id
   link.click()
 }
 function Searching() {

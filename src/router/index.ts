@@ -55,6 +55,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'illegality_query',
         component: illegalityQuery
+      },
+      {
+        path: 'transaction_monitor',
+        component: transaction_monitor
+      },
+      {
+        path: 'accounting_monitor',
+        component: accounting_monitor
       }
     ]
   },

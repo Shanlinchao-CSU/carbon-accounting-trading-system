@@ -103,59 +103,6 @@
               <el-button @click="dialogVisible = false">取消</el-button>
             </div>
           </template>
-          <!--
-                <el-scrollbar>
-                    <h1>
-                        您正在购买的额度ID为:
-                        <span style="color: red">{{ dialogData.id }}</span>
-                    </h1>
-                    <h2>
-                        额度单价:
-                        <span style="font-size: large">{{
-                            dialogData.unit_price
-                        }}</span>
-                    </h2>
-                    <h2>
-                        额度总价:
-                        <span style="color: red">{{ purchase_price }}</span>
-                    </h2>
-                    <el-form
-                        ref="form"
-                        style="
-                            display: flex;
-                            align-items: center;
-                            flex-direction: column;
-                        "
-                    >
-                        <el-form-item label="请输入您欲购买的份额">
-                            <el-input-number
-                                v-model="purchase_quota"
-                                :min="1"
-                                :max="dialogData.quota"
-                                :precision="0"
-                                @change="recHandleChange"
-                            />
-                        </el-form-item>
-                    </el-form>
-                    <el-button
-                        class="carbon_sell_button"
-                        @click="carbonSellSubmit"
-                        type="primary"
-                        color="rgb(216, 187, 222)"
-                        :disabled="
-                            !carbon_purchase_button_can_click || !isLogin
-                        "
-                    >
-                        购买
-                    </el-button>
-                    <linePrompt
-                        :opacity="purchase_submit_error"
-                        :data_left="purchase_submit_error"
-                        :type="purchase_submit_prompt_type"
-                        class="line_reminder"
-                    ></linePrompt>
-                </el-scrollbar>
-          -->
         </el-dialog>
     </div>
 </template>
@@ -339,6 +286,7 @@ export default {
                 });
         },
         async carbonSellSubmit() {
+          this.dialogVisible = false
             let seller_publicKey = this.dialogData.seller_public_key;
             let amount = this.purchase_quota;
             let price = this.dialogData.unit_price;
@@ -360,9 +308,10 @@ export default {
                         localStorage.getItem("account")
                     ).account_id;
                     let seller_id = this.dialogData.seller_id;
-                    buyer = await App.getCoinAmount(buyer_public_key);
+                    let buyer = await App.getCoinAmount(buyer_public_key);
                     chain_data = chain_data + buyer_id + "," + buyer.remain + "," + buyer.coin + ";"
-                    seller = await App.getCoinAmount(seller_public_key);
+                    let seller = await App.getCoinAmount(seller_public_key);
+                    console.log(buyer,seller)
                     chain_data = chain_data + seller_id + "," + seller.remain + "," + seller.coin
                     form.block_data = chain_data
                     form.account_id =JSON.parse(localStorage.getItem("account")).account_id
@@ -387,6 +336,7 @@ export default {
                                         "success";
                                     this.purchase_submit_error = "购买成功";
                                     this.getCarbonCount();//更新额度
+                                  this.getSellMsg();
                                 } else {
                                     this.purchase_submit_error = "购买失败";
                                     this.purchase_submit_prompt_type = "error";

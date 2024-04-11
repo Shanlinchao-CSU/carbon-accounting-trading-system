@@ -26,7 +26,7 @@
                 <carbonAccountingSubpage_10 v-if="choose_page == 10"></carbonAccountingSubpage_10>
             </div>
             <div ref="son_1" class="son_subpage" style="left: 100%">
-                <carbonAccountingReview></carbonAccountingReview>
+                <carbonAccountingReview ref="accounting_review"></carbonAccountingReview>
             </div>
         </div>
     </div>
@@ -62,6 +62,10 @@ export default {
             return this.$refs.container.offsetTop;
         },
         clickNav(index) {
+          if (index === 1){
+            let enterpriseId = JSON.parse(localStorage.getItem("account")).account_id
+            this.$refs.accounting_review.getSellMsg(enterpriseId)
+          }
             this.son_pages = [false, false];
             this.son_pages[index] = true;
             this.son_pages.forEach((element, i) => {

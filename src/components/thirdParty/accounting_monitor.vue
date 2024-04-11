@@ -203,12 +203,12 @@ function sortChange(column) {
 
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/accounting_record/file?id=` + id
+  link.href = `${$target.$target}/administrator/accounting_record/file?id=` + id
   link.click()
 }
 
 function handle_register(method, id) {
-  let url = `${$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
+  let url = `${$target.$target}/administrator/application?register_application_id=` + id + '&account_id=' + account.account_id
   axios({
     method: method,
     url: url

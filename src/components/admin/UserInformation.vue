@@ -43,7 +43,7 @@
     </el-table-column>
     <el-table-column prop="limit_next_month" label="排放限额预期修改" width="200">
       <template #default="scope">
-        {{scope.limit_next_month === "" ? "无修改" : scope.limit_next_month}}
+        {{scope.row.limit_next_month === 0 ? "无修改" : scope.row.limit_next_month}}
       </template>
     </el-table-column>
     <el-table-column prop="t_coin" label="炭币余额" width="140" sortable="custom"/>
@@ -115,7 +115,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`${$target}/administrator/enterprise/accounts`)
+          .get(`${$target.$target}/administrator/enterprise/accounts`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -188,7 +188,7 @@ function changeLimit(row) {
     chosen_id.value = ""
   }else {
     axios
-        .patch(`${$target}/administrator/enterprise/t_limit?account_id=`+row.account_id+"&t_limit="+chosen_limit.value)
+        .patch(`${$target.$target}/administrator/enterprise/t_limit?account_id=`+row.account_id+"&t_limit="+chosen_limit.value)
         .then(resp=>{
           if (resp.status === 200) {
             if (resp.data.code === 0) {
@@ -199,6 +199,7 @@ function changeLimit(row) {
               })
               let account = all_data.value.find(obj => String(obj.account_id) === String(row.account_id))
               account.limit_next_month = chosen_limit.value
+              getData()
             }else {
               ElMessage({
                 message: "修 改 失 败 !",

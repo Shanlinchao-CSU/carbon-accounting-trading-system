@@ -80,7 +80,7 @@ function getData(reload=true,real=true) {
   if (reload) {
     if (real) {
       axios
-          .get(`${$target}/administrator/enterprise/exceed`)
+          .get(`${$target.$target}/administrator/enterprise/exceed`)
           .then(resp=>{
             if (resp.status === 200) {
               if (resp.data.code === 0) {
@@ -143,11 +143,11 @@ function Searching() {
 }
 function downloadFile(id) {
   const link = document.createElement('a')
-  link.href = `${$target}/administrator/accounting_record/file?id=`+id
+  link.href = `${$target.$target}/administrator/accounting_record/file?id=`+id
   link.click()
 }
 function handle_register(method,id) {
-  let url = `${$target}/administrator/application?data_id=`+id+'&account_id='+account.account_id
+  let url = `${$target.$target}/administrator/application?data_id=`+id+'&account_id='+account.account_id
   axios({
     method: method,
     url: url
