@@ -76,7 +76,7 @@
             >
             </el-pagination>
         </div>
-        <el-dialog
+        <!-- <el-dialog
             v-model="changeDialogVisible"
             title="碳交易:额度单价修改"
             width="800px"
@@ -125,8 +125,8 @@
                     ></linePrompt>
                 </el-scrollbar>
             </div>
-        </el-dialog>
-        <el-dialog
+        </el-dialog> -->
+        <!-- <el-dialog
             v-model="cancleDialogVisible"
             title="碳交易:取消额度出售"
             width="800px"
@@ -159,6 +159,54 @@
                     ></linePrompt>
                 </el-scrollbar>
             </div>
+        </el-dialog> -->
+        <el-dialog
+            v-model="changeDialogVisible"
+            title="碳交易: 单价修改"
+            width="320"
+        >
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 3%">
+            <el-text style="margin-right: 10%">当前额度单价:</el-text>
+            <el-text>{{dialogData.unit_price}}</el-text>
+          </div>
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 6%;margin-bottom: 3%">
+            <el-text style="margin-right: 5%">请输入您欲修改的单价:</el-text>
+            <el-input-number
+                v-model="dialogData.changed_price"
+                :min="0.01"
+                :precision="2"
+            />
+          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button type="primary" @click="carbonChangeSubmit" :disabled="!carbon_button_can_click || !isLogin">
+                确认
+              </el-button>
+              <el-button @click="changeDialogVisible = false">取消</el-button>
+            </div>
+          </template>
+        </el-dialog>
+        <el-dialog
+            v-model="cancleDialogVisible"
+            title="碳交易: 取消出售"
+            width="320"
+        >
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 3%">
+            <el-text style="margin-right: 10%">当前额度ID:</el-text>
+            <el-text>{{dialogData.id}}</el-text>
+          </div>
+          <div style="display: flex;justify-content:center;width: 100%;margin-top: 6%;margin-bottom: 3%">
+            <el-text style="margin-right: 5%">当前额度单价:</el-text>
+            <el-text>{{dialogData.unit_price}}</el-text>
+          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button type="primary" @click="carbonCancelSubmit" :disabled="!carbon_button_can_click || !isLogin">
+                确认
+              </el-button>
+              <el-button @click="cancleDialogVisible = false">取消</el-button>
+            </div>
+          </template>
         </el-dialog>
     </div>
 </template>
