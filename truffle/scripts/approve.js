@@ -4,9 +4,9 @@ const CarbonCredits = artifacts.require("CarbonCredits")
 // const web3 = new Web3('http://119.23.143.76:8545');
 // const web3 = new Web3('http://localhost:8545');
 
-const accounts = ["0xc387a9155b36850cded153182e37f86dbf6064e3",
-                  "0x8b751a0226707ef8df389078b288d13a415343b7",
-                  "0x2f875a7c2069a7b389c24e6227755cde6494e56d"]
+const accounts = ["0x90E672df02F2aed9A98a16324e6eE00344f6c7C3", // 0 系统
+                  "0x46d9Be20C17CA09e09efC293f8e0BFc3B3efFb22", // 1 数据审核员
+                  "0x2f875a0xd078d8bEADc71ae788f13F79F4CA6346DF2400CE7c2069a7b389c24e6227755cde6494e56d"] // 2 第三方机构
 
 module.exports = async function (callback) {
     const carbonCoin = await CarbonCoin.deployed()
