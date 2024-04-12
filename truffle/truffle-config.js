@@ -90,7 +90,7 @@ module.exports = {
             host: "120.78.1.201",
             port: 8545,
             network_id: "726",
-            from: accounts[1],
+            from: accounts[1] ,
             password: "123456mm"
         }
         //
