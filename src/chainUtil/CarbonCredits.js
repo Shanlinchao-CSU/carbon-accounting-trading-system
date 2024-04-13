@@ -113,7 +113,7 @@ const App = {
         }
     }
 }
-const address = "0xF60342Ec106e30dD0bA9eC50e28fCC39757B3dD1"
+const address = "0x561067595417797Bf55D5e40C75eF0e4561bBF50"
 const abi = [
     {
         "inputs": [
@@ -396,7 +396,7 @@ const abi = [
     }
 ]
 
-const carbonCoinAddress = "0xcEBc6C22b0488e88085555DdBeF44f66ed6fc29b"
+const carbonCoinAddress = "0xBeAa1C479D634372b80ba1F538B5a850e56d542E"
 const carbonCoinABI = [
     {
         "inputs": [],
