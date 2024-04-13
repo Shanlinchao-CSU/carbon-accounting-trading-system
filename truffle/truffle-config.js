@@ -52,9 +52,9 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 // 系统： 给新账号发送碳币，每月重置额度（到默认额度)，拥有碳币管理权
 // 数据审核员： 碳报告上链
 // 第三方机构： 查看所有信息
-const accounts = ["0x90E672df02F2aed9A98a16324e6eE00344f6c7C3", // 0 系统
-                  "0x46d9Be20C17CA09e09efC293f8e0BFc3B3efFb22", // 1 数据审核员
-                  "0xd078d8bEADc71ae788f13F79F4CA6346DF2400CE"] // 2 第三方机构
+const accounts = ["0xa512dc579dad9e019c2953c6085e130e8633f7ca", // 0 系统
+                  "0x35afb612b9f26bba267eb7310d20c3bc1b0a9548", // 1 数据审核员
+                  "0x4d92bc92e8421b4079fbf1b1ef3cece011d16830"] // 2 第三方机构
 
 module.exports = {
     /**
@@ -89,7 +89,7 @@ module.exports = {
         cchain: {
             host: "120.78.1.201",
             port: 8545,
-            network_id: "826",
+            network_id: "926",
             from: accounts[0] ,
             password: "123456mm"
         }
