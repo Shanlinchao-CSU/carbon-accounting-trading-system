@@ -290,6 +290,7 @@ export default {
             let seller_publicKey = this.dialogData.seller_public_key;
             let amount = this.purchase_quota;
             let price = this.dialogData.unit_price;
+            console.log(seller_publicKey)
             let result = await App.carbonTransaction(
                 seller_publicKey,
                 amount,

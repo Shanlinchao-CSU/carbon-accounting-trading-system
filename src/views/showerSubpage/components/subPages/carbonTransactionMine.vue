@@ -170,7 +170,7 @@
             <el-text>{{dialogData.unit_price}}</el-text>
           </div>
           <div style="display: flex;justify-content:center;width: 100%;margin-top: 6%;margin-bottom: 3%">
-            <el-text style="margin-right: 5%">请输入您欲修改的单价:</el-text>
+            <el-text style="margin-right: 5%">请输入单价:</el-text>
             <el-input-number
                 v-model="dialogData.changed_price"
                 :min="0.01"

@@ -97,7 +97,8 @@ import {ref, reactive, watch, onMounted, computed} from "vue";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from "axios";
 import $target from "@/main";
-import $node_target from "@/main"
+import $node_target from "@/main";
+import App from "@/chainUtil/CarbonCredits";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -110,7 +111,6 @@ let jsonObject = undefined
 const search_input = ref("")
 // 设置一页多少条记录
 let onePageNumber = 15
-let account = undefined
 
 function getData(reload=true,real=true) {
   //reload用于删除数据的情况,非reload用于查询的情况
@@ -211,13 +211,14 @@ function handle_record(state,row) {
     )
         .then(() => {
           axios
-              .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+              .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id=30")
               .then(async res => {
                 if (res.status === 200) {
                   if (res.data.code === 0) {
                     axios
-                        .post(`${$node_target.$node_target}/api/submitCarbonReport?report=`+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
+                        .post(`${$node_target.$node_target}/submitCarbonReport?report=`+generateCarbonReport(row)+"&amount="+row.result+"&publicKey="+row.public_key+"&account_id="+row.enterprise_id)
                         .then(resp=>{
+                          console.log(resp)
                           if (resp.status === 200) {
                             ElMessage({
                               type: 'success',
@@ -246,7 +247,7 @@ function handle_record(state,row) {
         })
   }else {
     axios
-        .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id="+account.account_id)
+        .post(`${$target.$target}/dataAuditors/carbon_accounting?id=`+row.id+"&approve="+state+"&conductor_id=30")
         .then(res => {
           if (res.status === 200) {
             if (res.data.code === 0) {
@@ -274,6 +275,7 @@ function handle_record(state,row) {
 }
 function generateCarbonReport(row) {
   let report = {}
+  report.id = row.id
   report.account_id = row.enterprise_id
   report.account_name = row.account_name
   report.enterprise_type = row.enterprise_type
@@ -352,9 +354,9 @@ function sortChange(column) {
 function filterHandler(value,row) {
   return row.enterprise_type === value
 }
-onMounted(()=>{
+onMounted(async () => {
   getData()
-  account = JSON.parse(localStorage.getItem("account"))
+  console.log(await App.getCoinAmount("0xa12d6fB7FCB9Cfc71325E6C2DA200DC3a2Df1B99"))
 })
 </script>
 

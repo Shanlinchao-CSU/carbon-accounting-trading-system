@@ -109,6 +109,8 @@ async function getData(reload=true,real=true) {
         all_data.value.push(value)
         public_keys.push(value._to, value._from) //卖家公钥,买家公钥
       })
+      console.log(all_data.value)
+      console.log(public_keys)
       if (public_keys.length !== 0) {
         axios
             .post(`${$target.$target}/enterprise/info/address`, JSON.stringify(public_keys), {
@@ -120,6 +122,7 @@ async function getData(reload=true,real=true) {
               if (resp.status === 200) {
                 if (resp.data.code === 0) {
                   let res_data = resp.data.data
+                  console.log(res_data)
                   for (let i = 0; i < all_data.value.length; i++) {
                     all_data.value[i]._to_id = res_data[i * 2].account_id
                     all_data.value[i]._to_name = res_data[i * 2].account_name

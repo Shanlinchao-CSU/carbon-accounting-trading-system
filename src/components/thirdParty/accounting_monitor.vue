@@ -91,6 +91,7 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import App from "@/chainUtil/CarbonCredits"
 import $target from "@/main";
+import $node_target from "@/main";
 
 const currentPage = ref(1)
 const pageTotal = ref(0)
@@ -107,13 +108,25 @@ let jsonObject = undefined
 async function getData(reload = true, real = true) {
   if (reload) {
     if (real) {
-      all_data.value = await App.getCarbonReport()
-      data.value = all_data.value
-      pageTotal.value = data.value.length
-      if (pageTotal.value <= currentPage.value * onePageNumber - onePageNumber) {
-        currentPage.value = pageTotal.value / onePageNumber + 1
-      }
-      data_show.value = get_data_for_show(currentPage.value)
+      axios
+          .get(`${$node_target.$node_target}/getCarbonReports`)
+          .then(resp=>{
+            if (resp.status === 200) {
+              all_data.value = resp.data.map(item => JSON.parse(item.report))
+              data.value = all_data.value
+              pageTotal.value = data.value.length
+              if (pageTotal.value <= currentPage.value * onePageNumber - onePageNumber) {
+                currentPage.value = pageTotal.value / onePageNumber + 1
+              }
+              data_show.value = get_data_for_show(currentPage.value)
+            }else {
+              ElMessage({
+                message: "失 败 , 请 检 查 网 络 !",
+                type: 'error',
+                offset: 70
+              })
+            }
+          })
     } else {
       data.value = all_data.value
       pageTotal.value = data.value.length

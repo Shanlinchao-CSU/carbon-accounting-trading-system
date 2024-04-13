@@ -22,7 +22,7 @@
             "
         >
             <div ref="son_0" class="son_subpage">
-                <carbonTransaction_sell :goToCarbonAccounting = "goToCarbonAccounting"></carbonTransaction_sell>
+                <carbonTransaction_sell :goToCarbonAccounting = "goToCarbonAccounting" ref="transaction_sell"></carbonTransaction_sell>
             </div>
             <div ref="son_1" class="son_subpage" style="left: 100%">
                 <carbonTransaction_purchase></carbonTransaction_purchase>
@@ -65,6 +65,9 @@ export default {
           let enterpriseId = JSON.parse(
               localStorage.getItem("account")
           ).account_id;
+          if (index === 0) {
+            this.$refs.transaction_sell.getCarbonCount()
+          }
           if (index === 2) {
             this.$refs.transaction_mine.getSellMsg(enterpriseId)
           }

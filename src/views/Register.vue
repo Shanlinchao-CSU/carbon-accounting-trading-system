@@ -56,7 +56,8 @@
               v-model="register_company_user.password"
               placeholder="请设置密码"
               maxlength="18"
-              class="input"></el-input>
+              class="input"
+              type="password"></el-input>
         </el-form-item>
         <el-form-item
             prop="v_code"
@@ -82,13 +83,14 @@
               v-model="register_company_user.confirm_password"
               placeholder="请确认密码"
               maxlength="18"
-              class="input"></el-input>
+              class="input"
+              type="password"></el-input>
         </el-form-item>
         <el-form-item
             prop="enterprise_type"
             class="form_item">
           <el-select
-              v-model="enterprise_type"
+              v-model="register_company_user.enterprise_type"
               placeholder="请选择企业类型"
               size="large"
               style="width: 260px;">
@@ -143,7 +145,8 @@
               v-model="monitor_institution.password"
               placeholder="请设置密码"
               maxlength="18"
-              class="input"></el-input>
+              class="input"
+              type="password"></el-input>
         </el-form-item>
         <el-form-item
             prop="v_code"
@@ -169,7 +172,8 @@
               v-model="monitor_institution.confirm_password"
               placeholder="请确认密码"
               maxlength="18"
-              class="input"></el-input>
+              class="input"
+              type="password"></el-input>
         </el-form-item>
         <el-upload
             action="#"
@@ -339,7 +343,7 @@ const validatePhone = (rule, value, callback) => {
 }
 
 const validateType = (rule, value, callback) => {
-  if (enterprise_type.value === null) {
+  if (register_company_user.enterprise_type.value === null) {
     return callback(new Error("请选择企业类型!"))
   } else {
     return callback()
@@ -596,38 +600,6 @@ function submit(formEl) {
   })
 }
 
-async function signature() {
-  const message = "Confirmation will bind your account to your account on this website, and your public key will be stored in our database for future transactions";
-  try {
-    const account = register_company_user.public_key
-    const signature = await window.ethereum.request({
-      method: 'personal_sign',
-      params: [message, account]
-    });
-    const address = await window.ethereum.request({method: 'eth_accounts'});
-    const response = await fetch(`${$target.$target}/general/signature`, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify({
-        signature: signature.toString(),
-        message: message.toString(),
-        address: address.toString(),
-      })
-    }).then(response => response.json())
-        .then(data => {
-          if (data.data) {
-            return 0
-          } else {
-            return 1
-          }
-        })
-  } catch (error) {
-    alert('签名过程出现错误，请检查您的 MetaMask 插件是否正确安装和配置。')
-    return 2
-  }
-}
 
 function reset() {
   if (register_type.value === 0) {

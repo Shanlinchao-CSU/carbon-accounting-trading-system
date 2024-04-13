@@ -78,6 +78,9 @@ const App = {
                     console.log(error)
                     return {code:1}
                 })
+                .on('receipt', receipt => {
+                    console.log(receipt)
+                })
             return {code:0}
         } else {
             return {code:3}
@@ -110,7 +113,7 @@ const App = {
         }
     }
 }
-const address = "0x46226E90D5fCffebDa2387c5aA7c228B535EF94F"
+const address = "0xF60342Ec106e30dD0bA9eC50e28fCC39757B3dD1"
 const abi = [
     {
         "inputs": [
@@ -393,7 +396,7 @@ const abi = [
     }
 ]
 
-const carbonCoinAddress = "0x6D78638F149c584E44f5E58E7f76c74772aF6AE7"
+const carbonCoinAddress = "0xcEBc6C22b0488e88085555DdBeF44f66ed6fc29b"
 const carbonCoinABI = [
     {
         "inputs": [],

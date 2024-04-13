@@ -29,7 +29,7 @@
                 <el-input
                     v-model="ruleForm.username"
                     placeholder="请输入账户ID/手机号码/邮箱"
-                    maxlength="16"
+                    maxlength="26"
                     :prefix-icon="User"
                     class="input"/>
               </el-form-item>

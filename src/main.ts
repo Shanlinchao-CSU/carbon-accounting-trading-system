@@ -48,7 +48,7 @@ app
 })();
 
 let $target = "http://localhost:8080/api";
-let $node_target = "http://localhost:8888";
+let $node_target = "http://localhost:8888/api";
 
 // let $target = "http://119.23.143.76/api";
 // let $node_target = "http://120.78.1.201:8888";

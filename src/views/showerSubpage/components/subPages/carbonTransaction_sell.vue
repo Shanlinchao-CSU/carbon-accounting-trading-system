@@ -127,9 +127,11 @@ export default {
                             console.log("获取成功");
                             store.state.carbonCount = resp.data.data;
                             this.carbonCount = resp.data.data;
-                            if (this.carbonCount <= 0) {
+                            if (this.carbonCount < 0) {
                                 console.log(this.carbonCount);
                                 this.warningVisible = true;
+                            }else {
+                              this.warningVisible = false;
                             }
                         } else {
                             ElMessage({

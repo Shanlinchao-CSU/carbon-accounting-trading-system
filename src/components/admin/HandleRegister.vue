@@ -235,12 +235,10 @@ function handle_enterprise_register() {
       method: "POST",
       url: url
     }).then(async resp => {
-      console.log("123123")
       if (resp.status === 200) {
         if (resp.data.code === 0) {
-          //await App.issueAllowance(dialog_publicKey, default_amount.value)
           axios
-              .post(`${$node_target.$node_target}/api/register?publicKey=${dialog_publicKey}&coin=50&amount=${default_amount.value}`)
+              .post(`${$node_target.$node_target}/register?publicKey=${dialog_publicKey}&coin=50&amount=${default_amount.value}`)
               .then(resp => {
                 if (resp.status === 200) {
                   ElMessage({
@@ -248,10 +246,10 @@ function handle_enterprise_register() {
                     type: 'success',
                     offset: 70
                   })
+                  all_data.value = all_data.value.filter(item => item.register_application_id !== dialog_id)
+                  getData(true, false)
                 }
               })
-          all_data.value = all_data.value.filter(item => item.register_application_id !== dialog_id)
-          getData(true, false)
         } else {
           ElMessage({
             message: "失 败 , 正 在 重 新 加 载 !",
